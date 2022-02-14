@@ -86,18 +86,33 @@ int lsh_launch(char **args)
 int lsh_cd(char **args);
 int lsh_help(char **args);
 int lsh_exit(char **args);
+int lsh_echo(char **args);
+int lsh_pwd(char **args);
+int lsh_export(char **args);
+int lsh_unset(char **args);
+int lsh_env(char **args);
 
 /*  List of builtin commands, followed by their corresponding functions. */
 char *builtin_str[] = {
   "cd",
   "help",
-  "exit"
+  "exit",
+  "echo",
+  "pwd",
+  "export",
+  "unset",
+  "env"
 };
 
 int (*builtin_func[]) (char **) = {
   &lsh_cd,
   &lsh_help,
-  &lsh_exit
+  &lsh_exit,
+  &lsh_echo,
+  &lsh_pwd,
+  &lsh_export,
+  &lsh_unset,
+  &lsh_env
 };
 
 int lsh_num_builtins() {
@@ -135,6 +150,72 @@ int lsh_help(char **args)
 int lsh_exit(char **args)
 {
   return 0;
+}
+
+int lsh_echo(char **args)
+{
+  int i;
+
+  i = 1;
+  while (args[i]) {
+  	printf("%s\n", args[i]);
+    i++;
+  }
+  return 1;
+}
+
+int lsh_pwd(char **args)
+{
+  char path_name[50];
+
+  getcwd(path_name, 50);
+  printf("%s\n", path_name);
+  return 1;
+}
+
+int lsh_export(char **args)
+{
+  extern char	**environ;
+  char		**env;
+
+  env = environ;
+  if (args[1] == NULL) {
+    while(*env) {
+		printf("%s\n", *env);
+        env++;
+    }
+	} else {
+    // if (setenv(args[1], args[2], 1) != 0) {
+    //   perror("lsh");
+    // }
+		while (strncmp(*env, args[1], strlen(args[1])) != 0) {
+			env++;
+		}
+		char *str = malloc(strlen(args[1]) + strlen(args[2]) + 2);
+		strcpy(str, args[1]);
+		strcat(str, "=");
+		strcat(str, args[2]);
+		if (*env == NULL) {
+			// envになかったら追加
+		}
+		else
+		{
+			char *tmp = *env;
+			*env = str;
+			free(tmp);
+		}
+	}
+	return 1;
+}
+
+int lsh_unset(char **args)
+{
+  return 1;
+}
+
+int lsh_env(char **args)
+{
+  return 1;
 }
 
 int lsh_execute(char **args)
