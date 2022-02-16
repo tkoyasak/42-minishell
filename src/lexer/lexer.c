@@ -1,24 +1,4 @@
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-
-typedef enum e_token_kind
-{
-	TK_RESERVED,
-	TK_STRING,
-	TK_EOF
-}	t_token_kind;
-
-// <, >, <<, >>, ;, &&, ||, |
-
-typedef struct s_token
-{
-	t_token_kind	kind;
-	struct s_token	*next;
-	char			*str;
-}	t_token;
+#include "lexer.h"
 
 // <<< などを弾く
 bool	is_valid_str(char *p)
@@ -52,39 +32,21 @@ int	reserved_len(char *p)
 int	string_len(char *p)
 {
 	int	idx;
-	int qidx;
+	int quote_idx;
 
 	idx = 0;
 	while (p[idx] && isspace(p[idx]) == false)
 	{
-		// if (p[idx] == '\'')
-		// {
-		// 	idx++;
-		// 	while (p[idx] && p[idx] != '\'')
-		// 		idx++;
-		// 	if (p[idx] != '\'')
-		// 		return (0);
-		// }
-		// if (p[idx] == '"')
-		// {
-		// 	idx++;
-		// 	while (p[idx] && p[idx] != '"')
-		// 		idx++;
-		// 	if (p[idx] != '"')
-		// 		return (0);
-		// }
 		if (p[idx] == '\'' || p[idx] == '"')
 		{
-			qidx = 0;
-			qidx++;
-			while (p[idx + qidx] && p[idx + qidx] != p[idx])
-				qidx++;
-			if (p[idx + qidx] != p[idx])
+			quote_idx = 1;
+			while (p[idx + quote_idx] && p[idx + quote_idx] != p[idx])
+				quote_idx++;
+			if (p[idx + quote_idx] != p[idx])
 				return (0);
-			idx += qidx;
+			idx += quote_idx;
 		}
 		idx++;
-
 	}
 	return (idx);
 }
@@ -142,16 +104,32 @@ t_token	*tokenize(char *p)
 	return (head.next);
 }
 
-int	main(int argc, char **argv)
+// int	main(int argc, char **argv)
+// {
+// 	t_token	*token;
+
+// 	// argv[1] = "echo \"aa \"'b'b";
+// 	argv[1] = "echo \"hello w\"'orld'";
+// 	token = tokenize(argv[1]);
+
+// 	while (token)
+// 	{
+// 		printf("type:%d %s\n", token->kind, token->str);
+// 		token = token->next;
+// 	}
+// }
+
+t_token	*lexer(int argc, char *argv)
 {
 	t_token	*token;
 
-	argv[1] = "echo \"aa \"'b'b";
-	token = tokenize(argv[1]);
+	(void)argc;
+	token = tokenize(argv);
 
-	while (token)
-	{
-		printf("%s\n", token->str);
-		token = token->next;
-	}
+	// while (token)
+	// {
+	// 	printf("%s\n", token->str);
+	// 	token = token->next;
+	// }
+	return (token);
 }
