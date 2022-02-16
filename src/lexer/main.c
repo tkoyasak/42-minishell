@@ -52,10 +52,40 @@ int	reserved_len(char *p)
 int	string_len(char *p)
 {
 	int	idx;
+	int qidx;
 
 	idx = 0;
 	while (p[idx] && isspace(p[idx]) == false)
+	{
+		// if (p[idx] == '\'')
+		// {
+		// 	idx++;
+		// 	while (p[idx] && p[idx] != '\'')
+		// 		idx++;
+		// 	if (p[idx] != '\'')
+		// 		return (0);
+		// }
+		// if (p[idx] == '"')
+		// {
+		// 	idx++;
+		// 	while (p[idx] && p[idx] != '"')
+		// 		idx++;
+		// 	if (p[idx] != '"')
+		// 		return (0);
+		// }
+		if (p[idx] == '\'' || p[idx] == '"')
+		{
+			qidx = 0;
+			qidx++;
+			while (p[idx + qidx] && p[idx + qidx] != p[idx])
+				qidx++;
+			if (p[idx + qidx] != p[idx])
+				return (0);
+			idx += qidx;
+		}
 		idx++;
+
+	}
 	return (idx);
 }
 
@@ -98,10 +128,15 @@ t_token	*tokenize(char *p)
 			continue ;
 		}
 		len = string_len(p);
+		if (len > 0)
 		{
 			cur = new_token(TK_STRING, cur, &p, len);
 			continue ;
 		}
+		// free必要
+		// error_handler(free_all(&head, ___));
+		printf("quotes error\n");
+		exit(1);
 	}
 	new_token(TK_EOF, cur, &p, 0);
 	return (head.next);
@@ -111,6 +146,7 @@ int	main(int argc, char **argv)
 {
 	t_token	*token;
 
+	argv[1] = "echo \"aa \"'b'b";
 	token = tokenize(argv[1]);
 
 	while (token)
