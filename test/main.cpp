@@ -72,7 +72,7 @@ TEST(lexer, lexer_test05)
 {
 	char *input = "ls>>file.txt";
 	char	*expected[] = {"ls", ">>", "file.txt", "\0"};
-	t_token_kind expected_kind[] = {TK_STRING, TK_RESERVED, TK_STRING, TK_EOF};
+	t_token_kind expected_kind[] = {TK_STRING, TK_REDIRECT, TK_STRING, TK_EOF};
 
 	t_token *tokens = lexer(input);
 	func(tokens, expected, expected_kind);
@@ -82,7 +82,7 @@ TEST(lexer, lexer_test06)
 {
 	char *input = "cat \"abc'def\">>file.txt";
 	char	*expected[] = {"cat", "\"abc'def\"",">>", "file.txt", "\0"};
-	t_token_kind expected_kind[] = {TK_STRING, TK_STRING, TK_RESERVED, TK_STRING, TK_EOF};
+	t_token_kind expected_kind[] = {TK_STRING, TK_STRING, TK_REDIRECT, TK_STRING, TK_EOF};
 
 	t_token *tokens = lexer(input);
 	func(tokens, expected, expected_kind);
@@ -92,7 +92,7 @@ TEST(lexer, lexer_test07)
 {
 	char *input = "ls|cat>file.txt";
 	char	*expected[] = {"ls", "|", "cat", ">", "file.txt", "\0"};
-	t_token_kind expected_kind[] = {TK_STRING, TK_RESERVED, TK_STRING, TK_RESERVED, TK_STRING, TK_EOF};
+	t_token_kind expected_kind[] = {TK_STRING, TK_RESERVED, TK_STRING, TK_REDIRECT, TK_STRING, TK_EOF};
 
 	t_token *tokens = lexer(input);
 	func(tokens, expected, expected_kind);
