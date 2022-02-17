@@ -1,6 +1,7 @@
 # For me
 .vscode
 build
+obj
 
 # Prerequisites
 *.d
@@ -54,3 +55,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# For mac
+.DS_Store
