@@ -84,7 +84,10 @@ t_token	*tokenize(char *p)
 		len = reserved_len(p);
 		if (len > 0)
 		{
-			cur = new_token(TK_RESERVED, cur, &p, len);
+			if (strchr("<>", *p))
+				cur = new_token(TK_REDIRECT, cur, &p, len);
+			else
+				cur = new_token(TK_RESERVED, cur, &p, len);
 			continue ;
 		}
 		len = string_len(p);
