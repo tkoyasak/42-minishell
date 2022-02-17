@@ -31,20 +31,20 @@ int	reserved_len(char *p)
 
 int	string_len(char *p)
 {
-	int	idx;
-	int quote_idx;
+	int		idx;
+	char	quote;
 
 	idx = 0;
 	while (p[idx] && isspace(p[idx]) == false)
 	{
-		if (p[idx] == '\'' || p[idx] == '"')
+		if (strchr("\"'", p[idx]))
 		{
-			quote_idx = 1;
-			while (p[idx + quote_idx] && p[idx + quote_idx] != p[idx])
-				quote_idx++;
-			if (p[idx + quote_idx] != p[idx])
+			quote = p[idx];
+			idx++;
+			while (p[idx] && p[idx] != quote)
+				idx++;
+			if (p[idx] != quote)
 				return (0);
-			idx += quote_idx;
 		}
 		idx++;
 	}
@@ -104,32 +104,11 @@ t_token	*tokenize(char *p)
 	return (head.next);
 }
 
-// int	main(int argc, char **argv)
-// {
-// 	t_token	*token;
-
-// 	// argv[1] = "echo \"aa \"'b'b";
-// 	argv[1] = "echo \"hello w\"'orld'";
-// 	token = tokenize(argv[1]);
-
-// 	while (token)
-// 	{
-// 		printf("type:%d %s\n", token->kind, token->str);
-// 		token = token->next;
-// 	}
-// }
-
-t_token	*lexer(int argc, char *argv)
+t_token	*lexer(char *line)
 {
-	t_token	*token;
+	t_token	*tokens;
 
-	(void)argc;
-	token = tokenize(argv);
+	tokens = tokenize(line);
 
-	// while (token)
-	// {
-	// 	printf("%s\n", token->str);
-	// 	token = token->next;
-	// }
-	return (token);
+	return (tokens);
 }
