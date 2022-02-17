@@ -7,6 +7,8 @@
 # include <string.h>
 # include <ctype.h>
 
+# define RESERVED_CHAR "<>|&;"
+
 typedef enum e_token_kind
 {
 	TK_RESERVED,
