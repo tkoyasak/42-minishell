@@ -22,4 +22,6 @@ typedef struct s_node
 	t_token			*token; // |間の子プロセス
 }	t_node;
 
+t_node	*parser(char *argv);
+
 #endif
