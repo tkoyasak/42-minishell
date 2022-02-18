@@ -6,7 +6,7 @@ bool	is_valid_str(char *p)
 	int	idx;
 
 	idx = 0;
-	while (strchr(RESERVED_CHAR, p[idx]))
+	while (p[idx] && strchr(RESERVED_CHAR, p[idx]))
 		idx++;
 	if (idx == 0)
 		return (true);
@@ -22,7 +22,7 @@ int	reserved_len(char *p)
 	int	idx;
 
 	idx = 0;
-	while (strchr(RESERVED_CHAR, p[idx]))
+	while (p[idx] && strchr(RESERVED_CHAR, p[idx]))
 		idx++;
 	return (idx);
 }
@@ -35,7 +35,7 @@ int	string_len(char *p)
 	idx = 0;
 	while (p[idx] && isspace(p[idx]) == false && strchr(RESERVED_CHAR, p[idx]) == false)
 	{
-		if (strchr("\"'", p[idx]))
+		if (p[idx] && strchr("\"'", p[idx]))
 		{
 			quote = p[idx];
 			idx++;
