@@ -40,6 +40,7 @@ t_node	*create_process_node(t_token **cur_token)
 		if ((*cur_token)->kind == TK_REDIRECT && \
 				(*cur_token)->next->kind == TK_REDIRECT)
 			exit(1); // error_handler();
+		
 		*cur_token = (*cur_token)->next;
 	} // < << を飛ばす
 	token_tail = *cur_token;
@@ -48,20 +49,30 @@ t_node	*create_process_node(t_token **cur_token)
 	return (node);
 }
 
+t_token	**expect_process(t_token **cur_token)
+{
+	if ((*cur_token)->kind != TK_STRING)
+	{
+		printf("exit: not process / kind = %d\n", (*cur_token)->kind);
+		exit(1); // error_handler();
+	}
+	return (cur_token);
+}
+
 // semicolon間の部分木
 t_node	*expression(t_token **cur_token)
 {
 	t_node	*node;
 
-	node = create_process_node(cur_token);
+	if ((*cur_token)->kind == TK_EOF)
+		return (NULL);
+	node = create_process_node(expect_process(cur_token));
 	while (true)
 	{
 		if (consume("|", cur_token))
-			node = new_node(ND_PIPE, node, create_process_node(cur_token));
+			node = new_node(ND_PIPE, node, create_process_node(expect_process(cur_token)));
 		else
-		{
 			return (node);
-		}
 	}
 }
 
@@ -109,4 +120,10 @@ t_node	*parser(char *argv)
 	// dfs(tree);
 	
 	return (tree);
+}
+
+int	main()
+{
+	parser("ls -al ; ; cat");
+	return (0);
 }
