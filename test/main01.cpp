@@ -88,3 +88,27 @@ TEST(parser, parser_test04)
 
 	func(tree, expected_token, expected_node);
 }
+
+TEST(parser, parser_test05)
+{
+	char		*input = "ls -al&&cd&&cat>file;cat>file";
+	char		*expected_token[] = \
+		{"ls", "-al", "&&", "cd", "&&", "cat", ">", "file", ";", "cat", ">", "file"};
+	t_node_kind expected_node[] = \
+		{ND_COMMAND, ND_DAND, ND_COMMAND, ND_DAND, ND_COMMAND, ND_SEMICOLON, ND_COMMAND};
+	t_node		*tree = parser(input);
+
+	func(tree, expected_token, expected_node);
+}
+
+TEST(parser, parser_test06)
+{
+	char		*input = "ls -al ; cat || cat>file||cat>file";
+	char		*expected_token[] = \
+		{"ls", "-al", ";", "cat", "||", "cat", ">", "file", "||", "cat", ">", "file"};
+	t_node_kind expected_node[] = \
+		{ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_DPIPE, ND_COMMAND, ND_DPIPE, ND_COMMAND};
+	t_node		*tree = parser(input);
+
+	func(tree, expected_token, expected_node);
+}
