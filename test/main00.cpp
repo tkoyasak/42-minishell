@@ -98,4 +98,12 @@ TEST(lexer, lexer_test07)
 	func(tokens, expected, expected_kind);
 }
 
+TEST(lexer, lexer_test08)
+{
+	char *input = "ls;cat>file.txt;";
+	char	*expected[] = {"ls", ";", "cat", ">", "file.txt", ";", "\0"};
+	t_token_kind expected_kind[] = {TK_STRING, TK_RESERVED, TK_STRING, TK_REDIRECT, TK_STRING, TK_RESERVED, TK_EOF};
 
+	t_token *tokens = lexer(input);
+	func(tokens, expected, expected_kind);
+}

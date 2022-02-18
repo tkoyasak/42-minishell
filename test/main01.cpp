@@ -112,3 +112,15 @@ TEST(parser, parser_test06)
 
 	func(tree, expected_token, expected_node);
 }
+
+TEST(parser, parser_test07)
+{
+	char		*input = "ls -al ; cat ;";
+	char		*expected_token[] = \
+		{"ls", "-al", ";", "cat", ";"};
+	t_node_kind expected_node[] = \
+		{ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_SEMICOLON};
+	t_node		*tree = parser(input);
+
+	func(tree, expected_token, expected_node);
+}
