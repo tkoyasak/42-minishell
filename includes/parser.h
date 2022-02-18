@@ -7,7 +7,6 @@ typedef enum e_node_kind
 {
 	ND_SEMICOLON, // ;
 	ND_DAND, // &&
-	ND_AND, // &
 	ND_DPIPE, // ||
 	ND_PIPE, // |
 	ND_COMMAND // 文字列
