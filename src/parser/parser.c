@@ -75,6 +75,10 @@ t_node	*parser_sub(t_token *cur_token)
 	{
 		if (consume(";", &cur_token))
 			node = new_node(ND_SEMICOLON, node, expression(&cur_token));
+		else if (consume("&&", &cur_token))
+			node = new_node(ND_DAND, node, expression(&cur_token));
+		else if (consume("||", &cur_token))
+			node = new_node(ND_DPIPE, node, expression(&cur_token));
 		else
 			return node;
 	}
