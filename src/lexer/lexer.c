@@ -14,6 +14,8 @@ bool	is_valid_str(char *p)
 		return (false);
 	if (idx == 2 && p[0] != p[1])
 		return (false);
+	if (idx == 2 && p[0] == ';')
+		return (false);
 	return (true);
 }
 
@@ -96,8 +98,7 @@ t_token	*tokenize(char *p)
 			cur = new_token(TK_STRING, cur, &p, len);
 			continue ;
 		}
-		// free必要
-		// error_handler(free_all(&head, ___));
+		// free必要 error_handler(free_all(&head, ___));
 		printf("quotes error\n");
 		exit(1);
 	}
