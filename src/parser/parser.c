@@ -56,26 +56,23 @@ t_node	*expression(t_token **cur_token)
 	node = create_process_node(cur_token);
 	while (true)
 	{
-		printf("59:%s\n", (*cur_token)->str);
 		if (consume("|", cur_token))
 			node = new_node(ND_PIPE, node, create_process_node(cur_token));
 		else
 		{
-			printf("61:%s\n", (*cur_token)->str);
 			return (node);
 		}
 	}
 }
 
 // 全体のrootのnodeへのポインタを返す
-t_node	*parser(t_token *cur_token)
+t_node	*parser_sub(t_token *cur_token)
 {
 	t_node	*node;
 
 	node = expression(&cur_token);
 	while (true)
 	{
-		printf("74:%s\n", cur_token->str);
 		if (consume(";", &cur_token))
 			node = new_node(ND_SEMICOLON, node, expression(&cur_token));
 		else
@@ -83,15 +80,29 @@ t_node	*parser(t_token *cur_token)
 	}
 }
 
-int	main(int argc, char **argv)
+void	dfs(t_node *tree)
+{
+	if (tree->lhs)
+		dfs(tree->lhs);
+	printf("kind:%d\n", tree->kind);
+	while(tree->token)
+	{
+		printf("%s\n", tree->token->str);
+		tree->token = tree->token->next;
+	}
+	if (tree->rhs)
+		dfs(tree->rhs);
+}
+
+t_node	*parser(char *argv)
 {
 	t_token	*tokens;
 	t_node	*tree;
 
-	(void)argc;
-	tokens = lexer(argv[1]);
-	tree = parser(tokens);
-	(void)tree;
-
-	return (0);
+	// (void)argc;
+	tokens = lexer(argv);
+	tree = parser_sub(tokens);
+	// dfs(tree);
+	
+	return (tree);
 }
