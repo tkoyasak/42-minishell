@@ -12,9 +12,11 @@ bool	is_valid_str(char *p)
 		return (true);
 	if (idx > 2)
 		return (false);
-	if (idx == 2 && p[0] != p[1])
+	if (idx == 2 && p[0] != p[1]) // 変更 &> >& &< <& はOK 1>file  1&>file
 		return (false);
 	if (idx == 2 && p[0] == ';')
+		return (false);
+	if (idx == 1 && p[0] == '&')
 		return (false);
 	return (true);
 }

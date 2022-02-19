@@ -11,7 +11,7 @@
 
 typedef enum e_token_kind
 {
-	TK_RESERVED, // ; | && || &
+	TK_RESERVED, // ; | && ||
 	TK_REDIRECT, // < << > >>
 	TK_STRING,
 	TK_EOF
