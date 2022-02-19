@@ -15,7 +15,8 @@ OBJS		:= $(subst $(SRCROOT), $(OBJROOT), $(SRCS:.c=.o))
 DEPS		:= $(OBJS:.o=.d)
 
 CC			:= gcc
-CFLAGS		:= -Wall -Wextra -Werror -MMD -MP
+# CFLAGS		:= -Wall -Wextra -Werror -MMD -MP
+CFLAGS		:= -MMD -MP
 # LFLAGS		:= -L$(LIBFTDIR) -lft
 INCLUDE		:= -Iincludes
 
