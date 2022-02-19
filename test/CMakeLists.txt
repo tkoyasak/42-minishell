@@ -7,10 +7,12 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_library(lexer STATIC ../src/lexer/lexer.c)
 add_library(parser STATIC ../src/parser/parser.c)
-# include_directories("../src/lexer")
+add_library(expansion STATIC ../src/expansion/expansion.c)
 include_directories(../includes)
 
-add_executable(main main01.cpp)
+# add_executable(main main00.cpp)
+# add_executable(main main01.cpp)
+add_executable(main main02.cpp)
 
 target_link_libraries(main
   PRIVATE
@@ -18,4 +20,5 @@ target_link_libraries(main
     GTest::Main
     lexer
     parser
+	expansion
 )
