@@ -40,7 +40,6 @@ t_node	*create_process_node(t_token **cur_token)
 		if ((*cur_token)->kind == TK_REDIRECT && \
 				(*cur_token)->next->kind == TK_REDIRECT)
 			exit(1); // error_handler();
-		
 		*cur_token = (*cur_token)->next;
 	} // < << を飛ばす
 	token_tail = *cur_token;
@@ -118,12 +117,15 @@ t_node	*parser(char *argv)
 	tokens = lexer(argv);
 	tree = parser_sub(tokens);
 	// dfs(tree);
-	
+
 	return (tree);
 }
 
-int	main()
-{
-	parser("ls -al ; ; cat");
-	return (0);
-}
+// int	main()
+// {
+// 	// parser("ls -al ; ; cat");
+// 	// return (0);
+// 	lexer("ls -al 2 &>1");
+// 	printf("ok\n");
+// 	return (0);
+// }
