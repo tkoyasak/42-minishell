@@ -36,33 +36,33 @@ void	func(t_node *node, char *expected_token[], t_node_kind expected_node[])
 
 TEST(parser, expansion_test00)
 {
-	char		*input = "ls -al | cat $PATH";
-	char		*expected_token[] = {"ls", "-al", "|", "cat", "/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/Users/koyasako/.cargo/bin"};
-	t_node_kind expected_node[] = {ND_COMMAND, ND_PIPE, ND_COMMAND};
-	t_node		*tree = expansion(input);
-
-	func(tree, expected_token, expected_node);
-}
-
-TEST(parser, expansion_test01)
-{
 	char		*input = "ls -al | cat aa$PATH";
-	char		*expected_token[] = {"ls", "-al", "|", "cat", "a/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/Users/koyasako/.cargo/bin"};
+	char		*expected_token[] = {"ls", "-al", "|", "cat", "a/Users/jkosaka/.pyenv/shims:/Users/jkosaka/.pyenv/bin:/Users/jkosaka/Library/Python/3.8/bin:/Users/jkosaka/development/flutter/bin:/Users/jkosaka/Desktop/42/push_swap_pre:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/Apple/usr/bin"};
 	t_node_kind expected_node[] = {ND_COMMAND, ND_PIPE, ND_COMMAND};
 	t_node		*tree = expansion(input);
 
 	func(tree, expected_token, expected_node);
 }
 
-TEST(parser, expansion_test02)
-{
-	char		*input = "ls -al | $PATH";
-	char		*expected_token[] = {"ls", "-al", "|", "/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/Users/koyasako/.cargo/bin"};
-	t_node_kind expected_node[] = {ND_COMMAND, ND_PIPE, ND_COMMAND};
-	t_node		*tree = expansion(input);
+// TEST(parser, expansion_test01)
+// {
+// 	char		*input = "ls -al | cat aa$PATH";
+// 	char		*expected_token[] = {"ls", "-al", "|", "cat", "a/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/Users/koyasako/.cargo/bin"};
+// 	t_node_kind expected_node[] = {ND_COMMAND, ND_PIPE, ND_COMMAND};
+// 	t_node		*tree = expansion(input);
 
-	func(tree, expected_token, expected_node);
-}
+// 	func(tree, expected_token, expected_node);
+// }
+
+// TEST(parser, expansion_test02)
+// {
+// 	char		*input = "ls -al | $PATH";
+// 	char		*expected_token[] = {"ls", "-al", "|", "/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/Users/koyasako/.cargo/bin"};
+// 	t_node_kind expected_node[] = {ND_COMMAND, ND_PIPE, ND_COMMAND};
+// 	t_node		*tree = expansion(input);
+
+// 	func(tree, expected_token, expected_node);
+// }
 
 // TEST(parser, parser_test01)
 // {
