@@ -40,19 +40,14 @@ int	get_env_index(char *env_word)
 	return (-1);
 }
 
-// abc$PATH
-t_token	*func2(t_token *token)
+size_t get_expanded_len(char *str)
 {
-	char		*str;
-	char		*env_word;
-	char		*env_value;
-	char		*expanded_words;
 	extern char	**environ;
+	char		*env_word;
 	size_t		len;
 	int			idx;
 	int			env_idx;
 
-	str = token->str;
 	len = 0;
 	idx = 0;
 	while (str[idx])
@@ -76,9 +71,17 @@ t_token	*func2(t_token *token)
 			idx++;
 		}
 	}
-	expanded_words = calloc(len + 1, sizeof(char));
-	// mallocエラー処理
-	idx = 0;
+	return (len);
+}
+
+char	*get_expanded_str(char *expanded_str, char *str)
+{
+	extern char	**environ;
+	char		*env_word;
+	char		*env_value;
+	int			idx;
+	int			env_idx;
+
 	while (str[idx])
 	{
 		if (str[idx] == '$')
@@ -91,21 +94,35 @@ t_token	*func2(t_token *token)
 			if (env_idx != -1)
 			{
 				env_value = strdup(environ[env_idx] + strlen(env_word) + 1);
-				strlcat(expanded_words, env_value, strlen(expanded_words) + strlen(env_value) + 1);
+				strlcat(expanded_str, env_value, strlen(expanded_str) + strlen(env_value) + 1);
 				free(env_value);
 			}
 			free(env_word); // PATH
 		}
 		else
 		{
-			strlcat(expanded_words, &str[idx], strlen(expanded_words)+2);
+			strlcat(expanded_str, &str[idx], strlen(expanded_str)+2);
 			idx++;
 		}
 	}
-	return (lexer(expanded_words));
+	return (expanded_str);
 }
 
-void	func(t_node *node)
+
+// abc$PATH
+t_token	*get_expanded_token(t_token *token)
+{
+	char		*expanded_str;
+	size_t		expanded_len;
+
+	expanded_len = get_expanded_len(token->str);
+	expanded_str = calloc(expanded_len + 1, sizeof(char));
+	// mallocエラー処理
+	expanded_str = get_expanded_str(expanded_str, token->str);
+	return (lexer(expanded_str));
+}
+
+void	handle_command(t_node *node)
 {
 	t_token	*token;
 	t_token *next;
@@ -116,7 +133,7 @@ void	func(t_node *node)
 	while (token)
 	{
 		next = token->next;
-		token = func2((token)); //(token)を展開して先頭の(token)アドレスを返す 1(token) -> 2(token)
+		token = get_expanded_token(token); //(token)を展開して先頭の(token)アドレスを返す 1(token) -> 2(token)
 		if (prev)
 			prev->next = token;
 		else
@@ -141,7 +158,7 @@ void	expansion_sub(t_node *node)
 	//今のnodeに対する処理
 	if (node->kind == ND_COMMAND)
 	{
-		func(node);
+		handle_command(node); // cmd > cmd = process
 	}
 	if (node->lhs)
 		expansion_sub(node->lhs);
