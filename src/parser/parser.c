@@ -94,12 +94,12 @@ t_node	*parser_sub(t_token *cur_token)
 	}
 }
 
-void	dfs(t_node *tree)
+static void	dfs(t_node *tree)
 {
 	if (tree->lhs)
 		dfs(tree->lhs);
 	printf("kind:%d\n", tree->kind);
-	while(tree->token)
+	while (tree->token)
 	{
 		printf("%s\n", tree->token->str);
 		tree->token = tree->token->next;
@@ -125,7 +125,7 @@ t_node	*parser(char *argv)
 // {
 // 	// parser("ls -al ; ; cat");
 // 	// return (0);
-// 	lexer("ls -al 2 &>1");
+// 	parser("ls -al | cat $PATH");
 // 	printf("ok\n");
 // 	return (0);
 // }
