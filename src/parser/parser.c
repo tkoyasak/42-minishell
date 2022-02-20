@@ -31,7 +31,7 @@ t_node	*create_process_node(t_token **cur_token)
 	t_token	*token_tail;
 
 	node = malloc(sizeof(t_node));
-	node->kind = ND_COMMAND;
+	node->kind = ND_PROCESS;
 	node->lhs = NULL;
 	node->rhs = NULL;
 	node->token = *cur_token;

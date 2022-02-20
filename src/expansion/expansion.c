@@ -122,7 +122,7 @@ t_token	*get_expanded_token(t_token *token)
 	return (lexer(expanded_str));
 }
 
-void	handle_command(t_node *node)
+void	handle_process(t_node *node)
 {
 	t_token	*token;
 	t_token *next;
@@ -156,9 +156,9 @@ ls -a -l NULL
 void	expansion_sub(t_node *node)
 {
 	//今のnodeに対する処理
-	if (node->kind == ND_COMMAND)
+	if (node->kind == ND_PROCESS)
 	{
-		handle_command(node); // cmd > cmd = process
+		handle_process(node); // cmd > cmd = process
 	}
 	if (node->lhs)
 		expansion_sub(node->lhs);

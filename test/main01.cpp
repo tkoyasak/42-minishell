@@ -5,7 +5,7 @@ extern "C" {
 	#include "parser.h"
 }
 
-int token_idx; 
+int token_idx;
 int	node_idx;
 
 void	dfs(t_node *node, char *expected_token[], t_node_kind expected_node[])
@@ -14,7 +14,7 @@ void	dfs(t_node *node, char *expected_token[], t_node_kind expected_node[])
 		dfs(node->lhs, expected_token, expected_node);
 	EXPECT_EQ(node->kind, expected_node[node_idx]);
 	node_idx++;
-	if (node->kind != ND_COMMAND)
+	if (node->kind != ND_PROCESS)
 		token_idx++;
 	while (node->token)
 	{
@@ -37,7 +37,7 @@ TEST(parser, parser_test00)
 {
 	char		*input = "ls -al | cat";
 	char		*expected_token[] = {"ls", "-al", "|", "cat"};
-	t_node_kind expected_node[] = {ND_COMMAND, ND_PIPE, ND_COMMAND};
+	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
 	t_node		*tree = parser(input);
 
 	func(tree, expected_token, expected_node);
@@ -47,7 +47,7 @@ TEST(parser, parser_test01)
 {
 	char		*input = "ls -al|cat|echo \"hello\">>file";
 	char		*expected_token[] = {"ls", "-al", "|", "cat", "|", "echo", "\"hello\"", ">>", "file"};
-	t_node_kind expected_node[] = {ND_COMMAND, ND_PIPE, ND_COMMAND, ND_PIPE, ND_COMMAND};
+	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS, ND_PIPE, ND_PROCESS};
 	t_node		*tree = parser(input);
 
 	func(tree, expected_token, expected_node);
@@ -59,7 +59,7 @@ TEST(parser, parser_test02)
 	char		*expected_token[] = \
 		{"ls", "-al", "|", "cat", ";", "cat", ">", "file"};
 	t_node_kind expected_node[] = \
-		{ND_COMMAND, ND_PIPE, ND_COMMAND, ND_SEMICOLON, ND_COMMAND};
+		{ND_PROCESS, ND_PIPE, ND_PROCESS, ND_SEMICOLON, ND_PROCESS};
 	t_node		*tree = parser(input);
 
 	func(tree, expected_token, expected_node);
@@ -71,7 +71,7 @@ TEST(parser, parser_test03)
 	char		*expected_token[] = \
 		{"ls", "-al", ";", "cd", ";", "echo", "\"hello w\"'orld'", ";", "cat", ">", "file"};
 	t_node_kind expected_node[] = \
-		{ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_SEMICOLON, ND_COMMAND};
+		{ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON, ND_PROCESS};
 	t_node		*tree = parser(input);
 
 	func(tree, expected_token, expected_node);
@@ -83,7 +83,7 @@ TEST(parser, parser_test04)
 	char		*expected_token[] = \
 		{"ls", "-al", ";", "cat", "|", "cat", ">", "file", ";", "cat", ">", "file"};
 	t_node_kind expected_node[] = \
-		{ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_PIPE, ND_COMMAND, ND_SEMICOLON, ND_COMMAND};
+		{ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_PIPE, ND_PROCESS, ND_SEMICOLON, ND_PROCESS};
 	t_node		*tree = parser(input);
 
 	func(tree, expected_token, expected_node);
@@ -95,7 +95,7 @@ TEST(parser, parser_test05)
 	char		*expected_token[] = \
 		{"ls", "-al", "&&", "cd", "&&", "cat", ">", "file", ";", "cat", ">", "file"};
 	t_node_kind expected_node[] = \
-		{ND_COMMAND, ND_DAND, ND_COMMAND, ND_DAND, ND_COMMAND, ND_SEMICOLON, ND_COMMAND};
+		{ND_PROCESS, ND_DAND, ND_PROCESS, ND_DAND, ND_PROCESS, ND_SEMICOLON, ND_PROCESS};
 	t_node		*tree = parser(input);
 
 	func(tree, expected_token, expected_node);
@@ -107,7 +107,7 @@ TEST(parser, parser_test06)
 	char		*expected_token[] = \
 		{"ls", "-al", ";", "cat", "||", "cat", ">", "file", "||", "cat", ">", "file"};
 	t_node_kind expected_node[] = \
-		{ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_DPIPE, ND_COMMAND, ND_DPIPE, ND_COMMAND};
+		{ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_DPIPE, ND_PROCESS, ND_DPIPE, ND_PROCESS};
 	t_node		*tree = parser(input);
 
 	func(tree, expected_token, expected_node);
@@ -119,7 +119,7 @@ TEST(parser, parser_test07)
 	char		*expected_token[] = \
 		{"ls", "-al", ";", "cat", ";"};
 	t_node_kind expected_node[] = \
-		{ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_SEMICOLON};
+		{ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
 	t_node		*tree = parser(input);
 
 	func(tree, expected_token, expected_node);
@@ -131,7 +131,7 @@ TEST(parser, parser_test08)
 	char		*expected_token[] = \
 		{"ls", "-al", ";", "cat", ";", "cd", ".", ";", "ls", "-a", ";"};
 	t_node_kind expected_node[] = \
-		{ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_SEMICOLON};
+		{ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
 	t_node		*tree = parser(input);
 
 	func(tree, expected_token, expected_node);
@@ -143,7 +143,7 @@ TEST(parser, parser_test08)
 // 	char		*expected_token[] = \
 // 		{"ls", "-al", ";", "cat", ";"};
 // 	t_node_kind expected_node[] = \
-// 		{ND_COMMAND, ND_SEMICOLON, ND_COMMAND, ND_SEMICOLON};
+// 		{ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
 // 	t_node		*tree = parser(input);
 
 // 	func(tree, expected_token, expected_node);

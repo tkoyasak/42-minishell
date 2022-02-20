@@ -9,7 +9,7 @@ typedef enum e_node_kind
 	ND_DAND, // &&
 	ND_DPIPE, // ||
 	ND_PIPE, // |
-	ND_COMMAND // 文字列
+	ND_PROCESS // 文字列
 }	t_node_kind;
 
 // 抽象構文木のノードの型
