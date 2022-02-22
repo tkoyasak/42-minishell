@@ -1,6 +1,6 @@
 #include "expansion.h"
 
-int	word_len(char *str)
+int	env_word_len(char *str)
 {
 	int	idx;
 
@@ -8,38 +8,6 @@ int	word_len(char *str)
 	while (str[idx] && isalnum(str[idx]))
 		idx++;
 	return (idx);
-}
-
-int	get_env_len(char *env_word)
-{
-	extern char	**environ;
-	int			idx;
-
-	idx = 0;
-	while (environ[idx])
-	{
-		if (!strncmp(environ[idx], env_word, strlen(env_word)))
-			return (strlen(environ[idx]) - strlen(env_word) - 1);
-		idx++;
-	}
-	return (0);
-}
-
-int	get_env_index(char *env_word)
-{
-	extern char	**environ;
-	int			idx;
-
-	idx = 0;
-	if (*env_word == '\0')
-		return (-1);
-	while (environ[idx])
-	{
-		if (!strncmp(environ[idx], env_word, strlen(env_word)))
-			return (idx);
-		idx++;
-	}
-	return (-1);
 }
 
 char	*lexer_and_revert(char *env_value)
@@ -71,12 +39,10 @@ char	*lexer_and_revert(char *env_value)
 // var=ls   "$var "'-al'     ls -al
 size_t get_expanded_len(char *str)
 {
-	extern char	**environ;
 	char		*env_word;
 	char		*env_value;
 	size_t		len;
 	int			idx;
-	int			env_idx;
 	bool		has_squote;
 	bool		has_dquote;
 
@@ -92,19 +58,17 @@ size_t get_expanded_len(char *str)
 			has_dquote ^= true;
 		if (!has_squote && str[idx] == '$' && str[idx + 1])
 		{
-			idx++; // 次のスペースまでを文字列として見て、環境変数の展開
-			env_word = malloc(word_len(&str[idx]) + 1);
-			strlcpy(env_word, &str[idx], word_len(&str[idx]) + 1);// $HOGEの時のHOGE
-			env_idx = get_env_index(env_word);
-			idx += strlen(env_word);
-			if (env_idx != -1)
+			idx++; // 次のスペースか予約語までを文字列として見て、環境変数の展開
+			env_word = ft_substr(&str[0], idx, env_word_len(&str[idx]));
+			env_value = getenv(env_word);
+			if (env_value)
 			{
-				env_value = strdup(environ[env_idx] + strlen(env_word) + 1);
 				if (!has_dquote)
 					len += strlen(lexer_and_revert(env_value));
 				else
-					len += strlen(environ[env_idx]) - strlen(env_word) - 1;
+					len += strlen(env_value);
 			}
+			idx += strlen(env_word);
 			free(env_word);
 		}
 		else
@@ -139,19 +103,16 @@ char	*get_expanded_str(char *expanded_str, char *str)
 		if (!has_squote && str[idx] == '$' && str[idx + 1])
 		{
 			idx++; // 次のスペースまでを文字列として見て、環境変数の展開
-			env_word = malloc(word_len(&str[idx]) + 1);
-			strlcpy(env_word, &str[idx], word_len(&str[idx]) + 1); // $HOGEの時のHOGE
-			env_idx = get_env_index(env_word);
-			idx += strlen(env_word);
-			if (env_idx != -1)
+			env_word = ft_substr(&str[0], idx, env_word_len(&str[idx]));
+			env_value = getenv(env_word);
+			if (env_value)
 			{
-				env_value = strdup(environ[env_idx] + strlen(env_word) + 1);
 				if (!has_dquote)
 					env_value = lexer_and_revert(env_value);
 				strlcat(expanded_str, env_value, strlen(expanded_str) + strlen(env_value) + 1);
-				free(env_value);
 			}
-			free(env_word); // PATH
+			idx += strlen(env_word);
+			free(env_word);
 		}
 		else
 		{
@@ -169,7 +130,6 @@ t_token	*get_expanded_token(t_token *token)
 	size_t		expanded_len;
 
 	expanded_len = get_expanded_len(token->str);
-	// printf("expanded len: %zu\n", expanded_len);
 	expanded_str = calloc(expanded_len + 1, sizeof(char));
 	// mallocエラー処理
 	expanded_str = get_expanded_str(expanded_str, token->str);
