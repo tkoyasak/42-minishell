@@ -131,6 +131,7 @@ char	*get_expanded_str(char *expanded_str, char *str)
 	bool		has_squote;
 	bool		has_dquote;
 
+	idx = 0;
 	has_squote = false;
 	has_dquote = false;
 	while (str[idx])
@@ -158,10 +159,12 @@ char	*get_expanded_str(char *expanded_str, char *str)
 		}
 		else
 		{
+			printf("162: %c\n", str[idx]);
 			strlcat(expanded_str, &str[idx], strlen(expanded_str)+2);
 			idx++;
 		}
 	}
+	printf("expanded_str: %s\n", expanded_str);
 	return (expanded_str);
 }
 
@@ -172,9 +175,11 @@ t_token	*get_expanded_token(t_token *token)
 	size_t		expanded_len;
 
 	expanded_len = get_expanded_len(token->str);
+	printf("expanded len: %zu\n", expanded_len);
 	expanded_str = calloc(expanded_len + 1, sizeof(char));
 	// mallocエラー処理
 	expanded_str = get_expanded_str(expanded_str, token->str);
+	printf("182: expanded str: %s\n", expanded_str);
 	token->str = expanded_str;
 	// quote削除
 	return (token);
@@ -250,15 +255,15 @@ static void	dfs(t_node *tree)
 }
 
 
-int	main(void)
-{
-	char *s = "\"$SHELL\"";
+// int	main(void)
+// {
+// 	char *s = "ls -al";
 
-	int	len = get_expanded_len(s);
-	printf("%s : %d\n", s, len);
-	// t_node	*tree;
+// 	// int	len = get_expanded_len(s);
+// 	// printf("%s : %d\n", s, len);
+// 	t_node	*tree;
 
-	// tree = expansion("ls -a | cat $PATH");
-	// dfs(tree);
-	return (0);
-}
+// 	tree = expansion("ls -al | cat");
+// 	dfs(tree);
+// 	return (0);
+// }
