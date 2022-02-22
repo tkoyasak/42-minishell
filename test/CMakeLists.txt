@@ -20,5 +20,5 @@ target_link_libraries(main
     GTest::Main
     lexer
     parser
-	expansion
+    expansion
 )
