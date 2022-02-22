@@ -5,7 +5,7 @@ int	word_len(char *str)
 	int	idx;
 
 	idx = 0;
-	while (str[idx] && !strchr(" $\"'", str[idx]))
+	while (str[idx] && isalnum(str[idx]))
 		idx++;
 	return (idx);
 }
@@ -31,9 +31,10 @@ int	get_env_index(char *env_word)
 	int			idx;
 
 	idx = 0;
+	if (*env_word == '\0')
+		return (-1);
 	while (environ[idx])
 	{
-		printf("%s\n", environ[idx]);
 		if (!strncmp(environ[idx], env_word, strlen(env_word)))
 			return (idx);
 		idx++;
@@ -48,7 +49,7 @@ char	*lexer_and_revert(char *env_value)
 	char	*reverted_str;
 	size_t	len;
 
-	printf("env_value: %s\n", env_value);
+	// printf("env_value: %s\n", env_value);
 	token = lexer(env_value);
 	head = token;
 	len = -1;
@@ -56,7 +57,6 @@ char	*lexer_and_revert(char *env_value)
 	{
 		len += strlen(token->str) + 1;
 		token = token->next;
-		printf("57: %s\n", token->str);
 	}
 	reverted_str = calloc(len + 1, sizeof(char));
 	token = head;
@@ -86,21 +86,17 @@ size_t get_expanded_len(char *str)
 	has_dquote = false;
 	while (str[idx])
 	{
-		printf("89:%c\n", str[idx]);
 		if (!has_dquote && str[idx] == '\'')
 			has_squote ^= true;
 		else if (!has_squote && str[idx] == '"')
 			has_dquote ^= true;
-		if (!has_squote && str[idx] == '$')
+		if (!has_squote && str[idx] == '$' && str[idx + 1])
 		{
 			idx++; // 次のスペースまでを文字列として見て、環境変数の展開
 			env_word = malloc(word_len(&str[idx]) + 1);
 			strlcpy(env_word, &str[idx], word_len(&str[idx]) + 1);// $HOGEの時のHOGE
 			env_idx = get_env_index(env_word);
 			idx += strlen(env_word);
-			printf("99 :%d\n", env_idx);
-			printf("env_word: %s\n", env_word);
-			printf("environ_word: %s\n", environ[env_idx]);
 			if (env_idx != -1)
 			{
 				env_value = strdup(environ[env_idx] + strlen(env_word) + 1);
@@ -140,7 +136,7 @@ char	*get_expanded_str(char *expanded_str, char *str)
 			has_squote ^= true;
 		else if (!has_squote && str[idx] == '"')
 			has_dquote ^= true;
-		if (!has_squote && str[idx] == '$')
+		if (!has_squote && str[idx] == '$' && str[idx + 1])
 		{
 			idx++; // 次のスペースまでを文字列として見て、環境変数の展開
 			env_word = malloc(word_len(&str[idx]) + 1);
@@ -159,12 +155,10 @@ char	*get_expanded_str(char *expanded_str, char *str)
 		}
 		else
 		{
-			printf("162: %c\n", str[idx]);
 			strlcat(expanded_str, &str[idx], strlen(expanded_str)+2);
 			idx++;
 		}
 	}
-	printf("expanded_str: %s\n", expanded_str);
 	return (expanded_str);
 }
 
@@ -175,11 +169,11 @@ t_token	*get_expanded_token(t_token *token)
 	size_t		expanded_len;
 
 	expanded_len = get_expanded_len(token->str);
-	printf("expanded len: %zu\n", expanded_len);
+	// printf("expanded len: %zu\n", expanded_len);
 	expanded_str = calloc(expanded_len + 1, sizeof(char));
 	// mallocエラー処理
 	expanded_str = get_expanded_str(expanded_str, token->str);
-	printf("182: expanded str: %s\n", expanded_str);
+	// printf("182: expanded str: %s\n", expanded_str);
 	token->str = expanded_str;
 	// quote削除
 	return (token);
