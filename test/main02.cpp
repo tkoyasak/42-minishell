@@ -1,8 +1,5 @@
 #include <gtest/gtest.h>
 
-// #define PATH_LOCAL "/Users/jkosaka/.pyenv/shims:/Users/jkosaka/.pyenv/bin:/Users/jkosaka/Library/Python/3.8/bin:/Users/jkosaka/development/flutter/bin:/Users/jkosaka/Desktop/42/push_swap_pre:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/Apple/usr/bin:/Users/jkosaka/.cargo/bin:/usr/ucb"
-#define PATH_LOCAL "/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Users/koyasako/.nvm/versions/node/v17.4.0/bin:/usr/local/opt/mysql@5.6/bin:/Users/koyasako/.cargo/bin"
-
 extern "C" {
 	#include "lexer.h"
 	#include "parser.h"
@@ -48,12 +45,10 @@ char	*strjoin(char *s1, char *s2)
 	return (str);
 }
 
-#define STR(x,VAR) (#x VAR)
-
 TEST(expansion, expansion_test00)
 {
 	char		*input = "ls -al | cat aa$PATH";
-	char		*expected_token[] = {"ls", "-al", "|", "cat", STR(aa, PATH_LOCAL)};
+	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin("aa", getenv("PATH"))};
 	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
 	t_node		*tree = expansion(input);
 
@@ -63,7 +58,7 @@ TEST(expansion, expansion_test00)
 TEST(expansion, expansion_test01)
 {
 	char		*input = "ls -al | cat $PATH$PATH";
-	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(PATH_LOCAL, PATH_LOCAL)};
+	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(getenv("PATH"), getenv("PATH"))};
 	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
 	t_node		*tree = expansion(input);
 
@@ -73,7 +68,7 @@ TEST(expansion, expansion_test01)
 TEST(expansion, expansion_test02)
 {
 	char		*input = "ls -al|cat $PATH$";
-	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(PATH_LOCAL,"$")};
+	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(getenv("PATH"), "$")};
 	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
 	t_node		*tree = expansion(input);
 
@@ -83,7 +78,7 @@ TEST(expansion, expansion_test02)
 TEST(expansion, expansion_test03)
 {
 	char		*input = "ls -al|cat $PATH$ | cat";
-	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(PATH_LOCAL,"$"), "|", "cat"};
+	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(getenv("PATH"),"$"), "|", "cat"};
 	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS, ND_PIPE, ND_PROCESS};
 	t_node		*tree = expansion(input);
 
@@ -93,7 +88,7 @@ TEST(expansion, expansion_test03)
 TEST(expansion, expansion_test04)
 {
 	char		*input = "ls -al|cat $PATH#";
-	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(PATH_LOCAL, "#")};
+	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(getenv("PATH"), "#")};
 	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
 	t_node		*tree = expansion(input);
 
@@ -103,8 +98,28 @@ TEST(expansion, expansion_test04)
 TEST(expansion, expansion_test05)
 {
 	char		*input = "ls -al|cat $PATH$;";
-	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(PATH_LOCAL,"$"), ";"};
+	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(getenv("PATH"),"$"), ";"};
 	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS, ND_SEMICOLON};
+	t_node		*tree = expansion(input);
+
+	func(tree, expected_token, expected_node);
+}
+
+TEST(expansion, expansion_test06)
+{
+	char		*input = "ls -al|cat $SHELL$;";
+	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(getenv("SHELL"),"$"), ";"};
+	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS, ND_SEMICOLON};
+	t_node		*tree = expansion(input);
+
+	func(tree, expected_token, expected_node);
+}
+
+TEST(expansion, expansion_test07)
+{
+	char		*input = "$PWD;cat $PWD$;";
+	char		*expected_token[] = {getenv("PWD"), ";", "cat", strjoin(getenv("PWD"),"$"), ";"};
+	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
 	t_node		*tree = expansion(input);
 
 	func(tree, expected_token, expected_node);
