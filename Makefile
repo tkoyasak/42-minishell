@@ -46,6 +46,9 @@ fclean: clean
 
 re: fclean all
 
+gtest:
+	cmake -S ./test -B build && cmake --build ./test/build && ./test/build/main
+
 -include $(DEPS)
 
 .PHONY: all clean fclean re
