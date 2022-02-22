@@ -1,8 +1,8 @@
 NAME		:= a.out
 
-# LIBROOT		:= lib
-# LIBFTDIR	:= $(addprefix $(LIBROOT)/, libft)
-# LIBFT		:= libft.a
+LIBROOT		:= lib
+LIBFTDIR	:= $(addprefix $(LIBROOT)/, libft)
+LIBFT		:= libft.a
 
 SRCROOT		:= src
 SRCDIRS		:= $(shell find $(SRCROOT) -type d)
@@ -17,15 +17,15 @@ DEPS		:= $(OBJS:.o=.d)
 CC			:= gcc
 # CFLAGS		:= -Wall -Wextra -Werror -MMD -MP
 CFLAGS		:= -MMD -MP
-# LFLAGS		:= -L$(LIBFTDIR) -lft
-INCLUDE		:= -Iincludes
+LFLAGS		:= -L$(LIBFTDIR) -lft
+INCLUDE		:= -Iincludes -I$(LIBFTDIR)/includes
 
 RM			:= rm -f
 
 
 all: $(NAME) $(CHECKER)
 
-$(NAME): $(OBJS)
+$(NAME): $(LIBFTDIR)/$(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $^ $(LFLAGS) -o $@
 
 $(OBJROOT)/%.o: $(SRCROOT)/%.c
