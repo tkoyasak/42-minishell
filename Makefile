@@ -23,7 +23,7 @@ INCLUDE		:= -Iincludes -I$(LIBFTDIR)/includes
 RM			:= rm -f
 
 
-all: $(NAME) $(CHECKER)
+all: $(NAME)
 
 $(NAME): $(LIBFTDIR)/$(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $^ $(LFLAGS) -o $@
@@ -42,11 +42,10 @@ clean:
 fclean: clean
 	make fclean -sC $(LIBFTDIR)
 	$(RM) $(NAME)
-	$(RM) $(CHECKER)
 
 re: fclean all
 
-gtest: $(LIBFTDIR)/$(LIBFT)
+gtest:
 	cmake -S ./test -B ./test/build && cmake --build ./test/build && ./test/build/main
 
 -include $(DEPS)
