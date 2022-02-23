@@ -19,3 +19,5 @@ $
 - 文字列
 - 文字列の長さ
 - ダブルクォートの中か外か -> スプリットするかしないか
+
+# t_token	*get_expanded_token(t_token *token)でやること

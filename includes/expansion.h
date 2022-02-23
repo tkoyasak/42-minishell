@@ -8,7 +8,6 @@
 
 typedef struct s_exp_strlist
 {
-	bool			in_dquote;
 	int				len;
 	char			*str;
 	struct s_exp_strlist	*next;

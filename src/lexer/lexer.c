@@ -66,7 +66,7 @@ t_token	*new_token(t_token_kind kind, t_token *cur, char **p, int len)
 	return (tok);
 }
 
-t_token	*tokenize(char *p)
+t_token	*tokenize(char *p, bool is_tk_string)
 {
 	t_token	head;
 	t_token	*cur;
@@ -81,18 +81,21 @@ t_token	*tokenize(char *p)
 			p++;
 			continue;
 		}
-		if (is_valid_str(p) == false)
+		if (is_tk_string == false)
 		{
-			exit(1);
-		}
-		len = reserved_len(p);
-		if (len > 0)
-		{
-			if (strchr("<>", *p))
-				cur = new_token(TK_REDIRECT, cur, &p, len);
-			else
-				cur = new_token(TK_RESERVED, cur, &p, len);
-			continue ;
+			if (is_valid_str(p) == false)
+			{
+				exit(1);
+			}
+			len = reserved_len(p);
+			if (len > 0)
+			{
+				if (strchr("<>", *p))
+					cur = new_token(TK_REDIRECT, cur, &p, len);
+				else
+					cur = new_token(TK_RESERVED, cur, &p, len);
+				continue ;
+			}
 		}
 		len = string_len(p);
 		if (len > 0)
@@ -108,11 +111,10 @@ t_token	*tokenize(char *p)
 	return (head.next);
 }
 
-t_token	*lexer(char *line)
+t_token	*lexer(char *line, bool is_tk_string)
 {
 	t_token	*tokens;
 
-	tokens = tokenize(line);
-
+	tokens = tokenize(line, is_tk_string);
 	return (tokens);
 }

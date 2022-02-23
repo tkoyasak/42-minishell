@@ -10,46 +10,50 @@ int	env_word_len(char *str)
 	return (idx);
 }
 
-char	*lexer_and_revert(char *env_value)
+t_exp_strlist	*tk_strlist_last(t_exp_strlist *lst)
 {
-	t_token	*token;
-	t_token	*head;
-	char	*reverted_str;
-	size_t	len;
-
-	// printf("env_value: %s\n", env_value);
-	token = lexer(env_value);
-	head = token;
-	len = -1;
-	while (token->kind != TK_EOF)
-	{
-		len += strlen(token->str) + 1;
-		token = token->next;
-	}
-	reverted_str = calloc(len + 1, sizeof(char));
-	token = head;
-	while (token->kind != TK_EOF)
-	{
-		strlcat(reverted_str, token->str, strlen(reverted_str) + strlen(token->str) + 1);
-		token = token->next;
-	}
-	return (reverted_str);
+	if (!lst)
+		return (NULL);
+	while (lst->next)
+		lst = lst->next;
+	return (lst);
 }
 
-// var=ls   "$var "'-al'     ls -al
-size_t get_expanded_len(char *str)
+void	tk_strlist_add_back(t_list **lst, t_list *newsrc)
 {
-	char		*env_word;
-	char		*env_value;
-	size_t		len;
-	int			idx;
-	bool		has_squote;
-	bool		has_dquote;
+	if (!lst)
+		return ;
+	if (!*lst)
+		*lst = newsrc;
+	else
+		(tk_strlist_last(*lst))->next = newsrc;
+}
 
-	len = 0;
+t_exp_strlist	*tk_strlist_new(char *str)
+{
+	t_exp_strlist	*new;
+
+	new = malloc(sizeof(t_exp_strlist));
+	new->str = str;
+	new->next = NULL;
+	return (new);
+}
+
+t_exp_strlist	*expand_tk_string(char *str)
+{
+	t_exp_strlist	*head;
+	bool			has_squote;
+	bool			has_dquote;
+	char			*env_word;
+	size_t			envword_len;
+	int				idx;
+	int				left_idx;
+	
+	if (str == NULL)
+		return (NULL);
+	head = NULL;
 	idx = 0;
-	has_squote = false;
-	has_dquote = false;
+	left_idx = 0;
 	while (str[idx])
 	{
 		if (!has_dquote && str[idx] == '\'')
@@ -58,109 +62,51 @@ size_t get_expanded_len(char *str)
 			has_dquote ^= true;
 		if (!has_squote && str[idx] == '$' && str[idx + 1])
 		{
-			idx++; // 次のスペースか予約語までを文字列として見て、環境変数の展開
-			env_word = ft_substr(&str[0], idx, env_word_len(&str[idx]));
-			env_value = getenv(env_word);
-			if (env_value)
-			{
-				if (!has_dquote)
-					len += strlen(lexer_and_revert(env_value));
-				else
-					len += strlen(env_value);
-			}
-			idx += strlen(env_word);
-			free(env_word);
+			tk_strlist_add_back(&head, tk_strlist_new(ft_substr(str, left_idx, idx - left_idx)));
+			idx++;
+			envword_len = env_word_len(&str[idx]);
+			env_word = ft_substr(str, idx, envword_len);
+			tk_strlist_add_back(&head, expand_tk_string(getenv(env_word)));
+			idx += envword_len;
+			left_idx = idx;
 		}
 		else
-		{
-			len++;
 			idx++;
-		}
 	}
-	return (len);
+	if (left_idx < idx)
+		tk_strlist_add_back(&head, tk_strlist_new(ft_substr(str, left_idx, idx - left_idx)));
+	return (head);
 }
 
-char	*get_expanded_str(char *expanded_str, char *str)
-{
-	extern char	**environ;
-	char		*env_word;
-	char		*env_value;
-	int			idx;
-	int			env_idx;
-	char		*word;
-	bool		has_squote;
-	bool		has_dquote;
-
-	idx = 0;
-	has_squote = false;
-	has_dquote = false;
-	while (str[idx])
-	{
-		if (!has_dquote && str[idx] == '\'')
-			has_squote ^= true;
-		else if (!has_squote && str[idx] == '"')
-			has_dquote ^= true;
-		if (!has_squote && str[idx] == '$' && str[idx + 1])
-		{
-			idx++; // 次のスペースまでを文字列として見て、環境変数の展開
-			env_word = ft_substr(&str[0], idx, env_word_len(&str[idx]));
-			env_value = getenv(env_word);
-			if (env_value)
-			{
-				if (!has_dquote)
-					env_value = lexer_and_revert(env_value);
-				strlcat(expanded_str, env_value, strlen(expanded_str) + strlen(env_value) + 1);
-			}
-			idx += strlen(env_word);
-			free(env_word);
-		}
-		else
-		{
-			strlcat(expanded_str, &str[idx], strlen(expanded_str)+2);
-			idx++;
-		}
-	}
-	return (expanded_str);
-}
-
-// str = l$VAR / VAR= s    -al
-//       "l s         -al"
-//       => l -> s -> -al
-// token => l s -al
-// ここでlexer使う
-// token => l -> s -> -al
-
-// V1="s$V2", V2="    -al"
-// l$V1
-//
-// l"s          -al"
-
-// V1=l"V2" 
-
-// "$V1    $V2" vs $V1 $V2
-// V1=ls,V2="-al"
-// "ls     -al" vs "ls -al"
-
-char	*expanded_str(char *str)
-{
-
-}
-
-
-// 展開された文字列のリストを受け取ってトークンを作り直す
+// expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
 t_token	*get_expanded_token(t_token *token)
 {
 	char		*expanded_str;
 	size_t		expanded_len;
+	t_exp_strlist	*head_strlist;
+	t_exp_strlist	*itr;
+	t_token		*expanded_token;
 
-	expanded_len = get_expanded_len(token->str);
-	expanded_str = calloc(expanded_len + 1, sizeof(char));
-	// mallocエラー処理
-	expanded_str = get_expanded_str(expanded_str, token->str);
-	// printf("182: expanded str: %s\n", expanded_str);
-	token->str = expanded_str;
-	// quote削除
-	return (token);
+	expanded_len = 0;
+	head_strlist = expand_tk_string(token->str);
+	itr = head_strlist;
+	while (itr)
+	{
+		itr->len = strlen(itr->str);
+		expanded_len += itr->len;
+		itr = itr->next;
+	}
+	expanded_str = malloc(expanded_len + 1);
+	itr = head_strlist;
+	expanded_len = 0;
+	while (itr)
+	{
+		expanded_len += itr->len;
+		strlcat(expanded_str, itr->str, expanded_len + 1);
+		itr = itr->next;
+	}
+	expanded_token = lexer(expanded_str, true);
+	return (expanded_token);
 }
 
 void	handle_process(t_node *node)
@@ -187,13 +133,7 @@ void	handle_process(t_node *node)
 		token = token->next;
 	}
 }
-/*
-export var = “-a -l”
-ls $var NULL
-ls -a -l NULL
-*/
 
-// dfs
 void	expansion_sub(t_node *node)
 {
 	//今のnodeに対する処理
@@ -235,13 +175,15 @@ static void	dfs(t_node *tree)
 
 // int	main(void)
 // {
-// 	char *s = "ls -al";
+// 	// char *s = "ls -al";
 
-// 	// int	len = get_expanded_len(s);
-// 	// printf("%s : %d\n", s, len);
-// 	t_node	*tree;
+// 	// // int	len = get_expanded_len(s);
+// 	// // printf("%s : %d\n", s, len);
+// 	// t_node	*tree;
 
-// 	tree = expansion("ls -al | cat");
-// 	dfs(tree);
+// 	// tree = expansion("ls -al | cat");
+// 	// dfs(tree);
+// 	// return (0);
+// 	printf("%s\n", getenv("ppp"));
 // 	return (0);
 // }

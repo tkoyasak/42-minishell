@@ -114,7 +114,7 @@ t_node	*parser(char *argv)
 	t_node	*tree;
 
 	// (void)argc;
-	tokens = lexer(argv);
+	tokens = lexer(argv, false);
 	tree = parser_sub(tokens);
 	// dfs(tree);
 
