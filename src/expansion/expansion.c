@@ -123,7 +123,31 @@ char	*get_expanded_str(char *expanded_str, char *str)
 	return (expanded_str);
 }
 
-// abc$PATH
+// str = l$VAR / VAR= s    -al
+//       "l s         -al"
+//       => l -> s -> -al
+// token => l s -al
+// ここでlexer使う
+// token => l -> s -> -al
+
+// V1="s$V2", V2="    -al"
+// l$V1
+//
+// l"s          -al"
+
+// V1=l"V2" 
+
+// "$V1    $V2" vs $V1 $V2
+// V1=ls,V2="-al"
+// "ls     -al" vs "ls -al"
+
+char	*expanded_str(char *str)
+{
+
+}
+
+
+// 展開された文字列のリストを受け取ってトークンを作り直す
 t_token	*get_expanded_token(t_token *token)
 {
 	char		*expanded_str;
@@ -150,7 +174,7 @@ void	handle_process(t_node *node)
 	while (token)
 	{
 		next = token->next;
-		token = get_expanded_token(token); //(token)を展開して先頭の(token)アドレスを返す 1(token) -> 2(token)
+		token = get_expanded_token(token); //(token)を展開して先頭の(token)アドレスを返す
 		if (prev)
 			prev->next = token;
 		else

@@ -2,3 +2,20 @@
 2. “” で囲まれている環境変数はそのまま
 3. ‘’ で囲まれている$は展開しない
 4. 最後に””と’’を削除
+
+token->str
+ls -al | cat aa$PATH$
+
+node 3つ
+token 5つ
+
+export VAR=bb    $PATH
+
+aa$VAR$
+aa 2
+$VAR -> bb $PATH 
+$
+
+- 文字列
+- 文字列の長さ
+- ダブルクォートの中か外か -> スプリットするかしないか
