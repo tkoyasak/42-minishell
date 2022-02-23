@@ -24,7 +24,7 @@ TEST(lexer, lexer_test00)
 	char	*expected[] = {"echo", "\"hel'lo' w\"'o\"rld'", "\0"};
 	t_token_kind expected_kind[] = {TK_STRING, TK_STRING, TK_EOF};
 
-	t_token *tokens = lexer(input);
+	t_token *tokens = lexer(input, false);
 	func(tokens, expected, expected_kind);
 }
 
@@ -34,7 +34,7 @@ TEST(lexer, lexer_test01)
 	char	*expected[3] = {"echo", "\"hel'lo' w\"'o\"rld'", "\0"};
 	t_token_kind expected_kind[3] = {TK_STRING, TK_STRING, TK_EOF};
 
-	t_token *tokens = lexer(input);
+	t_token *tokens = lexer(input, false);
 	func(tokens, expected, expected_kind);
 }
 
@@ -44,7 +44,7 @@ TEST(lexer, lexer_test02)
 	char	*expected[] = {"cd", ".", ";", "ls", "-l", "|", "wc", "-l", "\0"};
 	t_token_kind expected_kind[] = {TK_STRING, TK_STRING, TK_RESERVED, TK_STRING, TK_STRING, TK_RESERVED, TK_STRING, TK_STRING, TK_EOF};
 
-	t_token *tokens = lexer(input);
+	t_token *tokens = lexer(input, false);
 	func(tokens, expected, expected_kind);
 }
 
@@ -54,7 +54,7 @@ TEST(lexer, lexer_test03)
 	char	*expected[] = {"ls", "-al", "|", "cat", "\0"};
 	t_token_kind expected_kind[] = {TK_STRING, TK_STRING, TK_RESERVED, TK_STRING, TK_EOF};
 
-	t_token *tokens = lexer(input);
+	t_token *tokens = lexer(input, false);
 	func(tokens, expected, expected_kind);
 }
 
@@ -64,7 +64,7 @@ TEST(lexer, lexer_test04)
 	char	*expected[] = {"ls", "-l", "|", "wc", "-l", "\0"};
 	t_token_kind expected_kind[] = {TK_STRING, TK_STRING, TK_RESERVED, TK_STRING, TK_STRING, TK_EOF};
 
-	t_token *tokens = lexer(input);
+	t_token *tokens = lexer(input, false);
 	func(tokens, expected, expected_kind);
 }
 
@@ -74,7 +74,7 @@ TEST(lexer, lexer_test05)
 	char	*expected[] = {"ls", ">>", "file.txt", "\0"};
 	t_token_kind expected_kind[] = {TK_STRING, TK_REDIRECT, TK_STRING, TK_EOF};
 
-	t_token *tokens = lexer(input);
+	t_token *tokens = lexer(input, false);
 	func(tokens, expected, expected_kind);
 }
 
@@ -84,7 +84,7 @@ TEST(lexer, lexer_test06)
 	char	*expected[] = {"cat", "\"abc'def\"",">>", "file.txt", "\0"};
 	t_token_kind expected_kind[] = {TK_STRING, TK_STRING, TK_REDIRECT, TK_STRING, TK_EOF};
 
-	t_token *tokens = lexer(input);
+	t_token *tokens = lexer(input, false);
 	func(tokens, expected, expected_kind);
 }
 
@@ -94,7 +94,7 @@ TEST(lexer, lexer_test07)
 	char	*expected[] = {"ls", "|", "cat", ">", "file.txt", "\0"};
 	t_token_kind expected_kind[] = {TK_STRING, TK_RESERVED, TK_STRING, TK_REDIRECT, TK_STRING, TK_EOF};
 
-	t_token *tokens = lexer(input);
+	t_token *tokens = lexer(input, false);
 	func(tokens, expected, expected_kind);
 }
 
@@ -104,6 +104,6 @@ TEST(lexer, lexer_test08)
 	char	*expected[] = {"ls", ";", "cat", ">", "file.txt", ";", "\0"};
 	t_token_kind expected_kind[] = {TK_STRING, TK_RESERVED, TK_STRING, TK_REDIRECT, TK_STRING, TK_RESERVED, TK_EOF};
 
-	t_token *tokens = lexer(input);
+	t_token *tokens = lexer(input, false);
 	func(tokens, expected, expected_kind);
 }

@@ -47,8 +47,8 @@ char	*strjoin(char *s1, char *s2)
 
 TEST(expansion, expansion_test00)
 {
-	char		*input = "ls -al | cat aa$PATH";
-	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin("aa", getenv("PATH"))};
+	char		*input = "ls -al | cat aa$VAR";
+	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin("aa", getenv("VAR"))};
 	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
 	t_node		*tree = expansion(input);
 
