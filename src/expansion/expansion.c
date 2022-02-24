@@ -148,7 +148,6 @@ void	remove_quotes(t_token *token)
 	itr = token;
 	while (itr->kind != TK_EOF)
 	{
-		printf("149: %s\n", itr->str);
 		len = get_raw_len(token->str);
 		token->str = copy_raw_str(token->str, len);
 		itr = itr->next;
@@ -158,11 +157,11 @@ void	remove_quotes(t_token *token)
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
 t_token	*get_expanded_token(t_token *token)
 {
-	char		*expanded_str;
-	size_t		expanded_len;
+	char			*expanded_str;
+	size_t			expanded_len;
 	t_exp_strlist	*head_strlist;
 	t_exp_strlist	*itr;
-	t_token		*expanded_token;
+	t_token			*expanded_token;
 
 	expanded_len = 0;
 	head_strlist = expand_tk_string(token->str);
@@ -190,22 +189,23 @@ t_token	*get_expanded_token(t_token *token)
 void	handle_process(t_node *node)
 {
 	t_token	*token;
-	t_token *next;
-	t_token *prev;
+	t_token	*next;
+	t_token	*prev;
 
 	token = node->token;
 	prev = NULL;
 	while (token)
 	{
 		next = token->next;
-		token = get_expanded_token(token); //(token)を展開して先頭の(token)アドレスを返す
+		token = get_expanded_token(token);
 		if (prev)
 			prev->next = token;
 		else
 			node->token = token;
 		while (token->next != NULL && token->next != next && token->next->kind != TK_EOF)
+		{
 			token = token->next;
-		assert(token->kind != TK_EOF);
+		}
 		token->next = next;
 		prev = token;
 		token = token->next;
@@ -216,9 +216,7 @@ void	expansion_sub(t_node *node)
 {
 	//今のnodeに対する処理
 	if (node->kind == ND_PROCESS)
-	{
-		handle_process(node); // cmd > cmd = process
-	}
+		handle_process(node);
 	if (node->lhs)
 		expansion_sub(node->lhs);
 	if (node->rhs)
@@ -232,7 +230,6 @@ t_node	*expansion(char *argv)
 
 	tree = parser(argv);
 	expansion_sub(tree);
-
 	return (tree);
 }
 
