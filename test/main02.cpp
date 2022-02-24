@@ -5,6 +5,7 @@ extern "C" {
 	#include "parser.h"
 	#include "expansion.h"
 	#include "libft.h"
+	#include <stdlib.h>
 }
 
 int token_idx;
@@ -39,6 +40,10 @@ char	*strjoin(char *s1, char *s2)
 {
 	char		*str;
 
+	if (s1 == NULL)
+		return (s2);
+	if (s2 == NULL)
+		return (s1);
 	str = (char *)calloc(100, 30);
 	strlcpy(str, s1, strlen(s1) + 1);
 	strlcat(str, s2, strlen(str) + strlen(s2) + 1);
@@ -47,8 +52,8 @@ char	*strjoin(char *s1, char *s2)
 
 TEST(expansion, expansion_test00)
 {
-	char		*input = "ls -al | cat aa$VAR";
-	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin("aa", getenv("VAR"))};
+	char		*input = "ls -al | cat aa$zzz$";
+	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(strjoin("aa", getenv("zzz")),"$")};
 	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
 	t_node		*tree = expansion(input);
 
@@ -120,6 +125,75 @@ TEST(expansion, expansion_test07)
 	char		*input = "$PWD;cat $PWD$;";
 	char		*expected_token[] = {getenv("PWD"), ";", "cat", strjoin(getenv("PWD"),"$"), ";"};
 	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
+	t_node		*tree = expansion(input);
+
+	func(tree, expected_token, expected_node);
+}
+
+TEST(expansion, expansion_test08)
+{
+	char		*input = "\"$PWD\" ; \'cat\' \"aa\'aaa\" ;";
+	char		*expected_token[] = {getenv("PWD"), ";", "cat", "aa'aaa", ";"};
+	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
+	t_node		*tree = expansion(input);
+
+	func(tree, expected_token, expected_node);
+}
+
+TEST(expansion, expansion_test09)
+{
+	char		*input = "\'$PWD \';cat $PWD$;";
+	char		*expected_token[] = {"$PWD ", ";", "cat", strjoin(getenv("PWD"),"$"), ";"};
+	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
+	t_node		*tree = expansion(input);
+
+	func(tree, expected_token, expected_node);
+}
+
+TEST(expansion, expansion_test10)
+{
+	setenv("VAR", "\"hello w\"'orld'", 0);
+	char		*input = "$VAR ; \"$VAR\"";
+	char		*expected_token[] = {"hello", "world", ";", "hello world"};
+	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS};
+	t_node		*tree = expansion(input);
+
+	func(tree, expected_token, expected_node);
+	unsetenv("VAR");
+}
+
+TEST(expansion, expansion_test11)
+{
+	setenv("VAR", "$SHELL is zsh", 0);
+	char		*input = "$VAR ; \"$VAR\"";
+	char		*expected_token[] = {getenv("SHELL"), "is", "zsh", ";", strjoin(getenv("SHELL"), " is zsh")};
+	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS};
+	t_node		*tree = expansion(input);
+
+	func(tree, expected_token, expected_node);
+	unsetenv("VAR");
+}
+
+TEST(expansion, expansion_test12)
+{
+	setenv("VAR", "hello", 0);
+	setenv("VAR2", "\"$VAR $VAR\"", 0);
+	char		*input = "$VAR2";
+	char		*expected_token[] = {"hello hello"};
+	t_node_kind expected_node[] = {ND_PROCESS};
+	t_node		*tree = expansion(input);
+
+	func(tree, expected_token, expected_node);
+	unsetenv("VAR");
+	unsetenv("VAR2");
+}
+
+TEST(expansion, expansion_test13)
+{
+	unsetenv("VAR");
+	char		*input = "$VAR | cat";
+	char		*expected_token[] = {"", "|", "cat"};
+	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
 	t_node		*tree = expansion(input);
 
 	func(tree, expected_token, expected_node);
