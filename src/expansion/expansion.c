@@ -48,7 +48,7 @@ t_exp_strlist	*expand_tk_string(char *str)
 	size_t			envword_len;
 	int				idx;
 	int				left_idx;
-	
+
 	if (str == NULL)
 		return (NULL);
 	head = NULL;
@@ -76,6 +76,83 @@ t_exp_strlist	*expand_tk_string(char *str)
 	if (left_idx < idx)
 		tk_strlist_add_back(&head, tk_strlist_new(ft_substr(str, left_idx, idx - left_idx)));
 	return (head);
+}
+
+size_t	get_raw_len(char *str)
+{
+	char	quote;
+	size_t	len;
+	size_t	idx;
+
+	len = 0;
+	idx = 0;
+	while (str[idx])
+	{
+		if (str[idx] && strchr("\"'", str[idx]))
+		{
+			quote = str[idx];
+			idx++;
+			while (str[idx] && str[idx] != quote)
+			{
+				len++;
+				idx++;
+			}
+			if (str[idx] != quote)
+				return (0);
+			idx++;
+		}
+		else
+		{
+			idx++;
+			len++;
+		}
+	}
+	return (len);
+}
+
+char	*copy_raw_str(char *src, size_t len)
+{
+	char	*dst;
+	char	quote;
+	size_t	src_idx;
+	size_t	dst_idx;
+
+	dst = malloc(sizeof(char) * (len + 1));
+	src_idx = 0;
+	dst_idx = 0;
+	while (src[src_idx])
+	{
+		if (src[src_idx] && strchr("\"'", src[src_idx]))
+		{
+			quote = src[src_idx];
+			src_idx++;
+			while (src[src_idx] && src[src_idx] != quote)
+				dst[dst_idx++] = src[src_idx++];
+			if (src[src_idx] != quote)
+				return (NULL);
+			src_idx++;
+		}
+		else
+			dst[dst_idx++] = src[src_idx++];
+	}
+	dst[dst_idx] = '\0';
+	return (dst);
+}
+
+void	remove_quotes(t_token *token)
+{
+	t_token	*itr;
+	size_t	len;
+	char	raw_str;
+
+	itr = token;
+	while (itr->kind != TK_EOF)
+	{
+		printf("149: %s\n", itr->str);
+		len = get_raw_len(token->str);
+		token->str = copy_raw_str(token->str, len);
+		itr = itr->next;
+	}
 }
 
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
@@ -106,6 +183,7 @@ t_token	*get_expanded_token(t_token *token)
 		itr = itr->next;
 	}
 	expanded_token = lexer(expanded_str, true);
+	remove_quotes(expanded_token);
 	return (expanded_token);
 }
 
