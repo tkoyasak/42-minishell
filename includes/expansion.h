@@ -13,7 +13,7 @@ typedef enum e_exp_strlist_type
 	ENV,
 	STRING,
 	NAKED_SPACE
-}				t_exp_strlist_type;
+}	t_exp_strlist_type;
 
 typedef struct s_exp_strlist
 {
@@ -25,7 +25,7 @@ typedef struct s_exp_strlist
 	struct s_exp_strlist	*next;
 }	t_exp_strlist;
 
-t_node	*expansion(char *argv);
-t_exp_strlist	*get_exp_strlist(char *str);
+t_node			*expansion(char *argv);
+t_exp_strlist	*get_exp_strlist(char *str, bool par_in_dquote);
 
 #endif
