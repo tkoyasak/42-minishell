@@ -1,16 +1,6 @@
 #include "expansion.h"
 
-int	env_word_len(char *str)
-{
-	int	idx;
-
-	idx = 0;
-	while (str[idx] && isalnum(str[idx]))
-		idx++;
-	return (idx);
-}
-
-t_exp_strlist	*tk_strlist_last(t_exp_strlist *lst)
+t_exp_strlist	*exp_strlist_last(t_exp_strlist *lst)
 {
 	if (!lst)
 		return (NULL);
@@ -19,171 +9,109 @@ t_exp_strlist	*tk_strlist_last(t_exp_strlist *lst)
 	return (lst);
 }
 
-void	tk_strlist_add_back(t_list **lst, t_list *newsrc)
+void	exp_strlist_add_back(t_list **lst, t_list *newsrc)
 {
 	if (!lst)
 		return ;
 	if (!*lst)
 		*lst = newsrc;
 	else
-		(tk_strlist_last(*lst))->next = newsrc;
+		(exp_strlist_last(*lst))->next = newsrc;
 }
 
-t_exp_strlist	*tk_strlist_new(char *str)
+t_exp_strlist	*exp_strlist_new(char *str, bool in_squote, bool in_dquote, t_exp_strlist_type type)
 {
 	t_exp_strlist	*new;
 
 	new = malloc(sizeof(t_exp_strlist));
+	if (!new)
+		return (NULL);
 	new->str = str;
+	new->in_squote = in_squote;
+	new->in_dquote = in_dquote;
+	new->type = type;
+	if (str && str[0] == '$' && ft_isalnum(str[1]) && !in_squote)
+		new->type = ENV;
+	if (str && str[0] == ' ' && !in_squote && !in_dquote)
+		new->type = NAKED_SPACE;
 	new->next = NULL;
 	return (new);
 }
 
-t_exp_strlist	*expand_tk_string(char *str)
+size_t	get_word_len(char *str, bool in_squote, bool in_dquote)
+{
+	char	*head;
+
+	head = str;
+	if ((in_squote && *str == '\'') || (!in_squote && *str == '\"'))
+		return (1);
+	if (in_squote)
+		return (ft_strchr(str, '\'') - str);
+	if (*str == '$')
+	{
+		str++;
+		while (*str && ft_isalnum(*str))
+			str++;
+	}
+	else if (in_dquote)
+		while (*str && *str != '$' && *str != '\"')
+			str++;
+	else if(ft_isspace(*str))
+		while (*str && ft_isspace(*str))
+			str++;
+	else
+		while (*str && !ft_strchr("\'\"$ ", *str))
+			str++;
+	return (str - head);
+}
+
+t_exp_strlist	*extract_word(char **str, bool in_squote, bool in_dquote, t_exp_strlist_type type)
+{
+	t_exp_strlist	*new;
+	char			*new_word;
+
+	new_word = ft_substr(*str, 0, get_word_len(*str, in_squote, in_dquote));
+	new = exp_strlist_new(new_word, in_squote, in_dquote, type);
+	*str += ft_strlen(new_word);
+	return (new);
+}
+
+t_exp_strlist	*get_exp_strlist(char *str)
 {
 	t_exp_strlist	*head;
-	bool			has_squote;
-	bool			has_dquote;
-	char			*env_word;
-	size_t			envword_len;
-	int				idx;
-	int				left_idx;
+	bool			in_dquote;
 
-	if (str == NULL)
-		return (NULL);
 	head = NULL;
-	idx = 0;
-	left_idx = 0;
-	while (str[idx])
+	in_dquote = false;
+	while (*str)
 	{
-		if (!has_dquote && str[idx] == '\'')
-			has_squote ^= true;
-		else if (!has_squote && str[idx] == '"')
-			has_dquote ^= true;
-		if (!has_squote && str[idx] == '$' && str[idx + 1])
+		if (!in_dquote && *str == '\'')
 		{
-			tk_strlist_add_back(&head, tk_strlist_new(ft_substr(str, left_idx, idx - left_idx)));
-			idx++;
-			envword_len = env_word_len(&str[idx]);
-			env_word = ft_substr(str, idx, envword_len);
-			tk_strlist_add_back(&head, expand_tk_string(getenv(env_word)));
-			idx += envword_len;
-			left_idx = idx;
+			exp_strlist_add_back(&head, extract_word(&str, true, in_dquote, SQUOTE));
+			exp_strlist_add_back(&head, extract_word(&str, true, in_dquote, STRING));
+			exp_strlist_add_back(&head, extract_word(&str, true, in_dquote, SQUOTE));
+		}
+		else if (*str == '\"')
+		{
+			in_dquote ^= 1;
+			exp_strlist_add_back(&head, extract_word(&str, false, true, DQUOTE));
 		}
 		else
-			idx++;
+			exp_strlist_add_back(&head, extract_word(&str, false, in_dquote, STRING));
 	}
-	if (left_idx < idx)
-		tk_strlist_add_back(&head, tk_strlist_new(ft_substr(str, left_idx, idx - left_idx)));
 	return (head);
-}
-
-size_t	get_raw_len(char *str)
-{
-	char	quote;
-	size_t	len;
-	size_t	idx;
-
-	len = 0;
-	idx = 0;
-	while (str[idx])
-	{
-		if (str[idx] && strchr("\"'", str[idx]))
-		{
-			quote = str[idx];
-			idx++;
-			while (str[idx] && str[idx] != quote)
-			{
-				len++;
-				idx++;
-			}
-			if (str[idx] != quote)
-				return (0);
-			idx++;
-		}
-		else
-		{
-			idx++;
-			len++;
-		}
-	}
-	return (len);
-}
-
-char	*copy_raw_str(char *src, size_t len)
-{
-	char	*dst;
-	char	quote;
-	size_t	src_idx;
-	size_t	dst_idx;
-
-	dst = malloc(sizeof(char) * (len + 1));
-	src_idx = 0;
-	dst_idx = 0;
-	while (src[src_idx])
-	{
-		if (src[src_idx] && strchr("\"'", src[src_idx]))
-		{
-			quote = src[src_idx];
-			src_idx++;
-			while (src[src_idx] && src[src_idx] != quote)
-				dst[dst_idx++] = src[src_idx++];
-			if (src[src_idx] != quote)
-				return (NULL);
-			src_idx++;
-		}
-		else
-			dst[dst_idx++] = src[src_idx++];
-	}
-	dst[dst_idx] = '\0';
-	return (dst);
-}
-
-void	remove_quotes(t_token *token)
-{
-	t_token	*itr;
-	size_t	len;
-	char	raw_str;
-
-	itr = token;
-	while (itr->kind != TK_EOF)
-	{
-		len = get_raw_len(token->str);
-		token->str = copy_raw_str(token->str, len);
-		itr = itr->next;
-	}
 }
 
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
 t_token	*get_expanded_token(t_token *token)
 {
-	char			*expanded_str;
-	size_t			expanded_len;
-	t_exp_strlist	*head_strlist;
-	t_exp_strlist	*itr;
 	t_token			*expanded_token;
+	t_exp_strlist	*exp_strlist;
 
-	expanded_len = 0;
-	head_strlist = expand_tk_string(token->str);
-	itr = head_strlist;
-	while (itr)
-	{
-		itr->len = strlen(itr->str);
-		expanded_len += itr->len;
-		itr = itr->next;
-	}
-	expanded_str = malloc(expanded_len + 1);
-	itr = head_strlist;
-	expanded_len = 0;
-	while (itr)
-	{
-		expanded_len += itr->len;
-		strlcat(expanded_str, itr->str, expanded_len + 1);
-		itr = itr->next;
-	}
-	expanded_token = lexer(expanded_str, true);
-	remove_quotes(expanded_token);
-	return (expanded_token);
+	// token->strをt_exp_strlist_typeで分割・分類する
+	exp_strlist = get_exp_strlist(token->str);
+
+
 }
 
 void	handle_process(t_node *node)
@@ -246,7 +174,6 @@ static void	dfs(t_node *tree)
 	if (tree->rhs)
 		dfs(tree->rhs);
 }
-
 
 // int	main(void)
 // {
