@@ -206,30 +206,65 @@ void	func_get_exp_strlist(t_exp_strlist *exp_strlist, char *expected_exp_strlist
 
 TEST(get_exp_strlist, exp_strlist_test00)
 {
+	setenv("VAR", "hello", 0);
 	char		*input = "$VAR | cat";
-	char		*expected_exp_strlist[] = {"$VAR", " ", "|", " ", "cat"};
-	t_exp_strlist_type	expected_exp_type[] = {ENV, NAKED_SPACE, STRING, NAKED_SPACE, STRING};
-	t_exp_strlist *res = get_exp_strlist(input);
+	char		*expected_exp_strlist[] = {"hello", " ", "|", " ", "cat"};
+	t_exp_strlist_type	expected_exp_type[] = {STRING, NAKED_SPACE, STRING, NAKED_SPACE, STRING};
+	t_exp_strlist *res = get_exp_strlist(input, false);
 
 	func_get_exp_strlist(res, expected_exp_strlist, expected_exp_type);
+	unsetenv("VAR");
 }
 
 TEST(get_exp_strlist, exp_strlist_test01)
 {
+	setenv("VAR", "hello world", 0);
 	char		*input = "$VAR$PATH '| cat'";
-	char		*expected_exp_strlist[] = {"$VAR", "$PATH", " ", "\'", "| cat", "\'"};
-	t_exp_strlist_type	expected_exp_type[] = {ENV, ENV, NAKED_SPACE, SQUOTE, STRING, SQUOTE};
-	t_exp_strlist *res = get_exp_strlist(input);
+	char		*expected_exp_strlist[] = {"hello", " ", "world", getenv("PATH"), " ", "\'", "| cat", "\'"};
+	t_exp_strlist_type	expected_exp_type[] = {STRING, NAKED_SPACE, STRING, STRING, NAKED_SPACE, SQUOTE, STRING, SQUOTE};
+	t_exp_strlist *res = get_exp_strlist(input, false);
 
 	func_get_exp_strlist(res, expected_exp_strlist, expected_exp_type);
+	unsetenv("VAR");
 }
 
 TEST(get_exp_strlist, exp_strlist_test02)
 {
-	char		*input = "$VAR$ | $VAR$";
-	char		*expected_exp_strlist[] = {"$VAR", "$", " ", "|", " ", "$VAR", "$"};
-	t_exp_strlist_type	expected_exp_type[] = {ENV, STRING, NAKED_SPACE, STRING, NAKED_SPACE, ENV, STRING};
-	t_exp_strlist *res = get_exp_strlist(input);
+	setenv("VAR", "'hell''o world'", 0);
+	char		*input = "$VAR$ | $";
+	char		*expected_exp_strlist[] = {"\'", "hell", "\'", "\'", "o world", "\'", "$", " ", "|", " ", "$"};
+	t_exp_strlist_type	expected_exp_type[] = {SQUOTE, STRING, SQUOTE, SQUOTE, STRING, SQUOTE, STRING, NAKED_SPACE, STRING, NAKED_SPACE, STRING};
+	t_exp_strlist *res = get_exp_strlist(input, false);
 
 	func_get_exp_strlist(res, expected_exp_strlist, expected_exp_type);
+	unsetenv("VAR");
 }
+
+TEST(get_exp_strlist, exp_strlist_test03)
+{
+	setenv("VAR1", "hello world", 0);
+	setenv("VAR2", "$VAR1", 0);
+	char		*input = "a$VAR2";
+	char		*expected_exp_strlist[] = {"a", "hello", " ", "world"};
+	t_exp_strlist_type	expected_exp_type[] = {STRING, STRING, NAKED_SPACE, STRING};
+	t_exp_strlist *res = get_exp_strlist(input, false);
+
+	func_get_exp_strlist(res, expected_exp_strlist, expected_exp_type);
+	unsetenv("VAR1");
+	unsetenv("VAR2");
+}
+
+TEST(get_exp_strlist, exp_strlist_test04)
+{
+	setenv("VAR1", "hello  world", 0);
+	setenv("VAR2", "$VAR1", 0);
+	char		*input = "a\"$VAR2\"";
+	char		*expected_exp_strlist[] = {"a", "\"", "hello  world", "\""};
+	t_exp_strlist_type	expected_exp_type[] = {STRING, DQUOTE, STRING, DQUOTE};
+	t_exp_strlist *res = get_exp_strlist(input, false);
+
+	func_get_exp_strlist(res, expected_exp_strlist, expected_exp_type);
+	unsetenv("VAR1");
+	unsetenv("VAR2");
+}
+
