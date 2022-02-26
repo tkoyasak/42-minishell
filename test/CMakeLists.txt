@@ -13,7 +13,7 @@ add_library(expansion STATIC ../src/expansion/expansion.c)
 add_library(ft STATIC ${LIBFT})
 include_directories(../includes)
 include_directories(../lib/libft/includes)
-# 
+#
 # add_executable(main main00.cpp)
 # add_executable(main main01.cpp)
 add_executable(main main02.cpp)
