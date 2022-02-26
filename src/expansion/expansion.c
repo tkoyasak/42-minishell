@@ -76,20 +76,22 @@ t_exp_strlist	*extract_word(char **str, bool in_squote, bool in_dquote, t_exp_st
 	return (new);
 }
 
-t_exp_strlist	*get_exp_strlist(char *str)
+t_exp_strlist	*split_str(char *str, bool par_in_dquote)
 {
 	t_exp_strlist	*head;
 	bool			in_dquote;
 
+	if (!str)
+		return (NULL);
 	head = NULL;
 	in_dquote = false;
 	while (*str)
 	{
 		if (!in_dquote && *str == '\'')
 		{
-			exp_strlist_add_back(&head, extract_word(&str, true, in_dquote, SQUOTE));
-			exp_strlist_add_back(&head, extract_word(&str, true, in_dquote, STRING));
-			exp_strlist_add_back(&head, extract_word(&str, true, in_dquote, SQUOTE));
+			exp_strlist_add_back(&head, extract_word(&str, true, par_in_dquote | in_dquote, SQUOTE));
+			exp_strlist_add_back(&head, extract_word(&str, true, par_in_dquote | in_dquote, STRING));
+			exp_strlist_add_back(&head, extract_word(&str, true, par_in_dquote | in_dquote, SQUOTE));
 		}
 		else if (*str == '\"')
 		{
@@ -97,7 +99,37 @@ t_exp_strlist	*get_exp_strlist(char *str)
 			exp_strlist_add_back(&head, extract_word(&str, false, true, DQUOTE));
 		}
 		else
-			exp_strlist_add_back(&head, extract_word(&str, false, in_dquote, STRING));
+			exp_strlist_add_back(&head, extract_word(&str, false, par_in_dquote | in_dquote, STRING));
+	}
+	return (head);
+}
+
+t_exp_strlist	*get_exp_strlist(char *str, bool par_in_dquote)
+{
+	t_exp_strlist	*head;
+	t_exp_strlist	*itr;
+	t_exp_strlist	*prev;
+	t_exp_strlist	*next;
+
+	prev = NULL;
+	head = split_str(str, par_in_dquote);
+	itr = head;
+	while (itr)
+	{
+		next = itr->next;
+		if (itr->type == ENV)
+		{
+			itr->str = getenv(itr->str + 1);
+			if (prev == NULL)
+				head = get_exp_strlist(itr->str, itr->in_dquote);
+			else
+				prev->next = get_exp_strlist(itr->str, itr->in_dquote);
+			prev = exp_strlist_last(head);
+			prev->next = next;
+		}
+		else
+			prev = itr;
+		itr = next;
 	}
 	return (head);
 }
@@ -109,7 +141,8 @@ t_token	*get_expanded_token(t_token *token)
 	t_exp_strlist	*exp_strlist;
 
 	// token->strをt_exp_strlist_typeで分割・分類する
-	exp_strlist = get_exp_strlist(token->str);
+	// 環境変数の展開
+	exp_strlist = get_exp_strlist(token->str, false);
 
 
 }
