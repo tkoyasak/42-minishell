@@ -27,6 +27,9 @@ typedef struct s_token
 	char			*str;
 }	t_token;
 
-t_token		*lexer(char *line, bool is_tk_string);
+t_token		*lexer(char *line);
+t_token		*tk_token_new(t_token_kind kind, char *str);
+t_token		*tk_token_last(t_token *token);
+void		tk_token_add_back(t_token **head, t_token *newsrc);
 
 #endif
