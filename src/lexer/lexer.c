@@ -53,7 +53,7 @@ int	string_len(char *p)
 	return (idx);
 }
 
-t_token	*new_token(t_token_kind kind, t_token *cur, char **p, int len)
+t_token	*new_token_consume(t_token_kind kind, t_token *cur, char **p, int len)
 {
 	t_token	*tok;
 
@@ -66,7 +66,7 @@ t_token	*new_token(t_token_kind kind, t_token *cur, char **p, int len)
 	return (tok);
 }
 
-t_token	*tokenize(char *p, bool is_tk_string)
+t_token	*tokenize(char *p)
 {
 	t_token	head;
 	t_token	*cur;
@@ -81,40 +81,37 @@ t_token	*tokenize(char *p, bool is_tk_string)
 			p++;
 			continue;
 		}
-		if (is_tk_string == false)
+		if (is_valid_str(p) == false)
 		{
-			if (is_valid_str(p) == false)
-			{
-				exit(1);
-			}
-			len = reserved_len(p);
-			if (len > 0)
-			{
-				if (strchr("<>", *p))
-					cur = new_token(TK_REDIRECT, cur, &p, len);
-				else
-					cur = new_token(TK_RESERVED, cur, &p, len);
-				continue ;
-			}
+			exit(1);
+		}
+		len = reserved_len(p);
+		if (len > 0)
+		{
+			if (strchr("<>", *p))
+				cur = new_token_consume(TK_REDIRECT, cur, &p, len);
+			else
+				cur = new_token_consume(TK_RESERVED, cur, &p, len);
+			continue ;
 		}
 		len = string_len(p);
 		if (len > 0)
 		{
-			cur = new_token(TK_STRING, cur, &p, len);
+			cur = new_token_consume(TK_STRING, cur, &p, len);
 			continue ;
 		}
 		// free必要 error_handler(free_all(&head, ___));
 		printf("quotes error\n");
 		exit(1);
 	}
-	new_token(TK_EOF, cur, &p, 0);
+	new_token_consume(TK_EOF, cur, &p, 0);
 	return (head.next);
 }
 
-t_token	*lexer(char *line, bool is_tk_string)
+t_token	*lexer(char *line)
 {
 	t_token	*tokens;
 
-	tokens = tokenize(line, is_tk_string);
+	tokens = tokenize(line);
 	return (tokens);
 }
