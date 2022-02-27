@@ -27,5 +27,6 @@ typedef struct s_exp_strlist
 
 t_node			*expansion(char *argv);
 t_exp_strlist	*get_exp_strlist(char *str, bool par_in_dquote);
+t_exp_strlist	*remove_quotes(t_exp_strlist *src_list);
 
 #endif

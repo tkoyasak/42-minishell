@@ -1,4 +1,5 @@
 #include "expansion.h"
+#include "lexer.h"
 
 t_exp_strlist	*exp_strlist_last(t_exp_strlist *lst)
 {
@@ -134,6 +135,85 @@ t_exp_strlist	*get_exp_strlist(char *str, bool par_in_dquote)
 	return (head);
 }
 
+t_exp_strlist	*remove_quotes(t_exp_strlist *src_list)
+{
+	t_exp_strlist	*head;
+	t_exp_strlist	*itr;
+	t_exp_strlist	*next;
+	
+	head = NULL;
+	itr = src_list;
+	while (itr)
+	{
+		next = itr->next;
+		itr->next = NULL;
+		if (itr->type == SQUOTE || itr->type == DQUOTE)
+			; // exp_strlist_delone(itr);
+		else
+			exp_strlist_add_back(&head, itr);
+		itr = next;
+	}
+	return (head);
+}
+
+size_t	token_str_len(t_exp_strlist *src_list)
+{
+	size_t			len;
+	t_exp_strlist	*itr;
+
+	len = 0;
+	itr = src_list;
+	while (itr && itr->type != NAKED_SPACE)
+	{
+		itr->len = ft_strlen(itr->str);
+		len += itr->len;
+		itr = itr->next;
+	}
+	return (len);
+}
+
+char	*token_str_join(t_exp_strlist **src_list, char *buf)
+{
+	t_exp_strlist	*itr;
+	size_t			len;
+
+	len = 0;
+	itr = *src_list;
+	while (itr && itr->type != NAKED_SPACE)
+	{
+		len += itr->len;
+		ft_strlcat(buf, itr->str, len + 1);
+		itr = itr->next;
+	}
+	*src_list = itr;
+	return (buf);
+}
+
+// naked spaceで分割し、文字列(t_exp_strlist)を連結してトークン化する
+t_token *convert_to_token(t_exp_strlist *src_list)
+{
+	t_token			*head;
+	t_exp_strlist	*itr;
+	size_t			len;
+	char			*str;
+
+	head = NULL;
+	itr = src_list;
+	while (itr)
+	{
+		if (itr->type == NAKED_SPACE)
+		{
+			itr = itr->next;
+			continue ;
+		}
+		len = token_str_len(itr);
+		str = ft_calloc((len + 1), sizeof(char));
+		str = token_str_join(&itr, str);
+		tk_token_add_back(&head, tk_token_new(TK_STRING, str));
+	}
+	return (head);
+}
+
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
 t_token	*get_expanded_token(t_token *token)
 {
@@ -143,8 +223,9 @@ t_token	*get_expanded_token(t_token *token)
 	// token->strをt_exp_strlist_typeで分割・分類する
 	// 環境変数の展開
 	exp_strlist = get_exp_strlist(token->str, false);
-
-
+	exp_strlist = remove_quotes(exp_strlist);
+	expanded_token = convert_to_token(exp_strlist);
+	return (expanded_token);
 }
 
 void	handle_process(t_node *node)
@@ -164,9 +245,7 @@ void	handle_process(t_node *node)
 		else
 			node->token = token;
 		while (token->next != NULL && token->next != next && token->next->kind != TK_EOF)
-		{
 			token = token->next;
-		}
 		token->next = next;
 		prev = token;
 		token = token->next;
@@ -175,7 +254,6 @@ void	handle_process(t_node *node)
 
 void	expansion_sub(t_node *node)
 {
-	//今のnodeに対する処理
 	if (node->kind == ND_PROCESS)
 		handle_process(node);
 	if (node->lhs)
@@ -194,31 +272,28 @@ t_node	*expansion(char *argv)
 	return (tree);
 }
 
-static void	dfs(t_node *tree)
-{
-	if (tree->lhs)
-		dfs(tree->lhs);
-	printf("kind:%d\n", tree->kind);
-	while (tree->token)
-	{
-		printf("%s\n", tree->token->str);
-		tree->token = tree->token->next;
-	}
-	if (tree->rhs)
-		dfs(tree->rhs);
-}
+// static void	dfs(t_node *tree)
+// {
+// 	if (tree->lhs)
+// 		dfs(tree->lhs);
+// 	printf("282:kind:%d\n", tree->kind);
+// 	while (tree->token)
+// 	{
+// 		tree->token = tree->token->next;
+// 	}
+// 	if (tree->rhs)
+// 		dfs(tree->rhs);
+// }
 
 // int	main(void)
 // {
-// 	// char *s = "ls -al";
+// 	char *s = "ls -al";
 
-// 	// // int	len = get_expanded_len(s);
-// 	// // printf("%s : %d\n", s, len);
-// 	// t_node	*tree;
+// 	// int	len = get_expanded_len(s);
+// 	// printf("%s : %d\n", s, len);
+// 	t_node	*tree;
 
-// 	// tree = expansion("ls -al | cat");
-// 	// dfs(tree);
-// 	// return (0);
-// 	printf("%s\n", getenv("ppp"));
+// 	tree = expansion("\"ls -al\"aaaa fff | cat");
+// 	dfs(tree);
 // 	return (0);
 // }
