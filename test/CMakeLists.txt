@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB LIBFT ../lib/libft/src/*/*.c ../lib/libft/includes/*.h)
 
-add_library(lexer STATIC ../src/lexer/lexer.c)
+add_library(lexer STATIC ../src/lexer/lexer.c ../src/lexer/lexer_utils.c)
 add_library(parser STATIC ../src/parser/parser.c)
 add_library(expansion STATIC ../src/expansion/expansion.c)
 add_library(ft STATIC ${LIBFT})
