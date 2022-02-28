@@ -31,12 +31,16 @@ t_list *convert_to_expression_list(t_node *tree)
 	if (ND_SEMICOLON <= tree->kind && tree->kind <= ND_DPIPE)
 	{
 		if (tree->lhs)
+		{
 			ft_lstadd_back(&expression_list, convert_to_expression_list(tree->lhs));
+			((t_expression *)(ft_lstlast(expression_list)->content))->end_of_expression = tree->kind;
+		}
 		if (tree->rhs)
 		{
 			expression = malloc(sizeof(t_expression));
 			expression->process = convert_to_process_list(tree->rhs);
 			ft_lstadd_back(&expression_list, ft_lstnew(expression));
+			((t_expression *)(ft_lstlast(expression_list)->content))->end_of_expression = ND_SEMICOLON;
 		}
 	}
 	else
@@ -50,17 +54,17 @@ t_list *convert_to_expression_list(t_node *tree)
 
 // int	main(void)
 // {
-// 	t_node *tree = expansion("ls -al | echo | 'hello'; $SHELL . ppp && echo hey!;");
+// 	t_node *tree = expansion("ls -al | echo | 'hello'; $SHELL . ppp && echo hey!");
 // 	t_list *expression_list = convert_to_expression_list(tree);
 
 // 	while (expression_list)
 // 	{
 // 		t_list *process_list = ((t_expression *)(expression_list->content))->process;
+// 		static int cnt = 0; cnt++;
+// 		printf("%d %d\n", cnt, ((t_expression *)(expression_list->content))->end_of_expression);
 // 		while (process_list)
 // 		{
-// 			static int cnt = 0; cnt++;
 // 			t_token *tok = ((t_process *)(process_list->content))->token;
-// 			printf("%d\n", cnt);
 // 			while (tok)
 // 			{
 // 				printf("%s ", tok->str);

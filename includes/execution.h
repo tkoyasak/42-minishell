@@ -13,7 +13,7 @@ typedef struct s_process
 typedef struct s_expression
 {
 	t_list					*process;
-	t_node_kind				kind; // 最後のprocessはND_SEMICOLON
+	t_node_kind				end_of_expression; // 最後のprocessはND_SEMICOLON
 }	t_expression;
 
 #endif
