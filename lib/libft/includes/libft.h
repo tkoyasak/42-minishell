@@ -10,6 +10,7 @@
 # include <unistd.h>
 # include <limits.h>
 # include <errno.h>
+# include <stdio.h>
 
 # define SUCCESS 1
 # define END_OF_FILE 0
