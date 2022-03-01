@@ -15,7 +15,7 @@ t_list *convert_to_process_list(t_node *tree)
 	}
 	else
 	{
-		process = malloc(sizeof(t_process));
+		process = ft_calloc(1, sizeof(t_process));
 		process->token = tree->token;
 		process_list = ft_lstnew(process);
 	}
@@ -37,7 +37,7 @@ t_list *convert_to_expression_list(t_node *tree)
 		}
 		if (tree->rhs)
 		{
-			expression = malloc(sizeof(t_expression));
+			expression = ft_calloc(1, sizeof(t_expression));
 			expression->process = convert_to_process_list(tree->rhs);
 			ft_lstadd_back(&expression_list, ft_lstnew(expression));
 			((t_expression *)(ft_lstlast(expression_list)->content))->end_of_expression = ND_SEMICOLON;
@@ -45,7 +45,7 @@ t_list *convert_to_expression_list(t_node *tree)
 	}
 	else
 	{
-		expression = malloc(sizeof(t_expression));
+		expression = ft_calloc(1, sizeof(t_expression));
 		expression->process = convert_to_process_list(tree);
 		ft_lstadd_back(&expression_list, ft_lstnew(expression));
 	}

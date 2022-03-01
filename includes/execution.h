@@ -5,9 +5,23 @@
 # include "parser.h"
 # include "expansion.h"
 
+typedef enum e_redirection_kind
+{
+	INPUT,
+	HEREDOC,
+	OUTPUT,
+	APPEND
+}	t_redirection_kind;
+
 typedef struct s_process
 {
-	t_token					*token;
+	t_token				*token;
+	t_redirection_kind	input_kind;
+	t_redirection_kind	output_kind;
+	int					input_fd;
+	int					output_fd;
+	char				*input_filename;
+	char				*output_filename;
 }	t_process;
 
 typedef struct s_expression
@@ -15,5 +29,7 @@ typedef struct s_expression
 	t_list					*process;
 	t_node_kind				end_of_expression; // 最後のprocessはND_SEMICOLON
 }	t_expression;
+
+t_list		*convert_to_expression_list(t_node *tree);
 
 #endif
