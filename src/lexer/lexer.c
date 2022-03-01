@@ -6,7 +6,7 @@ bool	is_valid_str(char *p)
 	int	idx;
 
 	idx = 0;
-	while (p[idx] && strchr(RESERVED_CHAR, p[idx]))
+	while (p[idx] && ft_strchr(RESERVED_CHAR, p[idx]))
 		idx++;
 	if (idx == 0)
 		return (true);
@@ -46,37 +46,37 @@ int	string_len(char *p)
 			while (p[idx] && p[idx] != quote)
 				idx++;
 			if (p[idx] != quote)
-				return (0);
+				return (-1);
 		}
 		idx++;
 	}
 	return (idx);
 }
 
-t_token	*new_token_consume(t_token_kind kind, t_token *cur, char **p, int len)
+t_list	*new_token_consume(t_token_kind kind, t_list *cur, char **p, int len)
 {
-	t_token	*tok;
+	t_token	*token;
 
-	tok = calloc(1, sizeof(t_token));
-	tok->kind = kind;
-	cur->next = tok;
-	tok->str = malloc((len + 1) * sizeof(char));
-	strlcpy(tok->str, *p, len + 1);
+	token = ft_calloc(1, sizeof(t_token));
+	token->kind = kind;
+	token->str = ft_calloc(len + 1, sizeof(char));
+	strlcpy(token->str, *p, len + 1);
 	*p += len;
-	return (tok);
+	cur->next = ft_lstnew(token);
+	return (cur->next);
 }
 
-t_token	*tokenize(char *p)
+t_list	*tokenize(char *p)
 {
-	t_token	head;
-	t_token	*cur;
+	t_list	head;
+	t_list	*cur;
 	int		len;
 
 	head.next = NULL;
 	cur = &head;
 	while (*p)
 	{
-		if (isspace(*p))
+		if (ft_isspace(*p))
 		{
 			p++;
 			continue;
@@ -88,7 +88,7 @@ t_token	*tokenize(char *p)
 		len = reserved_len(p);
 		if (len > 0)
 		{
-			if (strchr("<>", *p))
+			if (ft_strchr("<>", *p))
 				cur = new_token_consume(TK_REDIRECT, cur, &p, len);
 			else
 				cur = new_token_consume(TK_RESERVED, cur, &p, len);
@@ -104,14 +104,13 @@ t_token	*tokenize(char *p)
 		printf("quotes error\n");
 		exit(1);
 	}
-	new_token_consume(TK_EOF, cur, &p, 0);
 	return (head.next);
 }
 
-t_token	*lexer(char *line)
+t_list	*lexer(char *line)
 {
-	t_token	*tokens;
+	t_list	*token_list;
 
-	tokens = tokenize(line);
-	return (tokens);
+	token_list = tokenize(line);
+	return (token_list);
 }
