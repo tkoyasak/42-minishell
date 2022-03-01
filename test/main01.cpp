@@ -10,16 +10,19 @@ int	node_idx;
 
 void	dfs(t_node *node, char *expected_token[], t_node_kind expected_node[])
 {
+	t_list	*itr;
+
 	if (node->lhs)
 		dfs(node->lhs, expected_token, expected_node);
 	EXPECT_EQ(node->kind, expected_node[node_idx]);
 	node_idx++;
 	if (node->kind != ND_PROCESS)
 		token_idx++;
-	while (node->token)
+	itr = node->token_list;
+	while (itr)
 	{
-		EXPECT_STREQ(node->token->str, expected_token[token_idx]);
-		node->token = node->token->next;
+		EXPECT_STREQ(((t_token *)(itr->content))->str, expected_token[token_idx]);
+		itr = itr->next;
 		token_idx++;
 	}
 	if (node->rhs)
