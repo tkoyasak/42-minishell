@@ -1,123 +1,124 @@
 #include "lexer.h"
 #include "parser.h"
 
-t_node	*new_node(t_node_kind kind, t_node *lhs, t_node *rhs)
+t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs)
 {
 	t_node	*node;
 
-	node = malloc(sizeof(t_node));
+	node = ft_calloc(1, sizeof(t_node));
 	node->kind = kind;
 	node->lhs = lhs;
 	node->rhs = rhs;
-	node->token = NULL;
 	return (node);
 }
 
 // 比較と，一致していれば進める
-bool	consume(char *op, t_token **cur_token)
+bool	consume(char *op, t_list **cur_token_list)
 {
-	if (strcmp((*cur_token)->str, op) == 0)
+	if (*cur_token_list == NULL)
+		return (false);
+	if (strcmp(((t_token *)((*cur_token_list)->content))->str, op) == 0)
 	{
-		*cur_token = (*cur_token)->next;
+		*cur_token_list = (*cur_token_list)->next;
 		return (true);
 	}
 	return (false);
 }
 
 //次の|か;か一番最後までを塊として読む
-t_node	*create_process_node(t_token **cur_token)
+t_node	*create_process_node(t_list **cur_token_list)
 {
 	t_node	*node;
-	t_token	*token_tail;
+	t_list	*token_list_tail;
 
-	node = malloc(sizeof(t_node));
+	node = ft_calloc(1, sizeof(t_node));
 	node->kind = ND_PROCESS;
-	node->lhs = NULL;
-	node->rhs = NULL;
-	node->token = *cur_token;
-	while ((*cur_token)->next->kind != TK_RESERVED && (*cur_token)->next->kind != TK_EOF)
+	node->token_list = *cur_token_list;
+	while ((*cur_token_list)->next != NULL && \
+		((t_token *)(((*cur_token_list)->next)->content))->kind != TK_RESERVED)
 	{
-		if ((*cur_token)->kind == TK_REDIRECT && \
-				(*cur_token)->next->kind == TK_REDIRECT)
-			exit(1); // error_handler();
-		*cur_token = (*cur_token)->next;
-	} // < << を飛ばす
-	token_tail = *cur_token;
-	*cur_token = token_tail->next;
-	token_tail->next = NULL;
+		if (((t_token *)(*cur_token_list)->content)->kind == TK_REDIRECT && \
+				((t_token *)(((*cur_token_list)->next)->content))->kind == TK_REDIRECT)
+			exit(1); // error_handler(); // < や << などが連続したらエラー
+		*cur_token_list = (*cur_token_list)->next;
+	}
+	if (((t_token *)(*cur_token_list)->content)->kind == TK_REDIRECT)
+		exit(1); // error_handler(); // TK_REDIRECTが一番最後にあるとエラー
+	token_list_tail = *cur_token_list;
+	*cur_token_list = token_list_tail->next;
+	token_list_tail->next = NULL;
 	return (node);
 }
 
-t_token	**expect_process(t_token **cur_token)
+t_list	**expect_process(t_list **cur_token_list)
 {
-	if ((*cur_token)->kind != TK_STRING)
+	if (((t_token *)((*cur_token_list)->content))->kind != TK_STRING)
 	{
-		printf("exit: not process / kind = %d\n", (*cur_token)->kind);
+		printf("exit: not process / kind = %d\n", \
+				((t_token *)((*cur_token_list)->content))->kind);
 		exit(1); // error_handler();
 	}
-	return (cur_token);
+	return (cur_token_list);
 }
 
 // semicolon間の部分木
-t_node	*expression(t_token **cur_token)
+t_node	*expression(t_list **cur_token_list)
 {
 	t_node	*node;
 
-	if ((*cur_token)->kind == TK_EOF)
+	if (*cur_token_list == NULL)
 		return (NULL);
-	node = create_process_node(expect_process(cur_token));
+	node = create_process_node(expect_process(cur_token_list));
 	while (true)
 	{
-		if (consume("|", cur_token))
-			node = new_node(ND_PIPE, node, create_process_node(expect_process(cur_token)));
+		if (consume("|", cur_token_list))
+			node = node_new(ND_PIPE, node, create_process_node(expect_process(cur_token_list)));
 		else
 			return (node);
 	}
 }
 
 // 全体のrootのnodeへのポインタを返す
-t_node	*parser_sub(t_token *cur_token)
+t_node	*parser_sub(t_list *cur_token_list)
 {
 	t_node	*node;
 
-	node = expression(&cur_token);
+	node = expression(&cur_token_list);
 	while (true)
 	{
-		if (consume(";", &cur_token))
-			node = new_node(ND_SEMICOLON, node, expression(&cur_token));
-		else if (consume("&&", &cur_token))
-			node = new_node(ND_DAND, node, expression(&cur_token));
-		else if (consume("||", &cur_token))
-			node = new_node(ND_DPIPE, node, expression(&cur_token));
+		if (consume(";", &cur_token_list))
+			node = node_new(ND_SEMICOLON, node, expression(&cur_token_list));
+		else if (consume("&&", &cur_token_list))
+			node = node_new(ND_DAND, node, expression(&cur_token_list));
+		else if (consume("||", &cur_token_list))
+			node = node_new(ND_DPIPE, node, expression(&cur_token_list));
 		else
 			return node;
 	}
 }
 
-static void	dfs(t_node *tree)
-{
-	if (tree->lhs)
-		dfs(tree->lhs);
-	printf("kind:%d\n", tree->kind);
-	while (tree->token)
-	{
-		printf("%s\n", tree->token->str);
-		tree->token = tree->token->next;
-	}
-	if (tree->rhs)
-		dfs(tree->rhs);
-}
+// static void	dfs(t_node *tree)
+// {
+// 	if (tree->lhs)
+// 		dfs(tree->lhs);
+// 	printf("kind:%d\n", tree->kind);
+// 	while (tree->token)
+// 	{
+// 		printf("%s\n", tree->token->str);
+// 		tree->token = tree->token->next;
+// 	}
+// 	if (tree->rhs)
+// 		dfs(tree->rhs);
+// }
 
 t_node	*parser(char *argv)
 {
-	t_token	*tokens;
+	t_list	*token_list;
 	t_node	*tree;
 
-	// (void)argc;
-	tokens = lexer(argv);
-	tree = parser_sub(tokens);
+	token_list = lexer(argv);
+	tree = parser_sub(token_list);
 	// dfs(tree);
-
 	return (tree);
 }
 
