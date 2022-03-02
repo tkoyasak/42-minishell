@@ -222,7 +222,8 @@ void	handle_process(t_node *node)
 	while (itr)
 	{
 		next = itr->next;
-		itr = get_expanded_token(itr);
+		if (((t_token *)(itr->content))->kind == TK_STRING)
+			itr = get_expanded_token(itr);
 		if (prev)
 			prev->next = itr;
 		else
