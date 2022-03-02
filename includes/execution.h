@@ -7,6 +7,7 @@
 
 typedef enum e_redirection_kind
 {
+	NONE,
 	INPUT,
 	HEREDOC,
 	OUTPUT,
