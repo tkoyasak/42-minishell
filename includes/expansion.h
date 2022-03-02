@@ -6,27 +6,26 @@
 # include "parser.h"
 # include "libft.h"
 
-typedef enum e_exp_strlist_type
+typedef enum e_expansion_kind
 {
 	SQUOTE,
 	DQUOTE,
 	ENV,
 	STRING,
 	NAKED_SPACE
-}	t_exp_strlist_type;
+}	t_expansion_kind;
 
-typedef struct s_exp_strlist
+typedef struct s_expansion
 {
 	int						len;
 	char					*str;
 	bool					in_squote;
 	bool					in_dquote;
-	t_exp_strlist_type		type;
-	struct s_exp_strlist	*next;
-}	t_exp_strlist;
+	t_expansion_kind		kind;
+}	t_expansion;
 
 t_node			*expansion(char *argv);
-t_exp_strlist	*get_exp_strlist(char *str, bool par_in_dquote);
-t_exp_strlist	*remove_quotes(t_exp_strlist *src_list);
+t_list			*get_expansion_list(char *str, bool par_in_dquote);
+t_list			*remove_quotes(t_list *src_list);
 
 #endif
