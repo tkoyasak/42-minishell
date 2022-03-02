@@ -15,7 +15,7 @@ typedef enum e_redirection_kind
 
 typedef struct s_process
 {
-	t_token				*token;
+	t_list				*token_list;
 	t_redirection_kind	input_kind;
 	t_redirection_kind	output_kind;
 	int					input_fd;
@@ -26,7 +26,7 @@ typedef struct s_process
 
 typedef struct s_expression
 {
-	t_list					*process;
+	t_list					*process_list;
 	t_node_kind				end_of_expression; // 最後のprocessはND_SEMICOLON
 }	t_expression;
 
