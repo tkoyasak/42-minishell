@@ -35,10 +35,10 @@ t_node	*create_process_node(t_list **cur_token_list)
 	node->kind = ND_PROCESS;
 	node->token_list = *cur_token_list;
 	while ((*cur_token_list)->next != NULL && \
-		((t_token *)(((*cur_token_list)->next)->content))->kind != TK_RESERVED)
+		((t_token *)((*cur_token_list)->next->content))->kind != TK_RESERVED)
 	{
 		if (((t_token *)(*cur_token_list)->content)->kind == TK_REDIRECT && \
-				((t_token *)(((*cur_token_list)->next)->content))->kind == TK_REDIRECT)
+				((t_token *)((*cur_token_list)->next->content))->kind == TK_REDIRECT)
 			exit(1); // error_handler(); // < や << などが連続したらエラー
 		*cur_token_list = (*cur_token_list)->next;
 	}
