@@ -1,6 +1,7 @@
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
+# include <fcntl.h>
 # include "lexer.h"
 # include "parser.h"
 # include "expansion.h"
@@ -28,9 +29,13 @@ typedef struct s_process
 typedef struct s_expression
 {
 	t_list					*process_list;
+	int						process_cnt;
+	int						**pipefd;
+	pid_t					*pid;  // process id
 	t_node_kind				end_of_expression; // 最後のprocessはND_SEMICOLON
 }	t_expression;
 
 t_list		*convert_to_expression_list(t_node *tree);
+int			evaluate_expression(t_expression *expression);
 
 #endif
