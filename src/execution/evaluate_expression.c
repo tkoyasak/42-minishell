@@ -61,29 +61,44 @@ void	set_redirection_params(t_process *process)
 			itr = itr->next;
 			if (kind == INPUT || kind == HEREDOC)
 			{
-				process->input_kind = kind;
-				process->input_filename = ((t_token *)(itr->content))->str;
+				process->kind[0] = kind;
+				process->filename[0] = ((t_token *)(itr->content))->str;
 				if (kind == INPUT)
-					process->input_fd = open(process->input_filename, R_OK); //調べる
+					process->fd[0] = open(process->filename[0], R_OK); //調べる
 				else
 					;// heredocの処理
 			}
 			else if (kind == OUTPUT || kind == APPEND)
 			{
 				// file 作成
-				process->output_kind = kind;
-				process->output_filename = ((t_token *)(itr->content))->str;
+				process->kind[1] = kind;
+				process->filename[1] = ((t_token *)(itr->content))->str;
 				if (kind == OUTPUT)
-					process->output_fd = open(process->output_filename, O_CREAT | O_TRUNC | W_OK, 0644);
+					process->fd[1] = open(process->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
 				else
-					process->output_fd = open(process->output_filename, O_CREAT | O_APPEND | W_OK, 0644);
+					process->fd[1] = open(process->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
 			}
 		}
 		itr = itr->next;
 	}
-	remove_redirection_token(process);
 }
 
+void	set_command(t_process *process)
+{
+	t_list	*itr;
+	int		cmd_idx;
+
+	remove_redirection_token(process);
+	process->command = ft_calloc(ft_lstsize(process->token_list) + 1, sizeof(char *));
+	itr = process->token_list;
+	cmd_idx = 0;
+	while (itr)
+	{
+		process->command[cmd_idx] = ((t_token *)(itr->content))->str;
+		itr = itr->next;
+		cmd_idx++;
+	}
+}
 
 static void	create_pipe(t_expression *expression, const int cmd_idx)
 {
@@ -92,6 +107,67 @@ static void	create_pipe(t_expression *expression, const int cmd_idx)
 		exit(EXIT_FAILURE);
 	if (pipe(expression->pipefd[cmd_idx]) < 0)
 		exit(EXIT_FAILURE);
+}
+
+void	dup2_func(t_expression *expression, t_process *process, const int cmd_idx)
+{
+	if (process->kind[0] == NONE && cmd_idx > 0) // cmd_idx > 0 かつ redirectionがない
+		dup2(expression->pipefd[cmd_idx - 1][PIPEIN], STDIN);
+	else if (process->kind[0] != NONE)
+		dup2(process->fd[0], STDIN);
+	// cmd_idx == 0 && process->kind[0] == NONE の場合は何もしてない（要確認）
+
+	if (process->kind[1] == NONE && cmd_idx < expression->process_cnt - 1)
+		dup2(expression->pipefd[cmd_idx][PIPEOUT], STDOUT);
+	else if (process->kind[1] != NONE)
+		dup2(process->fd[1], STDOUT);
+	// cmd_idx == process_cnt - 1 && process->kind[1] == NONE の場合は何もしてない（要確認）
+}
+
+void	close_func(t_expression *expression, t_process *process, const int cmd_idx)
+{
+	if (cmd_idx > 0)
+	{
+		close(expression->pipefd[cmd_idx - 1][PIPEIN]);
+		close(expression->pipefd[cmd_idx - 1][PIPEOUT]);
+	}
+	if (cmd_idx < expression->process_cnt - 1)
+	{
+		close(expression->pipefd[cmd_idx][PIPEIN]);
+		close(expression->pipefd[cmd_idx][PIPEOUT]);
+	}
+}
+
+/*  execute child process  */
+void	exec_child(t_expression *expression, t_process *process, const int cmd_idx)
+{
+	int		filefd;
+	char	*cmd;
+	char	*fullpath_cmd;
+	extern	char	**environ;
+
+	// heredocの処理はset_redirection_paramsでやる
+	cmd = ((t_token *)(process->token_list->content))->str;
+	fullpath_cmd = get_fullpath_cmd(cmd);
+	dup2_func(expression, process, cmd_idx);
+	close_func(expression, process, cmd_idx);
+	execve(fullpath_cmd, process->command, environ);
+	// printf("110: %s\n", fullpath_cmd);
+	exit(NOCMD);
+}
+
+static int	wait_all_processes(t_expression *expression)
+{
+	int	cmd_idx;
+	int	wstatus;
+
+	cmd_idx = 0;
+	while (cmd_idx < expression->process_cnt)
+	{
+		waitpid(expression->pid[cmd_idx], &wstatus, WUNTRACED);
+		cmd_idx++;
+	}
+	return (wstatus);
 }
 
 // redirect + builtin
@@ -108,13 +184,24 @@ int	exec_processes(t_expression *expression)
 	{
 		process = process_list->content;
 		set_redirection_params(process);
+		set_command(process);
 		if (cmd_idx < expression->process_cnt - 1)
 			create_pipe(expression, cmd_idx);
-		// fork exec_child
+		expression->pid[cmd_idx] = fork();
+		if (expression->pid[cmd_idx] == 0)
+			exec_child(expression, process, cmd_idx);
+		else if (cmd_idx)
+		{
+			close(expression->pipefd[cmd_idx - 1][PIPEIN]);
+			close(expression->pipefd[cmd_idx - 1][PIPEOUT]);
+			// close(process->fd[0]);
+			// close(process->fd[1]);
+		}
 		process_list = process_list->next;
 		cmd_idx++;
 	}
-	return (127);
+	wstatus = wait_all_processes(expression);
+	return (WEXITSTATUS(wstatus));
 }
 
 // pipefd[0] = {input fd, output fd}
@@ -125,7 +212,7 @@ void	init_expression(t_expression *expression)
 	expression->process_cnt = ft_lstsize(expression->process_list);  // 3
 	pipe_cnt = expression->process_cnt - 1;
 	expression->pipefd = (int **)ft_calloc(pipe_cnt, sizeof(int *)); // prepare_pipe pipeは2つ用意
-	printf("63: pipe_cnt %d\n", pipe_cnt);
+	// printf("63: pipe_cnt %d\n", pipe_cnt);
 	expression->pid = (pid_t *)ft_calloc(expression->process_cnt, sizeof(pid_t)); 
 }
 
