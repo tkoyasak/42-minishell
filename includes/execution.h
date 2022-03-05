@@ -6,6 +6,16 @@
 # include "parser.h"
 # include "expansion.h"
 
+# define STDIN 0
+# define STDOUT 1
+# define STDERR 2
+# define PIPEIN 0
+# define PIPEOUT 1
+# define NOFILE -2
+# define NOCMD 127
+# define FD_MAX 256
+# define PATH_PREFIX 5
+
 typedef enum e_redirection_kind
 {
 	NONE,
@@ -18,12 +28,11 @@ typedef enum e_redirection_kind
 typedef struct s_process
 {
 	t_list				*token_list;
-	t_redirection_kind	input_kind;
-	t_redirection_kind	output_kind;
-	int					input_fd;
-	int					output_fd;
-	char				*input_filename;
-	char				*output_filename;
+	t_redirection_kind	kind[2];
+	int					fd[2];
+	char				*filename[2];
+	// char				*heredoc;
+	char				**command;
 }	t_process;
 
 typedef struct s_expression
@@ -37,5 +46,7 @@ typedef struct s_expression
 
 t_list		*convert_to_expression_list(t_node *tree);
 int			evaluate_expression(t_expression *expression);
+char		*get_fullpath_cmd(char *cmd);
+int			execution(t_node *tree);
 
 #endif
