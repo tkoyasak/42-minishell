@@ -66,11 +66,11 @@ static int	read_fd(int fd, char **memo, char **buf, char **line)
 
 int	get_next_line(int fd, char **line)
 {
-	static char		*memo[OPEN_MAX + 1];
+	static char		*memo[OPEN_MAX];
 	char			*buf;
 	int				status;
 
-	if (fd < 0 || OPEN_MAX < fd || BUFFER_SIZE <= 0)
+	if (fd < 0 || OPEN_MAX <= fd || BUFFER_SIZE <= 0)
 		return (ERROR);
 	if (!memo[fd])
 		memo[fd] = ft_strndup("", 0);
