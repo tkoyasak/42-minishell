@@ -46,7 +46,13 @@ fclean: clean
 re: fclean all
 
 gtest:
-	cmake -S ./test -B ./test/build && cmake --build ./test/build && ./test/build/main
+	cmake -S ./test/gtest -B ./test/gtest/build && cmake --build ./test/gtest/build && ./test/gtest/build/main
+
+shtest: $(OBJS)
+	@$(CC) $(CFLAGS) $(INCLUDE) test/shtest/main.c $^ $(LFLAGS) -o test/shtest/shtest
+	@chmod +x test/shtest/shtest
+	@chmod +x test/shtest/execution.sh
+	@cd test/shtest && ./execution.sh
 
 -include $(DEPS)
 
