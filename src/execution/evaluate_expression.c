@@ -66,11 +66,10 @@ void	set_redirection_params(t_process *process)
 				if (kind == INPUT)
 					process->fd[0] = open(process->filename[0], R_OK); //調べる
 				else
-					;// heredocの処理
+					set_heredoc(process, process->filename[0]);
 			}
 			else if (kind == OUTPUT || kind == APPEND)
 			{
-				// file 作成
 				process->kind[1] = kind;
 				process->filename[1] = ((t_token *)(itr->content))->str;
 				if (kind == OUTPUT)
@@ -113,19 +112,32 @@ void	dup2_func(t_expression *expression, t_process *process, const int cmd_idx)
 {
 	if (process->kind[0] == NONE && cmd_idx > 0) // cmd_idx > 0 かつ redirectionがない
 		dup2(expression->pipefd[cmd_idx - 1][PIPEIN], STDIN);
+	else if (process->kind[0] == HEREDOC)
+	{
+		process->here_pipefd = ft_calloc(2, sizeof(int));
+		if (!process->here_pipefd)
+			exit(EXIT_FAILURE);
+		if (pipe(process->here_pipefd) < 0)
+			exit(EXIT_FAILURE);
+		write(process->here_pipefd[1], process->heredoc, ft_strlen(process->heredoc));
+		dup2(process->here_pipefd[0], STDIN);
+	}
 	else if (process->kind[0] != NONE)
 		dup2(process->fd[0], STDIN);
-	// cmd_idx == 0 && process->kind[0] == NONE の場合は何もしてない（要確認）
 
 	if (process->kind[1] == NONE && cmd_idx < expression->process_cnt - 1)
 		dup2(expression->pipefd[cmd_idx][PIPEOUT], STDOUT);
 	else if (process->kind[1] != NONE)
 		dup2(process->fd[1], STDOUT);
-	// cmd_idx == process_cnt - 1 && process->kind[1] == NONE の場合は何もしてない（要確認）
 }
 
 void	close_func(t_expression *expression, t_process *process, const int cmd_idx)
 {
+	if (process->kind[0] == HEREDOC)
+	{
+		close(process->here_pipefd[0]);
+		close(process->here_pipefd[1]);
+	}
 	if (cmd_idx > 0)
 	{
 		close(expression->pipefd[cmd_idx - 1][PIPEIN]);
@@ -146,13 +158,14 @@ void	exec_child(t_expression *expression, t_process *process, const int cmd_idx)
 	char	*fullpath_cmd;
 	extern	char	**environ;
 
-	// heredocの処理はset_redirection_paramsでやる
 	cmd = ((t_token *)(process->token_list->content))->str;
+	// builtinの判定
+	// if ()
+	// 	return (builtin_exec(cmd));
 	fullpath_cmd = get_fullpath_cmd(cmd);
 	dup2_func(expression, process, cmd_idx);
 	close_func(expression, process, cmd_idx);
 	execve(fullpath_cmd, process->command, environ);
-	// printf("110: %s\n", fullpath_cmd);
 	exit(NOCMD);
 }
 
@@ -212,7 +225,6 @@ void	init_expression(t_expression *expression)
 	expression->process_cnt = ft_lstsize(expression->process_list);  // 3
 	pipe_cnt = expression->process_cnt - 1;
 	expression->pipefd = (int **)ft_calloc(pipe_cnt, sizeof(int *)); // prepare_pipe pipeは2つ用意
-	// printf("63: pipe_cnt %d\n", pipe_cnt);
 	expression->pid = (pid_t *)ft_calloc(expression->process_cnt, sizeof(pid_t)); 
 }
 

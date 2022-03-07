@@ -17,22 +17,24 @@ int	execution(t_node *tree)
 	return (error_status);
 }
 
+int	main(void)
+{
+	// t_node *tree = expansion("cat < infile | echo | 'hello'; $SHELL . ppp && echo hey! > outfile");
+	// t_node *tree = expansion("ls -al | head -n2 | cat");
+	t_node *tree = expansion("cat << EOS | cat > outfile");
+	// t_list *expression_list = convert_to_expression_list(tree);
+	int	error_status = execution(tree);
+
+	printf("41:%d\n", error_status);
+}
+
 // int	main(void)
 // {
-// 	t_node *tree = expansion("cat < infile | echo | 'hello'; $SHELL . ppp && echo hey! > outfile");
-// 	t_list *expression_list = convert_to_expression_list(tree);
-// 	int	error_status = execute(expression_list);
-
-// 	printf("41:%d\n", error_status);
-// }
-
-// int	main(void)
-// {
-// 	t_node *tree = expansion("cat < infile | cat < infile2 | 'hello'; $SHELL && echo hey! > outfile");
+// 	// t_node *tree = expansion("cat < infile | cat < infile2 | 'hello'; $SHELL && echo hey! > outfile");
 // 	// t_node *tree = expansion("ls -a | cat");
 // 	// t_node *tree = expansion("cat < infile | cat > outfile");
-// 	t_list *expression_list = convert_to_expression_list(tree);
-// 	execute(expression_list);
+// 	// t_list *expression_list = convert_to_expression_list(tree);
+// 	execution(tree);
 
 // 	printf("==============\n");
 // 	while (expression_list)
