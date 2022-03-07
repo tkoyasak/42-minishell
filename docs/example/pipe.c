@@ -14,7 +14,7 @@ int main()
 		exit(-1);
 	}
 	printf("pipefd: %d %d\n", pipefd[0], pipefd[1]);
-	pid = fork ();
+	pid = fork();
 	// パイプへの書き込み
 	if (pid == 0)
 	{
@@ -36,7 +36,7 @@ int main()
 		puts ("parents");
 		printf("child pid %d\n", pid);
 		char buf[128];
-		read(0, buf, 300); //エラー処理省略
+		read(pipefd[0], buf, 300); //エラー処理省略
 		printf("buf=[%s]\n", buf);
 	}
 
