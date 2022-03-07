@@ -13,7 +13,7 @@ static int	set_return_value(char *ptr_newline, char **memo, char **line)
 
 	if (ptr_newline)
 	{
-		*line = ft_strndup(*memo, ptr_newline - *memo);
+		*line = ft_strndup(*memo, ptr_newline - *memo + 1);
 		if (!*line)
 			return (ERROR);
 		tmp = ft_strndup(ptr_newline + 1, ft_strlen(ptr_newline + 1));
