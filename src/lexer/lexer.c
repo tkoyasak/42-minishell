@@ -21,25 +21,27 @@ bool	is_valid_str(char *p)
 	return (true);
 }
 
+/*  return length of RESERVED_CHAR "<>|&;"  */
 int	reserved_len(char *p)
 {
 	int	idx;
 
 	idx = 0;
-	while (p[idx] && strchr(RESERVED_CHAR, p[idx]))
+	while (p[idx] && ft_strchr(RESERVED_CHAR, p[idx]))
 		idx++;
 	return (idx);
 }
 
+/*  return length of string except for RESERVED_CHAR "<>|&;"  */
 int	string_len(char *p)
 {
 	int		idx;
 	char	quote;
 
 	idx = 0;
-	while (p[idx] && isspace(p[idx]) == false && strchr(RESERVED_CHAR, p[idx]) == false)
+	while (p[idx] && ft_isspace(p[idx]) == false && ft_strchr(RESERVED_CHAR, p[idx]) == false)
 	{
-		if (p[idx] && strchr("\"'", p[idx]))
+		if (p[idx] && ft_strchr("\"'", p[idx]))
 		{
 			quote = p[idx];
 			idx++;
@@ -53,6 +55,7 @@ int	string_len(char *p)
 	return (idx);
 }
 
+/*  create new token and advance *p by len  */
 t_list	*new_token_consume(t_token_kind kind, t_list *cur, char **p, int len)
 {
 	t_token	*token;
@@ -66,6 +69,7 @@ t_list	*new_token_consume(t_token_kind kind, t_list *cur, char **p, int len)
 	return (cur->next);
 }
 
+/*  スペースで分割し、token(TK_RESERVED, TK_REDIRECT, TK_STRING)に分割  */
 t_list	*tokenize(char *p)
 {
 	t_list	head;
