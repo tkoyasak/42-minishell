@@ -17,7 +17,7 @@ bool	consume(char *op, t_list **cur_token_list)
 {
 	if (*cur_token_list == NULL)
 		return (false);
-	if (strcmp(((t_token *)((*cur_token_list)->content))->str, op) == 0)
+	if (ft_strcmp(((t_token *)((*cur_token_list)->content))->str, op) == 0)
 	{
 		*cur_token_list = (*cur_token_list)->next;
 		return (true);
@@ -25,7 +25,7 @@ bool	consume(char *op, t_list **cur_token_list)
 	return (false);
 }
 
-//次の|か;か一番最後までを塊として読む
+// 次の|か;か一番最後までを塊として読む
 t_node	*create_process_node(t_list **cur_token_list)
 {
 	t_node	*node;
@@ -111,6 +111,8 @@ t_node	*parser_sub(t_list *cur_token_list)
 // 		dfs(tree->rhs);
 // }
 
+/*  token_listからND_SEMICOLON, ND_PIPE, ND_PROCESSの
+nodeで形成されるtreeのrootを返す  */
 t_node	*parser(char *argv)
 {
 	t_list	*token_list;
