@@ -111,7 +111,7 @@ static void	create_pipe(t_expression *expression, const int cmd_idx)
 void	dup2_func(t_expression *expression, t_process *process, const int cmd_idx)
 {
 	if (process->kind[0] == NONE && cmd_idx > 0) // cmd_idx > 0 かつ redirectionがない
-		dup2(expression->pipefd[cmd_idx - 1][PIPEIN], STDIN);
+		dup2(expression->pipefd[cmd_idx - 1][PIPEIN], STDIN_FILENO);
 	else if (process->kind[0] == HEREDOC)
 	{
 		process->here_pipefd = ft_calloc(2, sizeof(int));
@@ -120,15 +120,15 @@ void	dup2_func(t_expression *expression, t_process *process, const int cmd_idx)
 		if (pipe(process->here_pipefd) < 0)
 			exit(EXIT_FAILURE);
 		write(process->here_pipefd[1], process->heredoc, ft_strlen(process->heredoc));
-		dup2(process->here_pipefd[0], STDIN);
+		dup2(process->here_pipefd[0], STDIN_FILENO);
 	}
 	else if (process->kind[0] != NONE)
-		dup2(process->fd[0], STDIN);
+		dup2(process->fd[0], STDIN_FILENO);
 
 	if (process->kind[1] == NONE && cmd_idx < expression->process_cnt - 1)
-		dup2(expression->pipefd[cmd_idx][PIPEOUT], STDOUT);
+		dup2(expression->pipefd[cmd_idx][PIPEOUT], STDOUT_FILENO);
 	else if (process->kind[1] != NONE)
-		dup2(process->fd[1], STDOUT);
+		dup2(process->fd[1], STDOUT_FILENO);
 }
 
 void	close_func(t_expression *expression, t_process *process, const int cmd_idx)
@@ -160,8 +160,7 @@ void	exec_child(t_expression *expression, t_process *process, const int cmd_idx)
 
 	cmd = ((t_token *)(process->token_list->content))->str;
 	// builtinの判定
-	// if ()
-	// 	return (builtin_exec(cmd));
+	exec_builtin(expression, process, cmd_idx, cmd);
 	fullpath_cmd = get_fullpath_cmd(cmd);
 	dup2_func(expression, process, cmd_idx);
 	close_func(expression, process, cmd_idx);
@@ -225,7 +224,7 @@ void	init_expression(t_expression *expression)
 	expression->process_cnt = ft_lstsize(expression->process_list);  // 3
 	pipe_cnt = expression->process_cnt - 1;
 	expression->pipefd = (int **)ft_calloc(pipe_cnt, sizeof(int *)); // prepare_pipe pipeは2つ用意
-	expression->pid = (pid_t *)ft_calloc(expression->process_cnt, sizeof(pid_t)); 
+	expression->pid = (pid_t *)ft_calloc(expression->process_cnt, sizeof(pid_t));
 }
 
 // ls -al |  cat  |  head -n2  ここがpipex

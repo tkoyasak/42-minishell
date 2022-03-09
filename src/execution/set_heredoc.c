@@ -129,7 +129,7 @@ void	set_heredoc(t_process *process, char *limiter)
 		return ;
 	len = ft_strlen(limiter);
 	limiter[len] = '\n';
-	res = get_next_line(STDIN, &temp);
+	res = get_next_line(STDIN_FILENO, &temp);
 	while (temp && ft_strncmp(temp, limiter, len + 1))
 	{
 		temp = expansion_heredoc(temp);
@@ -141,7 +141,7 @@ void	set_heredoc(t_process *process, char *limiter)
 		}
 		// free_one(&(pdata->total_doc));
 		// free_one(&temp);
-		res = get_next_line(STDIN, &temp);
+		res = get_next_line(STDIN_FILENO, &temp);
 	}
 	// free_one(&temp);
 	process->heredoc = new_document;

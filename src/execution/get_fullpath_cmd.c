@@ -11,8 +11,8 @@ static void	free_str(char **str)
 
 static void	cmd_not_found(char *cmd)
 {
-	ft_putstr_fd("command not found: ", STDERR);
-	ft_putendl_fd(cmd, STDERR);
+	ft_putstr_fd("command not found: ", STDERR_FILENO);
+	ft_putendl_fd(cmd, STDERR_FILENO);
 }
 
 static char	*get_fullcmd_core(char *cmd, char **all_paths)

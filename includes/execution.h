@@ -5,10 +5,8 @@
 # include "lexer.h"
 # include "parser.h"
 # include "expansion.h"
+// # include "builtin.h"
 
-# define STDIN 0
-# define STDOUT 1
-# define STDERR 2
 # define PIPEIN 0
 # define PIPEOUT 1
 # define NOFILE -2
@@ -41,7 +39,7 @@ typedef struct s_expression
 	t_list					*process_list;
 	int						process_cnt;
 	int						**pipefd;
-	pid_t					*pid; 
+	pid_t					*pid;
 	t_node_kind				end_of_expression; // 最後のprocessはND_SEMICOLON
 }	t_expression;
 
@@ -50,5 +48,6 @@ int			evaluate_expression(t_expression *expression);
 char		*get_fullpath_cmd(char *cmd);
 int			execution(t_node *tree);
 void		set_heredoc(t_process *process, char *limiter);
+bool		exec_builtin(t_expression *expression, t_process *process, int cmd_idx, char *cmd);
 
 #endif
