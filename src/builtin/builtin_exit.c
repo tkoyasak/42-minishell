@@ -54,5 +54,5 @@ int		builtin_exit(t_expression *expression, t_process *process, int cmd_idx)
 		ft_putstr_fd("too many arguments\n", STDERR_FILENO);
 		return (1);
 	}
-	exit(exit_status);
+	return (exit_status);
 }
