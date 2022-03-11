@@ -182,6 +182,24 @@ static int	wait_all_processes(t_expression *expression)
 	return (wstatus);
 }
 
+void	set_redirections_and_commands(t_expression *expression)
+{
+	int	cmd_idx;
+	t_list		*process_list;
+	t_process	*process;
+
+	process_list = expression->process_list;
+	cmd_idx = 0;
+	while (cmd_idx < expression->process_cnt)
+	{
+		process = process_list->content;
+		set_redirection_params(process);
+		set_command(process);
+		process_list = process_list->next;
+		cmd_idx++;
+	}
+}
+
 // redirect + builtin
 int	exec_processes(t_expression *expression)
 {
@@ -192,11 +210,10 @@ int	exec_processes(t_expression *expression)
 
 	cmd_idx = 0;
 	process_list = expression->process_list;
+	set_redirections_and_commands(expression);
 	while (cmd_idx < expression->process_cnt)
 	{
 		process = process_list->content;
-		set_redirection_params(process);
-		set_command(process);
 		if (cmd_idx < expression->process_cnt - 1)
 			create_pipe(expression, cmd_idx);
 		expression->pid[cmd_idx] = fork();
