@@ -3,13 +3,14 @@
 
 # include "libft.h"
 
-typedef struct s_item
+typedef struct s_env
 {
 	char			*key;
 	char			*val;
-}	t_item;
+}	t_env;
 
-t_list		*init_env(void);
+t_list		*init_envlist(void);
+char		**get_environ(void);
 
 
 #endif
