@@ -1,7 +1,7 @@
 #include "lexer.h"
 
 // <<< などを弾く
-bool	is_valid_str(char *p)
+static bool	is_valid_str(char *p)
 {
 	int	idx;
 
@@ -22,26 +22,26 @@ bool	is_valid_str(char *p)
 }
 
 /*  return length of RESERVED_CHAR "<>|&;"  */
-int	reserved_len(char *p)
+static int	token_reserved_len(char *p, char *defined_char)
 {
 	int	idx;
 
 	idx = 0;
-	while (p[idx] && ft_strchr(RESERVED_CHAR, p[idx]))
+	while (p[idx] && ft_strchr(defined_char, p[idx]))
 		idx++;
 	return (idx);
 }
 
 /*  return length of string except for RESERVED_CHAR "<>|&;"  */
-int	string_len(char *p)
+static int	token_string_len(char *p)
 {
 	int		idx;
 	char	quote;
 
 	idx = 0;
-	while (p[idx] && ft_isspace(p[idx]) == false && ft_strchr(RESERVED_CHAR, p[idx]) == false)
+	while (p[idx] && !ft_isspace(p[idx]) && !ft_strchr(RESERVED_CHAR, p[idx]))
 	{
-		if (p[idx] && ft_strchr("\"'", p[idx]))
+		if (p[idx] && ft_strchr(QUOTE_CHAR, p[idx]))
 		{
 			quote = p[idx];
 			idx++;
@@ -55,53 +55,64 @@ int	string_len(char *p)
 	return (idx);
 }
 
+static bool	set_token_len_and_kind(char *p, int *len, t_token_kind *kind)
+{
+	if (is_valid_str(p) == false)
+		return (false);
+	if (ft_strchr(PROCESS_DELIM_CHAR, *p))
+	{
+		*len = token_reserved_len(p, PROCESS_DELIM_CHAR);
+		*kind = TK_PROCESS_DELIM;
+	}
+	else if (ft_strchr(REDIRECT_CHAR, *p))
+	{
+		*len = token_reserved_len(p, REDIRECT_CHAR);
+		*kind = TK_REDIRECT;
+	}
+	else
+	{
+		*len = token_string_len(p);
+		*kind = TK_STRING;
+	}
+	if (*len == -1)
+		return (false);
+	return (true);
+}
+
 /*  create new token and advance *p by len  */
-t_list	*new_token_consume(t_token_kind kind, t_list *cur, char **p, int len)
+static t_list	*consume_new_token(t_list *itr,
+									t_token_kind kind, char **p, int len)
 {
 	t_token	*token;
 
 	token = ft_calloc(1, sizeof(t_token));
 	token->kind = kind;
-	token->str = ft_calloc(len + 1, sizeof(char));
-	strlcpy(token->str, *p, len + 1);
+	token->str = ft_strndup(*p, len);
 	*p += len;
-	cur->next = ft_lstnew(token);
-	return (cur->next);
+	itr->next = ft_lstnew(token);
+	return (itr->next);
 }
 
-/*  スペースで分割し、token(TK_RESERVED, TK_REDIRECT, TK_STRING)に分割  */
-t_list	*tokenize(char *p)
+/*  スペースで分割し、token(TK_PROCESS_DELIM, TK_REDIRECT, TK_STRING)に分割  */
+static t_list	*tokenize(char *p)
 {
-	t_list	head;
-	t_list	*cur;
-	int		len;
+	t_list			head;
+	t_list			*itr;
+	int				len;
+	t_token_kind	kind;
 
 	head.next = NULL;
-	cur = &head;
+	itr = &head;
 	while (*p)
 	{
 		if (ft_isspace(*p))
 		{
 			p++;
-			continue;
-		}
-		if (is_valid_str(p) == false)
-		{
-			exit(1);
-		}
-		len = reserved_len(p);
-		if (len > 0)
-		{
-			if (ft_strchr("<>", *p))
-				cur = new_token_consume(TK_REDIRECT, cur, &p, len);
-			else
-				cur = new_token_consume(TK_RESERVED, cur, &p, len);
 			continue ;
 		}
-		len = string_len(p);
-		if (len > 0)
+		if (set_token_len_and_kind(p, &len, &kind))
 		{
-			cur = new_token_consume(TK_STRING, cur, &p, len);
+			itr = consume_new_token(kind, &p, len, itr);
 			continue ;
 		}
 		// free必要 error_handler(free_all(&head, ___));
