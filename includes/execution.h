@@ -43,14 +43,14 @@ typedef struct s_expression
 }	t_expression;
 
 t_list		*convert_to_expression_list(t_node *tree);
-int			evaluate_expression(t_expression *expression);
+int			evaluate_expression(t_expression *expression, t_shell_var *shell_var);
 char		*get_fullpath_cmd(char *cmd);
 int			execution(t_node *tree, t_shell_var *shell_var);
 void		set_heredoc(t_process *process, char *limiter);
-bool		exec_builtin(t_expression *expression, t_process *process, int cmd_idx, char *cmd);
+int			exec_builtin(t_expression *expression, t_process *process, t_shell_var *shell_var);
 bool		is_builtin(char *cmd);
-int			exec_processes(t_expression *expression);
-int			exec_single_process(t_expression *expression);
+int			exec_processes(t_expression *expression, t_shell_var *shell_var);
+int			exec_single_process(t_expression *expression, t_shell_var *shell_var);
 void		set_redirections_and_commands(t_expression *expression);
-
+void		exec_child(t_expression *expression, t_process *process, const int cmd_idx, t_shell_var *shell_var);
 #endif
