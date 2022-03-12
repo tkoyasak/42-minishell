@@ -17,6 +17,6 @@ typedef struct s_env
 }	t_env;
 
 t_list		*init_envlist(void);
-char		**get_environ(t_list *env_list);
+char		**get_environ(void);
 
 #endif

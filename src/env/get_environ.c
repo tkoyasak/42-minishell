@@ -1,9 +1,9 @@
-#include "env.h"
+#include "shell_var.h"
 
 char	**get_environ(void)
 {
+	t_list	*env_list = init_envlist();
 	char	**environ;
-	t_list	*env_list;
 	t_list	*itr;
 	size_t	i;
 	char	*key;
