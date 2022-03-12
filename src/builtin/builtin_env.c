@@ -1,5 +1,5 @@
 #include "builtin.h"
-#include "env.h"
+#include "shell_var.h"
 
 int		builtin_env(t_expression *expression, t_process *process, int cmd_idx)
 {

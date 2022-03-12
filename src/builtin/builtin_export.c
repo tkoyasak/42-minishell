@@ -1,5 +1,5 @@
 #include "builtin.h"
-#include "env.h"
+#include "shell_var.h"
 
 static bool validate_args(char *arg)
 {
