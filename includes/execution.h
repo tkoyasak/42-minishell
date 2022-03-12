@@ -2,10 +2,7 @@
 # define EXECUTION_H
 
 # include <fcntl.h>
-# include "lexer.h"
-# include "parser.h"
-# include "expansion.h"
-// # include "builtin.h"
+# include "minishell.h"
 
 # define PIPEIN 0
 # define PIPEOUT 1
@@ -46,8 +43,12 @@ typedef struct s_expression
 t_list		*convert_to_expression_list(t_node *tree);
 int			evaluate_expression(t_expression *expression);
 char		*get_fullpath_cmd(char *cmd);
-int			execution(t_node *tree);
+int			execution(t_node *tree, t_shell_var *shell_var);
 void		set_heredoc(t_process *process, char *limiter);
 bool		exec_builtin(t_expression *expression, t_process *process, int cmd_idx, char *cmd);
+bool		is_builtin(char *cmd);
+int			exec_processes(t_expression *expression);
+int			exec_single_process(t_expression *expression);
+void		set_redirections_and_commands(t_expression *expression);
 
 #endif
