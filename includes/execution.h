@@ -2,7 +2,9 @@
 # define EXECUTION_H
 
 # include <fcntl.h>
-# include "minishell.h"
+# include "libft.h"
+# include "shell_var.h"
+# include "expansion.h"
 
 # define PIPEIN 0
 # define PIPEOUT 1
