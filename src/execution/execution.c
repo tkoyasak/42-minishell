@@ -1,15 +1,42 @@
 #include "execution.h"
 
-// ls -al | cat | head -n2 ; ls ;  cat < file
-int	execution(t_node *tree)
+// pipefd[0] = {input fd, output fd}
+void	init_expression(t_expression *expression)
+{
+	int	pipe_cnt;
+
+	expression->process_cnt = ft_lstsize(expression->process_list);  // 3
+	pipe_cnt = expression->process_cnt - 1;
+	expression->pipefd = (int **)ft_calloc(pipe_cnt, sizeof(int *)); // prepare_pipe pipeは2つ用意
+	expression->pid = (pid_t *)ft_calloc(expression->process_cnt, sizeof(pid_t));
+}
+
+// ls -al |  cat  |  head -n2  ここがpipex
+int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 {
 	int	error_status;
-	t_list	*expression_list;
+	t_process *process;
+
+	init_expression(expression);
+	if (expression->process_cnt == 1)
+		error_status = exec_single_process(expression, shell_var);
+	else
+		error_status = exec_processes(expression, shell_var);
+	return (error_status);
+}
+
+// ls -al | cat | head -n2 ; ls ;  cat < file
+int	execution(t_node *tree, t_shell_var *shell_var)
+{
+	int				error_status;
+	t_list			*expression_list;
+	t_expression	*expression;
 
 	expression_list = convert_to_expression_list(tree);
 	while (expression_list)
 	{
-		error_status = evaluate_expression(((t_expression *)(expression_list->content)));
+		expression = expression_list->content;
+		error_status = evaluate_expression(expression, shell_var);
 		expression_list = expression_list->next;
 		// if (((t_expression *)(expression_list->content))->end_of_expression != )
 		// 	;
@@ -19,11 +46,15 @@ int	execution(t_node *tree)
 
 int	main(void)
 {
+	t_shell_var	*shell_var;
+
+	shell_var = NULL;
 	// t_node *tree = expansion("cat < infile | echo | 'hello'; $SHELL . ppp && echo hey! > outfile");
-	// t_node *tree = expansion("ls -al | head -n2 | cat");
-	t_node *tree = expansion("cat << EOS | cat > outfile");
+	// t_node *tree = expansion("ls -al | head -n4 | cat");
+	t_node *tree = expansion("ls -al");
+	// t_node *tree = expansion("export | head -n6 | cat");
 	// t_list *expression_list = convert_to_expression_list(tree);
-	int	error_status = execution(tree);
+	int	error_status = execution(tree, shell_var);
 
 	printf("41:%d\n", error_status);
 }
