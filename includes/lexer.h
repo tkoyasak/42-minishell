@@ -10,10 +10,13 @@
 # include "libft.h"
 
 # define RESERVED_CHAR "<>|&;"
+# define PROCESS_DELIM_CHAR "|&;"
+# define REDIRECT_CHAR "<>"
+# define QUOTE_CHAR "\"\'"
 
 typedef enum e_token_kind
 {
-	TK_RESERVED, // ; | && ||
+	TK_PROCESS_DELIM, // ; | && ||
 	TK_REDIRECT, // < << > >>
 	TK_STRING
 }	t_token_kind;
