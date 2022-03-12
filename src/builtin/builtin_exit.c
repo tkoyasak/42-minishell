@@ -34,7 +34,7 @@ int	a_to_uchar(const char *str)
 	return ((unsigned char)(ret * sign));
 }
 
-int		builtin_exit(t_expression *expression, t_process *process, int cmd_idx)
+int		builtin_exit(t_expression *expression, t_process *process, t_shell_var *shell_var)
 {
 	char	**command;
 	int		exit_status;
@@ -43,7 +43,7 @@ int		builtin_exit(t_expression *expression, t_process *process, int cmd_idx)
 	if (command[1] == NULL)
 		return (0);
 	exit_status = a_to_uchar(command[1]);
-	printf("exit_status: %d\n", exit_status);
+	// printf("exit_status: %d\n", exit_status);
 	if (exit_status == -1)
 	{
 		ft_putstr_fd("numeric argument required\n", STDERR_FILENO);

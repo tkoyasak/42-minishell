@@ -1,6 +1,6 @@
 #include "builtin.h"
 
-int	builtin_echo(t_expression *expression, t_process *process, int cmd_idx)
+int	builtin_echo(t_expression *expression, t_process *process, t_shell_var *shell_var)
 {
 	t_list			*itr;
 	char			*str;
@@ -12,7 +12,7 @@ int	builtin_echo(t_expression *expression, t_process *process, int cmd_idx)
 		itr = itr->next;
 		if (itr)
 			str = ft_strjoin(str, " ");
-		write_in_process(expression, process, cmd_idx, str);
+		printf("%s\n", str);
 	}
 	return (0);
 }
