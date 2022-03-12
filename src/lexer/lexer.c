@@ -81,7 +81,7 @@ static bool	set_token_len_and_kind(char *p, int *len, t_token_kind *kind)
 
 /*  create new token and advance *p by len  */
 static t_list	*consume_new_token(t_list *itr,
-									t_token_kind kind, char **p, int len)
+									char **p, int len, t_token_kind kind)
 {
 	t_token	*token;
 
@@ -112,7 +112,7 @@ static t_list	*tokenize(char *p)
 		}
 		if (set_token_len_and_kind(p, &len, &kind))
 		{
-			itr = consume_new_token(kind, &p, len, itr);
+			itr = consume_new_token(itr, &p, len, kind);
 			continue ;
 		}
 		// free必要 error_handler(free_all(&head, ___));
