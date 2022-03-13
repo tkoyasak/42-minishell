@@ -17,8 +17,8 @@ DEPS		:= $(OBJS:.o=.d)
 CC			:= gcc
 # CFLAGS		:= -Wall -Wextra -Werror -MMD -MP
 CFLAGS		:= -MMD -MP
-LFLAGS		:= -L$(LIBFTDIR) -lft
-INCLUDE		:= -Iincludes -I$(LIBFTDIR)/includes
+LFLAGS		:= -L$(LIBFTDIR) -lft -L/usr/local/opt/readline/lib -lreadline -lhistory
+INCLUDE		:= -Iincludes -I$(LIBFTDIR)/includes -I/usr/local/opt/readline/include
 
 RM			:= rm -f
 
