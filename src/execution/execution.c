@@ -55,7 +55,8 @@ int	main(void)
 	shell_var = NULL;
 	// t_node *tree = expansion("cat < infile | echo | 'hello'; $SHELL . ppp && echo hey! > outfile");
 	// t_node *tree = expansion("ls -al | head -n4 | cat");
-	t_node *tree = expansion("ls || echo aa");
+	t_node *tree = expansion("cd ..");
+	// t_node *tree = expansion("cd docs");
 	// t_node *tree = expansion("export | head -n6 | cat");
 	// t_list *expression_list = convert_to_expression_list(tree);
 	int	error_status = execution(tree, shell_var);
