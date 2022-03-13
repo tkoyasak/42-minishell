@@ -151,20 +151,21 @@ void	close_func(t_expression *expression, t_process *process, const int cmd_idx)
 }
 
 /*  execute child process  */
-void	exec_child(t_expression *expression, t_process *process, const int cmd_idx)
+void	exec_child(t_expression *expression, t_process *process, const int cmd_idx, t_shell_var *shell_var)
 {
 	int		filefd;
 	char	*cmd;
 	char	*fullpath_cmd;
-	extern	char	**environ;
+	// extern	char	**environ;
 
 	cmd = ((t_token *)(process->token_list->content))->str;
 	// builtinの判定
-	exec_builtin(expression, process, cmd_idx, cmd);
-	fullpath_cmd = get_fullpath_cmd(cmd);
 	dup2_func(expression, process, cmd_idx);
 	close_func(expression, process, cmd_idx);
-	execve(fullpath_cmd, process->command, environ);
+	if (is_builtin(cmd))
+		exit(exec_builtin(expression, process, shell_var));
+	fullpath_cmd = get_fullpath_cmd(cmd);
+	execve(fullpath_cmd, process->command, get_environ());
 	exit(NOCMD);
 }
 
@@ -184,7 +185,7 @@ static int	wait_all_processes(t_expression *expression)
 
 void	set_redirections_and_commands(t_expression *expression)
 {
-	int	cmd_idx;
+	int			cmd_idx;
 	t_list		*process_list;
 	t_process	*process;
 
@@ -201,7 +202,7 @@ void	set_redirections_and_commands(t_expression *expression)
 }
 
 // redirect + builtin
-int	exec_processes(t_expression *expression)
+int	exec_processes(t_expression *expression, t_shell_var *shell_var)
 {
 	int			wstatus;
 	int			cmd_idx;
@@ -218,7 +219,7 @@ int	exec_processes(t_expression *expression)
 			create_pipe(expression, cmd_idx);
 		expression->pid[cmd_idx] = fork();
 		if (expression->pid[cmd_idx] == 0)
-			exec_child(expression, process, cmd_idx);
+			exec_child(expression, process, cmd_idx, shell_var);
 		else if (cmd_idx)
 		{
 			close(expression->pipefd[cmd_idx - 1][PIPEIN]);
@@ -231,25 +232,4 @@ int	exec_processes(t_expression *expression)
 	}
 	wstatus = wait_all_processes(expression);
 	return (WEXITSTATUS(wstatus));
-}
-
-// pipefd[0] = {input fd, output fd}
-void	init_expression(t_expression *expression)
-{
-	int	pipe_cnt;
-
-	expression->process_cnt = ft_lstsize(expression->process_list);  // 3
-	pipe_cnt = expression->process_cnt - 1;
-	expression->pipefd = (int **)ft_calloc(pipe_cnt, sizeof(int *)); // prepare_pipe pipeは2つ用意
-	expression->pid = (pid_t *)ft_calloc(expression->process_cnt, sizeof(pid_t));
-}
-
-// ls -al |  cat  |  head -n2  ここがpipex
-int	evaluate_expression(t_expression *expression)
-{
-	int	error_status;
-
-	init_expression(expression);
-	error_status = exec_processes(expression);
-	return (error_status);
 }

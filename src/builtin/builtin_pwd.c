@@ -1,11 +1,11 @@
 #include "builtin.h"
 
-int		builtin_pwd(t_expression *expression, t_process *process, int cmd_idx)
+int		builtin_pwd(t_expression *expression, t_process *process, t_shell_var *shell_var)
 {
 	char	*buff;
 
 	buff = getcwd(NULL, 0);
-	write_in_process(expression, process, cmd_idx, buff);
+	printf("%s\n", buff);
 	free(buff);
 	return (0);
 }

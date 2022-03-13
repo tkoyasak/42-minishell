@@ -24,7 +24,7 @@ static bool validate_args(char *arg)
 	return (valid);
 }
 
-int	builtin_export(t_expression *expression, t_process *process, int cmd_idx)
+int	builtin_export(t_expression *expression, t_process *process, t_shell_var *shell_var)
 {
 	t_list	*env_list = init_envlist();
 	t_list	*itr;
@@ -38,11 +38,9 @@ int	builtin_export(t_expression *expression, t_process *process, int cmd_idx)
 		itr = env_list;
 		while (itr)
 		{
-			write_in_process(expression, process, cmd_idx, "declare -x ");
-			write_in_process(expression, process, cmd_idx, ((t_env *)(itr->content))->key);
-			write_in_process(expression, process, cmd_idx, "=\"");
-			write_in_process(expression, process, cmd_idx, ((t_env *)(itr->content))->val);
-			write_in_process(expression, process, cmd_idx, "\"\n");
+			printf("declare -x %s=\"%s\"\n", ((t_env *)(itr->content))->key, ((t_env *)(itr->content))->val);
+			// printf("%s", ((t_env *)(itr->content))->key);
+			// printf("=\"%s\"\n", ((t_env *)(itr->content))->val);
 			itr = itr->next;
 		}
 	}
@@ -76,6 +74,6 @@ int	builtin_export(t_expression *expression, t_process *process, int cmd_idx)
 			ft_lstadd_back(&env_list, ft_lstnew(env));
 		}
 	}
-	printf("called builtin_export\n");
+	// printf("called builtin_export\n");
 	return (0);
 }

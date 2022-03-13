@@ -1,7 +1,7 @@
 #include "builtin.h"
 #include "shell_var.h"
 
-int		builtin_unset(t_expression *expression, t_process *process, int cmd_idx)
+int		builtin_unset(t_expression *expression, t_process *process, t_shell_var *shell_var)
 {
 	t_list	*env_list = init_envlist();
 	t_list	head;
