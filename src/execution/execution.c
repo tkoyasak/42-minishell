@@ -32,14 +32,18 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 	t_list			*expression_list;
 	t_expression	*expression;
 
-	expression_list = convert_to_expression_list(tree);
+	expression_list = convert_to_expression_list(tree);;
 	while (expression_list)
 	{
 		expression = expression_list->content;
 		error_status = evaluate_expression(expression, shell_var);
+		if (((t_expression *)(expression_list->content))->end_of_expression == ND_DAND \
+				&& error_status != 0)
+			break ;
+		if (((t_expression *)(expression_list->content))->end_of_expression == ND_DPIPE \
+				&& error_status == 0)
+			break ;
 		expression_list = expression_list->next;
-		// if (((t_expression *)(expression_list->content))->end_of_expression != )
-		// 	;
 	}
 	return (error_status);
 }
@@ -51,7 +55,7 @@ int	main(void)
 	shell_var = NULL;
 	// t_node *tree = expansion("cat < infile | echo | 'hello'; $SHELL . ppp && echo hey! > outfile");
 	// t_node *tree = expansion("ls -al | head -n4 | cat");
-	t_node *tree = expansion("ls -al");
+	t_node *tree = expansion("ls || echo aa");
 	// t_node *tree = expansion("export | head -n6 | cat");
 	// t_list *expression_list = convert_to_expression_list(tree);
 	int	error_status = execution(tree, shell_var);
