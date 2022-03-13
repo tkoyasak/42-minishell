@@ -3,22 +3,26 @@
 // <<< などを弾く
 static bool	is_valid_str(char *p)
 {
-	int	idx;
+	bool	is_valid;
+	int		idx;
 
+	is_valid = true;
 	idx = 0;
 	while (p[idx] && ft_strchr(RESERVED_CHAR, p[idx]))
 		idx++;
-	if (idx == 0)
-		return (true);
-	if (idx > 2)
-		return (false);
-	if (idx == 2 && p[0] != p[1]) // 変更 &> >& &< <& はOK 1>file  1&>file
-		return (false);
-	if (idx == 2 && p[0] == ';')
-		return (false);
 	if (idx == 1 && p[0] == '&')
-		return (false);
-	return (true);
+		is_valid = false;
+	if (idx == 2 && (p[0] != p[1] || p[0] == ';')) // 変更 &> >& &< <& はOK 1>file  1&>file
+		is_valid = false;
+	if (idx > 2)
+		is_valid = false;
+	if (!is_valid)
+	{
+		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
+		ft_putnchar_fd(p, idx, STDERR_FILENO);
+		ft_putstr_fd("'\n", STDERR_FILENO);
+	}
+	return (is_valid);
 }
 
 /*  return length of RESERVED_CHAR "<>|&;"  */
@@ -48,7 +52,12 @@ static int	token_string_len(char *p)
 			while (p[idx] && p[idx] != quote)
 				idx++;
 			if (p[idx] != quote)
+			{
+				ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
+				ft_putnchar_fd(p, idx, STDERR_FILENO);
+				ft_putstr_fd("'\n", STDERR_FILENO);
 				return (-1);
+			}
 		}
 		idx++;
 	}
@@ -116,7 +125,6 @@ static t_list	*tokenize(char *p)
 			continue ;
 		}
 		// free必要 error_handler(free_all(&head, ___));
-		printf("quotes error\n");
 		exit(1);
 	}
 	return (head.next);
