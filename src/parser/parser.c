@@ -1,7 +1,7 @@
 #include "lexer.h"
 #include "parser.h"
 
-t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs)
+static t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs)
 {
 	t_node	*node;
 
@@ -13,87 +13,89 @@ t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs)
 }
 
 // 比較と，一致していれば進める
-bool	consume(char *op, t_list **cur_token_list)
+static bool	consume_node_kind(t_list **itr, char *op)
 {
-	if (*cur_token_list == NULL)
+	if (*itr == NULL)
 		return (false);
-	if (ft_strcmp(((t_token *)((*cur_token_list)->content))->str, op) == 0)
+	if (ft_strcmp(((t_token *)((*itr)->content))->str, op) == 0)
 	{
-		*cur_token_list = (*cur_token_list)->next;
+		*itr = (*itr)->next;
 		return (true);
 	}
 	return (false);
 }
 
 // 次の|か;か一番最後までを塊として読む
-t_node	*create_process_node(t_list **cur_token_list)
+static t_node	*create_process_node(t_list **itr)
 {
 	t_node	*node;
-	t_list	*token_list_tail;
+	t_list	*tail;
 
 	node = ft_calloc(1, sizeof(t_node));
 	node->kind = ND_PROCESS;
-	node->token_list = *cur_token_list;
-	while ((*cur_token_list)->next != NULL && \
-		((t_token *)((*cur_token_list)->next->content))->kind != TK_RESERVED)
+	node->token_list = *itr;
+	while ((*itr)->next != NULL && \
+		((t_token *)((*itr)->next->content))->kind != TK_PROCESS_DELIM)
 	{
-		if (((t_token *)(*cur_token_list)->content)->kind == TK_REDIRECT && \
-				((t_token *)((*cur_token_list)->next->content))->kind == TK_REDIRECT)
+		if (((t_token *)(*itr)->content)->kind == TK_REDIRECT && \
+				((t_token *)((*itr)->next->content))->kind == TK_REDIRECT)
 			exit(1); // error_handler(); // < や << などが連続したらエラー
-		*cur_token_list = (*cur_token_list)->next;
+		*itr = (*itr)->next;
 	}
-	if (((t_token *)(*cur_token_list)->content)->kind == TK_REDIRECT)
+	if (((t_token *)(*itr)->content)->kind == TK_REDIRECT)
 		exit(1); // error_handler(); // TK_REDIRECTが一番最後にあるとエラー
-	token_list_tail = *cur_token_list;
-	*cur_token_list = token_list_tail->next;
-	token_list_tail->next = NULL;
+	tail = *itr;
+	*itr = tail->next;
+	tail->next = NULL;
 	return (node);
 }
 
-t_list	**expect_process(t_list **cur_token_list)
+static t_list	**expect_process(t_list **itr)
 {
-	if (((t_token *)((*cur_token_list)->content))->kind != TK_STRING)
+	if (((t_token *)((*itr)->content))->kind != TK_STRING)
 	{
-		printf("exit: not process / kind = %d\n", \
-				((t_token *)((*cur_token_list)->content))->kind);
+		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
+		ft_putstr_fd(((t_token *)((*itr)->content))->str, STDERR_FILENO);
+		ft_putstr_fd("'\n", STDERR_FILENO);
 		exit(1); // error_handler();
 	}
-	return (cur_token_list);
+	return (itr);
 }
 
 // semicolon間の部分木
-t_node	*expression(t_list **cur_token_list)
+static t_node	*create_sub_astree(t_list **itr)
 {
 	t_node	*node;
 
-	if (*cur_token_list == NULL)
+	if (*itr == NULL)
 		return (NULL);
-	node = create_process_node(expect_process(cur_token_list));
+	node = create_process_node(expect_process(itr));
 	while (true)
 	{
-		if (consume("|", cur_token_list))
-			node = node_new(ND_PIPE, node, create_process_node(expect_process(cur_token_list)));
+		if (consume_node_kind(itr, "|"))
+			node = node_new(ND_PIPE, node, \
+					create_process_node(expect_process(itr)));
 		else
 			return (node);
 	}
 }
 
 // 全体のrootのnodeへのポインタを返す
-t_node	*parser_sub(t_list *cur_token_list)
+static t_node	*create_astree(t_list *itr)
 {
-	t_node	*node;
+	t_node		*node;
 
-	node = expression(&cur_token_list);
+	node = create_sub_astree(&itr);
 	while (true)
 	{
-		if (consume(";", &cur_token_list))
-			node = node_new(ND_SEMICOLON, node, expression(&cur_token_list));
-		else if (consume("&&", &cur_token_list))
-			node = node_new(ND_DAND, node, expression(&cur_token_list));
-		else if (consume("||", &cur_token_list))
-			node = node_new(ND_DPIPE, node, expression(&cur_token_list));
+		if (consume_node_kind(&itr, ";"))
+			node = node_new(ND_SEMICOLON, node, create_sub_astree(&itr));
+		else if (consume_node_kind(&itr, "&&"))
+			node = node_new(ND_DAND, node, create_sub_astree(&itr));
+		else if (consume_node_kind(&itr, "||"))
+			node = node_new(ND_DPIPE, node, create_sub_astree(&itr));
 		else
-			return node;
+			return (node);
 	}
 }
 
@@ -119,7 +121,7 @@ t_node	*parser(char *argv)
 	t_node	*tree;
 
 	token_list = lexer(argv);
-	tree = parser_sub(token_list);
+	tree = create_astree(token_list);
 	// dfs(tree);
 	return (tree);
 }
