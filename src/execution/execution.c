@@ -48,21 +48,21 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 	return (error_status);
 }
 
-int	main(void)
-{
-	t_shell_var	*shell_var;
+// int	main(void)
+// {
+// 	t_shell_var	*shell_var;
 
-	shell_var = NULL;
-	// t_node *tree = expansion("cat < infile | echo | 'hello'; $SHELL . ppp && echo hey! > outfile");
-	// t_node *tree = expansion("ls -al | head -n4 | cat");
-	t_node *tree = expansion("cd ..");
-	// t_node *tree = expansion("cd docs");
-	// t_node *tree = expansion("export | head -n6 | cat");
-	// t_list *expression_list = convert_to_expression_list(tree);
-	int	error_status = execution(tree, shell_var);
+// 	shell_var = NULL;
+// 	// t_node *tree = expansion("cat < infile | echo | 'hello'; $SHELL . ppp && echo hey! > outfile");
+// 	// t_node *tree = expansion("ls -al | head -n4 | cat");
+// 	t_node *tree = expansion("cd ..");
+// 	// t_node *tree = expansion("cd docs");
+// 	// t_node *tree = expansion("export | head -n6 | cat");
+// 	// t_list *expression_list = convert_to_expression_list(tree);
+// 	int	error_status = execution(tree, shell_var);
 
-	printf("41:%d\n", error_status);
-}
+// 	printf("41:%d\n", error_status);
+// }
 
 // int	main(void)
 // {
