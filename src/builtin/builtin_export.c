@@ -38,9 +38,9 @@ int	builtin_export(t_expression *expression, t_process *process, t_shell_var *sh
 		itr = env_list;
 		while (itr)
 		{
-			printf("declare -x ");
-			printf("%s", ((t_env *)(itr->content))->key);
-			printf("=\"%s\"\n", ((t_env *)(itr->content))->val);
+			printf("declare -x %s=\"%s\"\n", ((t_env *)(itr->content))->key, ((t_env *)(itr->content))->val);
+			// printf("%s", ((t_env *)(itr->content))->key);
+			// printf("=\"%s\"\n", ((t_env *)(itr->content))->val);
 			itr = itr->next;
 		}
 	}
