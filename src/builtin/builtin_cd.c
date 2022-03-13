@@ -8,7 +8,6 @@ int		builtin_cd(t_expression *expression, t_process *process, t_shell_var *shell
 	if (path_name == NULL)
 	{
 		path_name = getenv("HOME");
-		printf("11\n");
 	}
 	if (chdir(path_name) == -1)
 	{
@@ -17,9 +16,8 @@ int		builtin_cd(t_expression *expression, t_process *process, t_shell_var *shell
 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 		return (1);
 	}
-	char	*buff;
 
-	buff = getcwd(NULL, 0);
+	char	*buff = getcwd(NULL, 0);
 	printf("%s\n", buff);
 	free(buff);
 	return (0);
