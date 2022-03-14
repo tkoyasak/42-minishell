@@ -18,5 +18,6 @@ typedef struct s_env
 
 t_list		*init_envlist(void);
 char		**get_environ(void);
+char		*get_env_value(char *key, t_shell_var *shell_var);
 
 #endif

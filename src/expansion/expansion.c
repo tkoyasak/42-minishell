@@ -76,7 +76,7 @@ t_list	*split_str(char *str, bool par_in_dquote)
 	return (head);
 }
 
-t_list	*get_expansion_list(char *str, bool par_in_dquote)
+t_list	*get_expansion_list(char *str, bool par_in_dquote, t_shell_var *shell_var)
 {
 	t_list	*head;
 	t_list	*itr;
@@ -93,11 +93,12 @@ t_list	*get_expansion_list(char *str, bool par_in_dquote)
 		exp = (t_expansion *)(itr->content);
 		if (exp->kind == ENV)
 		{
-			exp->str = getenv(exp->str + 1);
+			exp->str = get_env_value(exp->str + 1, shell_var);
+			// printf("97: %s\n", exp->str);
 			if (prev == NULL)
-				head = get_expansion_list(exp->str, exp->in_dquote);
+				head = get_expansion_list(exp->str, exp->in_dquote, shell_var);
 			else
-				prev->next = get_expansion_list(exp->str, exp->in_dquote);
+				prev->next = get_expansion_list(exp->str, exp->in_dquote, shell_var);
 			prev = ft_lstlast(head);
 			prev->next = next;
 		}
@@ -198,20 +199,20 @@ t_list *convert_to_token(t_list *expansion_list)
 }
 
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
-t_list	*get_expanded_token(t_list *token_list)
+t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
 {
 	t_list			*expansion_list;
 	t_list			*expanded_token_list;
 
 	// token->strをt_exp_strlist_typeで分割・分類する
 	// 環境変数の展開
-	expansion_list = get_expansion_list(((t_token *)(token_list->content))->str, false); // t_expansionのリスト
+	expansion_list = get_expansion_list(((t_token *)(token_list->content))->str, false, shell_var); // t_expansionのリスト
 	expansion_list = remove_quotes(expansion_list); // t_expansionのリスト
 	expanded_token_list = convert_to_token(expansion_list); // t_tokenのリスト
 	return (expanded_token_list);
 }
 
-void	handle_process(t_node *node)
+void	handle_process(t_node *node, t_shell_var *shell_var)
 {
 	t_list	*itr; //token_list_itr
 	t_list	*next;
@@ -223,7 +224,7 @@ void	handle_process(t_node *node)
 	{
 		next = itr->next;
 		if (((t_token *)(itr->content))->kind == TK_STRING)
-			itr = get_expanded_token(itr);
+			itr = get_expanded_token(itr, shell_var);
 		if (prev)
 			prev->next = itr;
 		else
@@ -236,22 +237,32 @@ void	handle_process(t_node *node)
 	}
 }
 
-void	expansion_sub(t_node *node)
+void	expansion_sub(t_node *node, t_shell_var *shell_var)
 {
 	if (node->kind == ND_PROCESS)
-		handle_process(node);
+		handle_process(node, shell_var);
 	if (node->lhs)
-		expansion_sub(node->lhs);
+		expansion_sub(node->lhs, shell_var);
 	if (node->rhs)
-		expansion_sub(node->rhs);
+		expansion_sub(node->rhs, shell_var);
 }
 
-t_node	*expansion(char *argv)
+t_node	*expansion(char *argv, t_shell_var *shell_var)
 {
 	t_node	*tree;
 
+	// shell_var = ft_calloc(1, sizeof(t_shell_var));
+	// shell_var->env_list = init_envlist();
+
+	// t_list *itr = shell_var->env_list;
+	// while(itr)
+	// {
+	// 	printf("%s\n", ((t_env *)(itr->content))->key);
+	// 	itr = itr->next;
+	// }
 	tree = parser(argv);
-	expansion_sub(tree);
+	// printf("256\n");
+	expansion_sub(tree, shell_var);
 	return (tree);
 }
 
