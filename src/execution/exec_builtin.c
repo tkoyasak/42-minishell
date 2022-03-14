@@ -21,7 +21,7 @@ bool	is_builtin(char *cmd)
 int	exec_builtin(t_expression *expression, t_process *process, t_shell_var *shell_var)
 {
 	const char *builtin_str[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit"};
-	int (*builtin_func[]) (t_expression *, t_process *, int) = \
+	int (*builtin_func[]) (t_expression *, t_process *, t_shell_var *) = \
 			{&builtin_echo, &builtin_cd, &builtin_pwd, &builtin_export, \
 			&builtin_unset, &builtin_env, &builtin_exit};
 	char	*cmd;

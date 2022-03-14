@@ -15,7 +15,6 @@ void	init_expression(t_expression *expression)
 int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 {
 	int	error_status;
-	t_process *process;
 
 	init_expression(expression);
 	if (expression->process_cnt == 1)

@@ -18,7 +18,6 @@ t_redirection_kind	get_redirection_kind(char *redirect_str)
 void	remove_redirection_token(t_process *process)
 {
 	t_list					*itr;  // token_list
-	t_redirection_kind		kind;
 	t_list					*head;
 	t_list					*tmp;
 
@@ -153,7 +152,6 @@ void	close_func(t_expression *expression, t_process *process, const int cmd_idx)
 /*  execute child process  */
 void	exec_child(t_expression *expression, t_process *process, const int cmd_idx, t_shell_var *shell_var)
 {
-	int		filefd;
 	char	*cmd;
 	char	*fullpath_cmd;
 	// extern	char	**environ;

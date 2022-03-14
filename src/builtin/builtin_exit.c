@@ -1,16 +1,16 @@
 #include "builtin.h"
 
-static int	is_over(long n, int m, int sign)
+static int	is_over(unsigned long n, int m, int sign)
 {
 	if (sign > 0)
 		return (n > (LONG_MAX - m) / 10);
 	else
-		return (n > (-LONG_MIN - m) / 10);
+		return (n > ((unsigned long)LONG_MAX + 1 - m) / 10);
 }
 
 int	a_to_uchar(const char *str)
 {
-	long	ret;
+	unsigned long	ret;
 	int		sign;
 
 	sign = 1;

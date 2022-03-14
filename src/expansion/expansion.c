@@ -255,20 +255,20 @@ t_node	*expansion(char *argv)
 	return (tree);
 }
 
-static void	dfs(t_node *tree)
-{
-	if (tree->lhs)
-		dfs(tree->lhs);
-	printf("282:kind:%d\n", tree->kind);
-	t_list *itr = (t_list *)(tree->token_list);
-	while (itr)
-	{
-		printf("263: %s\n", ((t_token *)(itr->content))->str);
-		itr = itr->next;
-	}
-	if (tree->rhs)
-		dfs(tree->rhs);
-}
+// static void	dfs(t_node *tree)
+// {
+// 	if (tree->lhs)
+// 		dfs(tree->lhs);
+// 	printf("282:kind:%d\n", tree->kind);
+// 	t_list *itr = (t_list *)(tree->token_list);
+// 	while (itr)
+// 	{
+// 		printf("263: %s\n", ((t_token *)(itr->content))->str);
+// 		itr = itr->next;
+// 	}
+// 	if (tree->rhs)
+// 		dfs(tree->rhs);
+// }
 
 // int	main(void)
 // {

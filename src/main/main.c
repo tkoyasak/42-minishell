@@ -28,6 +28,7 @@ void minish_loop(void)
 	t_shell_var	shell_var;
 	int 		error_status;
 
+	(void)token_list;
 	init_shell_var(&shell_var);
 	while (1)
 	{

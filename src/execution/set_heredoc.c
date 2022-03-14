@@ -4,6 +4,8 @@ size_t	get_word_len_heredoc(char *str, bool in_squote, bool in_dquote)
 {
 	char	*head;
 
+	(void)in_squote;
+	(void)in_dquote;
 	head = str;
 	if (*str == '$')
 	{
