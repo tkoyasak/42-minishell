@@ -46,7 +46,7 @@ void	remove_redirection_token(t_process *process)
 }
 
 // ls -al > file           ls -al  output_kind = OUTPUT
-void	set_redirection_params(t_process *process)
+void	set_redirection_params(t_process *process, t_shell_var *shell_var)
 {
 	t_list					*itr;  // token_list
 	t_redirection_kind		kind;
@@ -65,7 +65,7 @@ void	set_redirection_params(t_process *process)
 				if (kind == INPUT)
 					process->fd[0] = open(process->filename[0], R_OK); //調べる
 				else
-					set_heredoc(process, process->filename[0]);
+					set_heredoc(process, process->filename[0], shell_var);
 			}
 			else if (kind == OUTPUT || kind == APPEND)
 			{
@@ -154,15 +154,13 @@ void	exec_child(t_expression *expression, t_process *process, const int cmd_idx,
 {
 	char	*cmd;
 	char	*fullpath_cmd;
-	// extern	char	**environ;
 
 	cmd = ((t_token *)(process->token_list->content))->str;
-	// builtinの判定
 	dup2_func(expression, process, cmd_idx);
 	close_func(expression, process, cmd_idx);
 	if (is_builtin(cmd))
 		exit(exec_builtin(expression, process, shell_var));
-	fullpath_cmd = get_fullpath_cmd(cmd);
+	fullpath_cmd = get_fullpath_cmd(cmd, shell_var);
 	execve(fullpath_cmd, process->command, get_environ());
 	exit(NOCMD);
 }
@@ -181,7 +179,7 @@ static int	wait_all_processes(t_expression *expression)
 	return (wstatus);
 }
 
-void	set_redirections_and_commands(t_expression *expression)
+void	set_redirections_and_commands(t_expression *expression, t_shell_var *shell_var)
 {
 	int			cmd_idx;
 	t_list		*process_list;
@@ -192,7 +190,7 @@ void	set_redirections_and_commands(t_expression *expression)
 	while (cmd_idx < expression->process_cnt)
 	{
 		process = process_list->content;
-		set_redirection_params(process);
+		set_redirection_params(process, shell_var);
 		set_command(process);
 		process_list = process_list->next;
 		cmd_idx++;
@@ -209,7 +207,7 @@ int	exec_processes(t_expression *expression, t_shell_var *shell_var)
 
 	cmd_idx = 0;
 	process_list = expression->process_list;
-	set_redirections_and_commands(expression);
+	set_redirections_and_commands(expression, shell_var);
 	while (cmd_idx < expression->process_cnt)
 	{
 		process = process_list->content;
