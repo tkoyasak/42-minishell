@@ -3,6 +3,7 @@ NAME		:= a.out
 LIBROOT		:= lib
 LIBFTDIR	:= $(addprefix $(LIBROOT)/, libft)
 LIBFT		:= libft.a
+READLINEDIR := $(shell brew --prefix readline)
 
 SRCROOT		:= src
 SRCDIRS		:= $(shell find $(SRCROOT) -type d)
@@ -17,8 +18,9 @@ DEPS		:= $(OBJS:.o=.d)
 CC			:= gcc
 # CFLAGS		:= -Wall -Wextra -Werror -MMD -MP
 CFLAGS		:= -MMD -MP
-LFLAGS		:= -L$(LIBFTDIR) -lft -L/usr/local/opt/readline/lib -lreadline -lhistory
-INCLUDE		:= -Iincludes -I$(LIBFTDIR)/includes -I/usr/local/opt/readline/include
+LFLAGS		:= -L$(LIBFTDIR) -lft -L$(READLINEDIR)/lib -lreadline -lhistory
+INCLUDE		:= -Iincludes -I$(LIBFTDIR)/includes -I$(READLINEDIR)/include
+
 
 RM			:= rm -f
 
