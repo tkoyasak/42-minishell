@@ -1,30 +1,30 @@
 #include "minishell.h"
 
-t_list	*consume_new_env(t_list *cur, char *str)
+t_list	*consume_new_env(t_list *itr, char *str)
 {
 	t_env	*env;
 
 	env = ft_calloc(1, sizeof(t_env));
 	env->key = ft_strndup(str, ft_strchr(str, '=') - str);
 	env->val = ft_strdup(ft_strchr(str, '=') + 1);
-	cur->next = ft_lstnew(env);
-	return (cur->next);
+	itr->next = ft_lstnew(env);
+	return (itr->next);
 }
 
 t_list	*init_envlist(void)
 {
-	t_list		env_list;
-	t_list		*cur;
+	t_list		*env_list;
+	t_list		*itr;
 	extern char	**environ;
 
-	env_list.next = NULL;
-	cur = &env_list;
+	env_list = ft_lstnew(NULL);
+	itr = env_list;
 	while (*environ)
 	{
-		cur = consume_new_env(cur, *environ);
+		itr = consume_new_env(itr, *environ);
 		environ++;
 	}
-	return (env_list.next);
+	return (env_list);
 }
 
 // int	main(void)

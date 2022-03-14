@@ -1,5 +1,19 @@
 #include "minishell.h"
 
+void	builtin_export_print(t_list *env_list)
+{
+	t_list	*itr;
+
+	itr = env_list->next;
+	while (itr)
+	{
+		printf("declare -x %s=\"%s\"\n", ((t_env *)(itr->content))->key, ((t_env *)(itr->content))->val);
+		// printf("%s", ((t_env *)(itr->content))->key);
+		// printf("=\"%s\"\n", ((t_env *)(itr->content))->val);
+		itr = itr->next;
+	}
+}
+
 static bool validate_args(char *arg)
 {
 	bool valid;
@@ -23,55 +37,47 @@ static bool validate_args(char *arg)
 	return (valid);
 }
 
-int	builtin_export(t_expression *expression, t_process *process, t_shell_var *shell_var)
+bool	set_env_value(char *arg, t_list *env_list)
 {
-	t_list	*env_list = init_envlist();
 	t_list	*itr;
-	char	*arg;
 	char	*key;
 	char	*val;
 	t_env	*env;
 
-	if (ft_lstsize((t_list *)(process->token_list)) == 1)
+	if (!validate_args(arg))
+		return (false);
+	key = ft_strndup(arg, ft_strchr(arg, '=') - arg);
+	val = ft_strdup(ft_strchr(arg, '=') + 1);
+	itr = env_list->next;
+	while (itr)
 	{
-		itr = env_list;
-		while (itr)
+		if (ft_strcmp(((t_env *)(itr->content))->key, key) == 0)
 		{
-			printf("declare -x %s=\"%s\"\n", ((t_env *)(itr->content))->key, ((t_env *)(itr->content))->val);
-			// printf("%s", ((t_env *)(itr->content))->key);
-			// printf("=\"%s\"\n", ((t_env *)(itr->content))->val);
-			itr = itr->next;
+			free(((t_env *)(itr->content))->val);
+			((t_env *)(itr->content))->val = val;
+			return (true);
 		}
+		itr = itr->next;
 	}
+	env = ft_calloc(1, sizeof(t_env));
+	env->key = key;
+	env->val = val;
+	ft_lstadd_back(&env_list, ft_lstnew(env));
+	return (true);
+}
+
+int	builtin_export(t_expression *expression, t_process *process, t_shell_var *shell_var)
+{
+	char	*arg;
+
+	(void)expression;
+	if (ft_lstsize((t_list *)(process->token_list)) == 1)
+		builtin_export_print(shell_var->env_list);
 	else
 	{
 		arg = ((t_token *)(process->token_list->next->content))->str;
-		// 引数のバリデイト
-		if (!validate_args(arg))
+		if (!set_env_value(arg, shell_var->env_list))
 			return (1);
-		// 引数のtoken_listからkeyとvalを取り出す
-		key = ft_strndup(arg, ft_strchr(arg, '=') - arg);
-		val = ft_strdup(ft_strchr(arg, '=') + 1);
-		// env_listにkeyと一致するものがあったら，そのkeyにvalを上書きする
-		itr = env_list;
-		while (itr)
-		{
-			if (ft_strcmp(((t_env *)(itr->content))->key, key) == 0)
-			{
-				free(((t_env *)(itr->content))->val);
-				((t_env *)(itr->content))->val = val;
-				break ;
-			}
-			itr = itr->next;
-		}
-		// なければ，新しくkeyとvalを追加する
-		if (itr == NULL)
-		{
-			env = ft_calloc(1, sizeof(t_env));
-			env->key = key;
-			env->val = val;
-			ft_lstadd_back(&env_list, ft_lstnew(env));
-		}
 	}
 	// printf("called builtin_export\n");
 	return (0);
