@@ -1,16 +1,15 @@
 #include "minishell.h"
 
-char	**get_environ(void)
+char	**get_environ(t_shell_var *shell_var)
 {
-	t_list	*env_list = init_envlist();
 	char	**environ;
 	t_list	*itr;
 	size_t	i;
 	char	*key;
 
 	i = 0;
-	environ = ft_calloc(ft_lstsize(env_list) + 1, sizeof(char *));
-	itr = env_list;
+	environ = ft_calloc(ft_lstsize(shell_var->env_list), sizeof(char *));
+	itr = shell_var->env_list->next;
 	while (itr)
 	{
 		key = ft_strjoin(((t_env *)itr->content)->key, "=");
