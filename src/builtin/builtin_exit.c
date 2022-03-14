@@ -41,18 +41,18 @@ int		builtin_exit(t_expression *expression, t_process *process, t_shell_var *she
 
 	command = process->command;
 	if (command[1] == NULL)
-		return (0);
+		exit(0);
 	exit_status = a_to_uchar(command[1]);
 	// printf("exit_status: %d\n", exit_status);
 	if (exit_status == -1)
 	{
 		ft_putstr_fd("numeric argument required\n", STDERR_FILENO);
-		return (255);
+		exit_status = 255;
 	}
-	if (command[2])
+	else if (command[2])
 	{
 		ft_putstr_fd("too many arguments\n", STDERR_FILENO);
-		return (1);
+		exit_status = 1;
 	}
-	return (exit_status);
+	exit(exit_status);
 }
