@@ -161,7 +161,7 @@ void	exec_child(t_expression *expression, t_process *process, const int cmd_idx,
 	if (is_builtin(cmd))
 		exit(exec_builtin(expression, process, shell_var));
 	fullpath_cmd = get_fullpath_cmd(cmd, shell_var);
-	execve(fullpath_cmd, process->command, get_environ());
+	execve(fullpath_cmd, process->command, get_environ(shell_var));
 	exit(NOCMD);
 }
 
