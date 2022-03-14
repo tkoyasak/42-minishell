@@ -7,7 +7,7 @@ int		builtin_cd(t_expression *expression, t_process *process, t_shell_var *shell
 	path_name = process->command[1];
 	if (path_name == NULL)
 	{
-		path_name = getenv("HOME");
+		path_name = get_env_value("HOME", shell_var);
 	}
 	if (chdir(path_name) == -1)
 	{

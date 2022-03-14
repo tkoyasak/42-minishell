@@ -53,7 +53,7 @@ t_list	*split_str_heredoc(char *str, bool par_in_dquote)
 	return (head);
 }
 
-t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote)
+t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_shell_var *shell_var)
 {
 	t_list	*head;
 	t_list	*itr;
@@ -70,11 +70,11 @@ t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote)
 		exp = (t_expansion *)(itr->content);
 		if (exp->kind == ENV)
 		{
-			exp->str = getenv(exp->str + 1);
+			exp->str = get_env_value(exp->str + 1, shell_var);
 			if (prev == NULL)
-				head = get_expansion_list_heredoc(exp->str, exp->in_dquote);
+				head = get_expansion_list_heredoc(exp->str, exp->in_dquote, shell_var);
 			else
-				prev->next = get_expansion_list_heredoc(exp->str, exp->in_dquote);
+				prev->next = get_expansion_list_heredoc(exp->str, exp->in_dquote, shell_var);
 			prev = ft_lstlast(head);
 			prev->next = next;
 		}
@@ -99,14 +99,14 @@ size_t	get_expanded_len_heredoc(t_list *exp_list)
 }
 
 /*  expand env word in here document like aa$PATH  */
-char	*expansion_heredoc(char *str)
+char	*expansion_heredoc(char *str, t_shell_var *shell_var)
 {
 	char	*dst;
 	char	*cur;
 	size_t	len;
 	t_list	*exp_list;
 
-	exp_list = get_expansion_list_heredoc(str, false);
+	exp_list = get_expansion_list_heredoc(str, false, shell_var);
 	len = get_expanded_len_heredoc(exp_list);
 	dst = (char *)malloc(sizeof(char) * (len + 1));
 	dst[0] = '\0';
@@ -119,7 +119,7 @@ char	*expansion_heredoc(char *str)
 	return (dst);
 }
 
-void	set_heredoc(t_process *process, char *limiter)
+void	set_heredoc(t_process *process, char *limiter, t_shell_var *shell_var)
 {
 	size_t	len;
 	char	*temp;
@@ -134,7 +134,7 @@ void	set_heredoc(t_process *process, char *limiter)
 	res = get_next_line(STDIN_FILENO, &temp);
 	while (temp && ft_strncmp(temp, limiter, len + 1))
 	{
-		temp = expansion_heredoc(temp);
+		temp = expansion_heredoc(temp, shell_var);
 		new_document = ft_strjoin(new_document, temp);
 		if (!new_document)
 		{
