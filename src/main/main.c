@@ -17,12 +17,6 @@ void	init_shell_var(t_shell_var *shell_var)
 	shell_var->env_list = init_envlist();
 	shell_var->pwd = NULL;
 	shell_var->oldpwd = NULL;
-	t_list *itr = shell_var->env_list;
-	while (itr)
-	{
-		printf("%s\n", ((t_env *)(itr->content))->key);
-		itr = itr->next;
-	}
 }
 
 void minish_loop(void)
