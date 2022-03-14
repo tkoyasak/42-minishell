@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 // <<< などを弾く
 static bool	is_valid_str(char *p)

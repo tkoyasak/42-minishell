@@ -12,7 +12,6 @@ void	sigint_handler(int sig)
 	g_exit_status = 1;
 }
 
-
 void	init_shell_var(t_shell_var *shell_var)
 {
 	shell_var->env_list = init_envlist();

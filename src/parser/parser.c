@@ -1,5 +1,4 @@
-#include "lexer.h"
-#include "parser.h"
+#include "minishell.h"
 
 static t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs)
 {

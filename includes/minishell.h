@@ -14,5 +14,6 @@
 # include "shell_var.h"
 # include "builtin.h"
 
+extern volatile sig_atomic_t	g_exit_status;
 
 #endif

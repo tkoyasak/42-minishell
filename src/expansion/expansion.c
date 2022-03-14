@@ -1,5 +1,4 @@
-#include "expansion.h"
-#include "lexer.h"
+#include "minishell.h"
 
 size_t	get_word_len(char *str, bool in_squote, bool in_dquote)
 {

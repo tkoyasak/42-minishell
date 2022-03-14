@@ -1,4 +1,4 @@
-#include "shell_var.h"
+#include "minishell.h"
 
 t_list	*consume_new_env(t_list *cur, char *str)
 {

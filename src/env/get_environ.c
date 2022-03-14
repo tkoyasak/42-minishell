@@ -1,4 +1,4 @@
-#include "shell_var.h"
+#include "minishell.h"
 
 char	**get_environ(void)
 {

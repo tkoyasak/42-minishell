@@ -1,4 +1,4 @@
-#include "execution.h"
+#include "minishell.h"
 
 static void	free_str(char **str)
 {

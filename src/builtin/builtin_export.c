@@ -1,5 +1,4 @@
-#include "builtin.h"
-#include "shell_var.h"
+#include "minishell.h"
 
 static bool validate_args(char *arg)
 {

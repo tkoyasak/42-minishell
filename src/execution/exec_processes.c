@@ -1,4 +1,4 @@
-#include "execution.h"
+#include "minishell.h"
 
 t_redirection_kind	get_redirection_kind(char *redirect_str)
 {
