@@ -55,6 +55,8 @@ t_list	*split_str(char *str, bool par_in_dquote)
 	if (!str)
 		return (NULL);
 	head = NULL;
+	if (*str == '\0')
+		ft_lstadd_back(&head, extract_word(&str, false, false, NAKED_SPACE));
 	in_dquote = false;
 	while (*str)
 	{
@@ -224,6 +226,15 @@ void	handle_process(t_node *node, t_shell_var *shell_var)
 		next = itr->next;
 		if (((t_token *)(itr->content))->kind == TK_STRING)
 			itr = get_expanded_token(itr, shell_var);
+		if (itr == NULL)
+		{
+			itr = next;
+			if (prev)
+				prev->next = itr;
+			else
+				node->token_list = itr;
+			continue ;
+		}
 		if (prev)
 			prev->next = itr;
 		else
@@ -260,7 +271,6 @@ t_node	*expansion(char *argv, t_shell_var *shell_var)
 	// 	itr = itr->next;
 	// }
 	tree = parser(argv);
-	// printf("256\n");
 	expansion_sub(tree, shell_var);
 	return (tree);
 }

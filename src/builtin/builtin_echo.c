@@ -8,6 +8,8 @@ int	builtin_echo(t_expression *expression, t_process *process, t_shell_var *shel
 
 	has_endl = true;
 	itr = process->token_list->next;
+	if (itr == NULL)
+		return (0);
 	str = ((t_token *)(itr->content))->str;
 	if (ft_strcmp(str, "-n") == 0)
 	{

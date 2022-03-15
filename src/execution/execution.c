@@ -15,7 +15,9 @@ void	init_expression(t_expression *expression)
 int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 {
 	init_expression(expression);
-	if (expression->process_cnt == 1)
+	if (((t_process *)(expression->process_list->content))->token_list == NULL)
+		g_exit_status = 0;
+	else if (expression->process_cnt == 1)
 		g_exit_status = exec_single_process(expression, shell_var);
 	else
 		g_exit_status = exec_processes(expression, shell_var);

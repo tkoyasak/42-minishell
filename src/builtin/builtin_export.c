@@ -8,8 +8,6 @@ void	builtin_export_print(t_list *env_list)
 	while (itr)
 	{
 		printf("declare -x %s=\"%s\"\n", ((t_env *)(itr->content))->key, ((t_env *)(itr->content))->val);
-		// printf("%s", ((t_env *)(itr->content))->key);
-		// printf("=\"%s\"\n", ((t_env *)(itr->content))->val);
 		itr = itr->next;
 	}
 }
@@ -79,6 +77,5 @@ int	builtin_export(t_expression *expression, t_process *process, t_shell_var *sh
 		if (!set_env_value(arg, shell_var->env_list))
 			return (1);
 	}
-	// printf("called builtin_export\n");
 	return (0);
 }
