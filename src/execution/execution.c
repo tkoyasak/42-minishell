@@ -14,11 +14,22 @@ void	init_expression(t_expression *expression)
 // ls -al |  cat  |  head -n2  ここがpipex
 int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 {
+	int		stdin_copy;
+	int		stdout_copy;
+
 	init_expression(expression);
 	if (((t_process *)(expression->process_list->content))->token_list == NULL)
 		g_exit_status = 0;
 	else if (expression->process_cnt == 1)
+	{
+		stdin_copy = dup(STDIN_FILENO);
+		stdout_copy = dup(STDOUT_FILENO);
 		g_exit_status = exec_single_process(expression, shell_var);
+		dup2(stdin_copy, STDIN_FILENO);
+		dup2(stdout_copy, STDOUT_FILENO);
+		close(stdin_copy);
+		close(stdout_copy);
+	}
 	else
 		g_exit_status = exec_processes(expression, shell_var);
 	return (g_exit_status);
@@ -31,7 +42,8 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 	t_list			*expression_list;
 	t_expression	*expression;
 
-	expression_list = convert_to_expression_list(tree);;
+	expression_list = convert_to_expression_list(tree);
+	set_heredoc(expression_list, shell_var);
 	while (expression_list)
 	{
 		expression = expression_list->content;
