@@ -119,7 +119,7 @@ char	*expansion_heredoc(char *str, t_shell_var *shell_var)
 	return (dst);
 }
 
-void	set_heredoc(t_process *process, char *limiter, t_shell_var *shell_var)
+void	set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var)
 {
 	size_t	len;
 	char	*temp;
@@ -147,4 +147,53 @@ void	set_heredoc(t_process *process, char *limiter, t_shell_var *shell_var)
 	}
 	// free_one(&temp);
 	process->heredoc = new_document;
+}
+
+void	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
+{
+	t_list				*itr; // token_list;
+	t_redirection_kind	kind;
+
+	itr = process->token_list;
+	while (itr)
+	{
+		if (((t_token *)(itr->content))->kind == TK_REDIRECT)
+		{
+			kind = get_redirection_kind(((t_token *)(itr->content))->str);
+			itr = itr->next;
+			if (kind == INPUT || kind == HEREDOC)
+			{
+				process->kind[0] = kind;
+				process->filename[0] = ((t_token *)(itr->content))->str;
+				set_heredoc_sub(process, process->filename[0], shell_var);
+			}
+		}
+		itr = itr->next;
+	}
+}
+
+void	set_heredoc(t_list *expression_list, t_shell_var *shell_var)
+{
+	t_list				*head;
+	t_expression		*expression;
+	t_process			*process;
+	t_list				*process_list;
+	int					cmd_idx;
+
+	head = expression_list;
+	while (expression_list)
+	{
+		expression = expression_list->content;
+		cmd_idx = 0;
+		process_list = expression->process_list;
+		expression->process_cnt = ft_lstsize(expression->process_list);
+		while (cmd_idx < expression->process_cnt)
+		{
+			process = process_list->content;
+			set_heredoc_in_process(process, shell_var);
+			cmd_idx++;
+		}
+		expression_list = expression_list->next;
+	}
+	expression_list = head;
 }
