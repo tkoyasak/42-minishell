@@ -37,22 +37,22 @@ int	a_to_uchar(const char *str)
 int		builtin_exit(t_expression *expression, t_process *process, t_shell_var *shell_var)
 {
 	char	**command;
-	int		exit_status;
+	// int		exit_status;
 
 	command = process->command;
 	if (command[1] == NULL)
 		exit(0);
-	exit_status = a_to_uchar(command[1]);
+	g_exit_status = a_to_uchar(command[1]);
 	// printf("exit_status: %d\n", exit_status);
-	if (exit_status == -1)
+	if (g_exit_status == -1)
 	{
 		ft_putstr_fd("numeric argument required\n", STDERR_FILENO);
-		exit_status = 255;
+		g_exit_status = 255;
 	}
 	else if (command[2])
 	{
 		ft_putstr_fd("too many arguments\n", STDERR_FILENO);
-		exit_status = 1;
+		g_exit_status = 1;
 	}
-	exit(exit_status);
+	exit(g_exit_status);
 }

@@ -14,15 +14,12 @@ void	init_expression(t_expression *expression)
 // ls -al |  cat  |  head -n2  ここがpipex
 int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 {
-	int	error_status;
-
 	init_expression(expression);
 	if (expression->process_cnt == 1)
-		error_status = exec_single_process(expression, shell_var);
+		g_exit_status = exec_single_process(expression, shell_var);
 	else
-		error_status = exec_processes(expression, shell_var);
-	g_exit_status = error_status;
-	return (error_status);
+		g_exit_status = exec_processes(expression, shell_var);
+	return (g_exit_status);
 }
 
 // ls -al | cat | head -n2 ; ls ;  cat < file
