@@ -64,8 +64,8 @@ void	set_redirection_params(t_process *process, t_shell_var *shell_var)
 				process->filename[0] = ((t_token *)(itr->content))->str;
 				if (kind == INPUT)
 					process->fd[0] = open(process->filename[0], R_OK); //調べる
-				else
-					set_heredoc(process, process->filename[0], shell_var);
+				// else
+				// 	set_heredoc_sub(process, process->filename[0], shell_var);
 			}
 			else if (kind == OUTPUT || kind == APPEND)
 			{
