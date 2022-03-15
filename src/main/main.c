@@ -19,19 +19,17 @@ void	init_shell_var(t_shell_var *shell_var)
 	shell_var->oldpwd = NULL;
 }
 
-void minish_loop(void)
+void minish_loop(t_shell_var *shell_var)
 {
 	char		*line;
 	t_list		*token_list;
 	t_node		*astree;
-	t_shell_var	shell_var;
 	int 		error_status;
 
 	(void)token_list;
-	init_shell_var(&shell_var);
 	while (1)
 	{
-		line = readline("minish$ ");
+		line = readline(CYAN"minish$ "RESET);
 		while (line == NULL)
 			line = readline("");
 		if (ft_strlen(line) == 0)
@@ -40,8 +38,8 @@ void minish_loop(void)
 		{
 			// token_list = lexer(line);
 			// astree = parser(line);
-			astree = expansion(line, &shell_var);
-			error_status = execution(astree, &shell_var);
+			astree = expansion(line, shell_var);
+			error_status = execution(astree, shell_var);
 			printf("error_status: %d\n", error_status);
 		}
 		add_history(line);
@@ -51,8 +49,12 @@ void minish_loop(void)
 
 int	main(void)
 {
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
-	minish_loop();
+	t_shell_var	shell_var;
+
+	if (signal(SIGINT, sigint_handler) == SIG_ERR || \
+		signal(SIGQUIT, SIG_IGN) == SIG_ERR)
+		return (1);
+	init_shell_var(&shell_var);
+	minish_loop(&shell_var);
 	return (0);
 }
