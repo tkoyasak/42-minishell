@@ -15,7 +15,7 @@ void	sigint_handler(int sig)
 void	init_shell_var(t_shell_var *shell_var)
 {
 	shell_var->env_list = init_envlist();
-	shell_var->pwd = NULL;
+	shell_var->pwd = getcwd(NULL, 0);
 	shell_var->oldpwd = NULL;
 }
 
