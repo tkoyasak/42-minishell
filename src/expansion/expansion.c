@@ -12,6 +12,8 @@ size_t	get_word_len(char *str, bool in_squote, bool in_dquote)
 	if (*str == '$')
 	{
 		str++;
+		if (*str == '?')
+			return (2);
 		while (*str && ft_isalnum(*str))
 			str++;
 	}
@@ -39,7 +41,7 @@ t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expansion_kin
 	exp->in_squote = in_squote;
 	exp->in_dquote = in_dquote;
 	exp->kind = kind;
-	if (exp->str && exp->str[0] == '$' && ft_isalnum(exp->str[1]) && !in_squote)
+	if (exp->str && exp->str[0] == '$' && (ft_isalnum(exp->str[1]) || exp->str[1] == '?') && !in_squote)
 		exp->kind = ENV;
 	if (exp->str && exp->str[0] == ' ' && !in_squote && !in_dquote)
 		exp->kind = NAKED_SPACE;
