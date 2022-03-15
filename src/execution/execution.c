@@ -21,6 +21,7 @@ int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 		error_status = exec_single_process(expression, shell_var);
 	else
 		error_status = exec_processes(expression, shell_var);
+	g_exit_status = error_status;
 	return (error_status);
 }
 

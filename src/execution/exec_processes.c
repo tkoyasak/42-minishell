@@ -118,6 +118,7 @@ void	dup2_func(t_expression *expression, t_process *process, const int cmd_idx)
 			exit(EXIT_FAILURE);
 		if (pipe(process->here_pipefd) < 0)
 			exit(EXIT_FAILURE);
+		// heredocの$?を展開
 		write(process->here_pipefd[1], process->heredoc, ft_strlen(process->heredoc));
 		dup2(process->here_pipefd[0], STDIN_FILENO);
 	}
@@ -161,6 +162,8 @@ void	exec_child(t_expression *expression, t_process *process, const int cmd_idx,
 	if (is_builtin(cmd))
 		exit(exec_builtin(expression, process, shell_var));
 	fullpath_cmd = get_fullpath_cmd(cmd, shell_var);
+	if (cmd_idx < expression->process_cnt - 1)
+		g_exit_status = 0;
 	execve(fullpath_cmd, process->command, get_environ(shell_var));
 	exit(NOCMD);
 }
