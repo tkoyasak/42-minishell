@@ -85,6 +85,7 @@ int expect_number() {
   return val;
 }
 
+// create_subshell_treeに対応
 Node *primary() {
   // 次のトークンが"("なら、"(" expr ")"のはず
   if (consume('(')) {
@@ -96,6 +97,7 @@ Node *primary() {
   return new_node_num(expect_number());
 }
 
+// create_sub_astreeに対応
 Node *mul() {
   Node *node = primary();
 
@@ -109,6 +111,7 @@ Node *mul() {
   }
 }
 
+// create_astreeに対応
 Node *expr() {
   Node *node = mul();
 
