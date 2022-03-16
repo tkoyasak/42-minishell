@@ -45,6 +45,8 @@ t_list	*split_str_heredoc(char *str, bool par_in_dquote)
 	if (!str)
 		return (NULL);
 	head = NULL;
+	if (*str == '\0')
+		ft_lstadd_back(&head, extract_word_heredoc(&str, false, par_in_dquote, STRING));
 	in_dquote = false;
 	while (*str)
 	{
@@ -119,13 +121,37 @@ char	*expansion_heredoc(char *str, t_shell_var *shell_var)
 	return (dst);
 }
 
+char	*remove_quote_heredoc(char *limiter, bool *in_quote)
+{
+	char	*dst;
+	size_t	src_idx;
+	size_t	dst_idx;
+
+	dst = ft_calloc(ft_strlen(limiter) + 1, sizeof(char));
+	src_idx = 0;
+	dst_idx = 0;
+	while (limiter[src_idx])
+	{
+		if (ft_strchr(QUOTE_CHAR, limiter[src_idx]))
+		{
+			*in_quote = true;
+			src_idx++;
+			continue ;
+		}
+		dst[dst_idx++] = limiter[src_idx++];
+	}
+	return (dst);
+}
+
 void	set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var)
 {
 	size_t	len;
 	char	*temp;
 	char	*new_document;
 	int		res;
+	bool	in_quote;
 
+	limiter = remove_quote_heredoc(limiter, &in_quote);
 	new_document = ft_strdup("");
 	if (!new_document)
 		return ;
@@ -134,7 +160,8 @@ void	set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var)
 	res = get_next_line(STDIN_FILENO, &temp);
 	while (temp && ft_strncmp(temp, limiter, len + 1))
 	{
-		temp = expansion_heredoc(temp, shell_var);
+		if (in_quote == false)
+			temp = expansion_heredoc(temp, shell_var);
 		new_document = ft_strjoin(new_document, temp);
 		if (!new_document)
 		{
@@ -145,6 +172,7 @@ void	set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var)
 		// free_one(&temp);
 		res = get_next_line(STDIN_FILENO, &temp);
 	}
+	// free(limiter);
 	// free_one(&temp);
 	process->heredoc = new_document;
 }

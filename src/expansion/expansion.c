@@ -220,13 +220,15 @@ void	handle_process(t_node *node, t_shell_var *shell_var)
 	t_list	*itr; //token_list_itr
 	t_list	*next;
 	t_list	*prev;
+	bool	is_delimiter;
 
 	itr = node->token_list;
 	prev = NULL;
+	is_delimiter = false;
 	while (itr)
 	{
 		next = itr->next;
-		if (((t_token *)(itr->content))->kind == TK_STRING)
+		if (!is_delimiter && ((t_token *)(itr->content))->kind == TK_STRING)
 			itr = get_expanded_token(itr, shell_var);
 		if (itr == NULL)
 		{
@@ -243,6 +245,9 @@ void	handle_process(t_node *node, t_shell_var *shell_var)
 			node->token_list = itr;
 		while (itr->next != NULL && itr->next != next)
 			itr = itr->next;
+		is_delimiter = false;
+		if (((t_token *)(itr->content))->kind == TK_REDIRECT && ft_strcmp(((t_token *)(itr->content))->str, "<<") == 0)
+			is_delimiter = true;
 		itr->next = next;
 		prev = itr;
 		itr = itr->next;
