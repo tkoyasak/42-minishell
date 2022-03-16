@@ -58,7 +58,7 @@ t_list	*split_str(char *str, bool par_in_dquote)
 		return (NULL);
 	head = NULL;
 	if (*str == '\0')
-		ft_lstadd_back(&head, extract_word(&str, false, false, NAKED_SPACE));
+		ft_lstadd_back(&head, extract_word(&str, false, par_in_dquote, STRING));
 	in_dquote = false;
 	while (*str)
 	{
