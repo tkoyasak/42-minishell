@@ -110,3 +110,13 @@ TEST(lexer, lexer_test08)
 	t_list *token_list = lexer(input);
 	func(token_list, expected, expected_kind);
 }
+
+TEST(lexer, lexer_test09)
+{
+	char *input = "(ls;(cat>file.txt;))";
+	char	*expected[] = {"(", "ls", ";", "(", "cat", ">", "file.txt", ";", ")", ")"};
+	t_token_kind expected_kind[] = {TK_L_PARENTHESIS, TK_STRING, TK_PROCESS_DELIM, TK_L_PARENTHESIS, TK_STRING, TK_REDIRECT, TK_STRING, TK_PROCESS_DELIM, TK_R_PARENTHESIS, TK_R_PARENTHESIS};
+
+	t_list *token_list = lexer(input);
+	func(token_list, expected, expected_kind);
+}

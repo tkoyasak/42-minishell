@@ -6,14 +6,14 @@ set(CMAKE_CXX_STANDARD 17)
 # add_compile_options(-Wall -Wextra -Werror)
 
 file(GLOB LIBFT ../../lib/libft/src/*/*.c ../../lib/libft/includes/*.h)
-file(GLOB EXECUTION ../../src/execution/*.c)
-file(GLOB ENV ../../src/env/*.c)
+# file(GLOB EXECUTION ../../src/execution/*.c)
+# file(GLOB ENV ../../src/env/*.c)
 
 add_library(lexer STATIC ../../src/lexer/lexer.c)
 add_library(parser STATIC ../../src/parser/parser.c)
 add_library(expansion STATIC ../../src/expansion/expansion.c)
 # add_library(execution STATIC ${EXECUTION})
-add_library(env STATIC ${ENV})
+# add_library(env STATIC ${ENV})
 add_library(ft STATIC ${LIBFT})
 include_directories(../../includes)
 include_directories(../../lib/libft/includes)
@@ -31,6 +31,6 @@ target_link_libraries(main
     parser
     expansion
     # execution
-	env
+	# env
     ft
 )

@@ -140,14 +140,14 @@ TEST(parser, parser_test08)
 	func(tree, expected_token, expected_node);
 }
 
-// TEST(parser, parser_test09)
-// {
-// 	char		*input = "ls -al | | cat ;";
-// 	char		*expected_token[] = \
-// 		{"ls", "-al", ";", "cat", ";"};
-// 	t_node_kind expected_node[] = \
-// 		{ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
-// 	t_node		*tree = parser(input);
+TEST(parser, parser_test09)
+{
+	char		*input = "(ls -al  && cd)";
+	char		*expected_token[] = \
+		{"ls", "-al", "&&", "cd", "subshell"};
+	t_node_kind expected_node[] = \
+		{ND_PROCESS, ND_DAND, ND_PROCESS, ND_SUBSHELL};
+	t_node		*tree = parser(input);
 
-// 	func(tree, expected_token, expected_node);
-// }
+	func(tree, expected_token, expected_node);
+}
