@@ -14,7 +14,7 @@ int main(int argc, char **argv)
  if (fstat(0, &stat_buf) == 0) {
     /* ファイル情報を表示 */
     printf("アクセス保護 : %o\n",stat_buf.st_mode);
-    printf("容量（バイト単位） : %d\n",stat_buf.st_size);
+    printf("容量（バイト単位） : %lld\n",stat_buf.st_size);
  }
 
   return EXIT_SUCCESS;
