@@ -1,9 +1,24 @@
 #include "minishell.h"
 
+bool	is_valid_option(char *str)
+{
+	if (!str)
+		return (false);
+	if (*str != '-')
+		return (false);
+	str++;
+	while (*str)
+	{
+		if (*str != 'n')
+			return (false);
+		str++;
+	}
+	return (true);
+}
+
 int	builtin_echo(t_expression *expression, t_process *process, t_shell_var *shell_var)
 {
 	t_list			*itr;
-	char			*str;
 	bool			has_endl;
 
 	has_endl = true;
@@ -13,17 +28,14 @@ int	builtin_echo(t_expression *expression, t_process *process, t_shell_var *shel
 		printf("\n");
 		return (0);
 	}
-	str = ((t_token *)(itr->content))->str;
-	if (ft_strcmp(str, "-n") == 0)
-	{
+	if (is_valid_option(((t_token *)(itr->content))->str))
 		has_endl = false;
+	while (is_valid_option(((t_token *)(itr->content))->str))
 		itr = itr->next;
-	}
 	while (itr)
 	{
-		str = ((t_token *)(itr->content))->str;
+		printf("%s", ((t_token *)(itr->content))->str);
 		itr = itr->next;
-		printf("%s", str);
 		if (itr)
 			printf(" ");
 	}
