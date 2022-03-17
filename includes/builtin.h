@@ -1,6 +1,7 @@
 #ifndef BUILTIN_H
 # define BUILTIN_H
 
+# include "struct.h"
 # include "execution.h"
 
 int		builtin_echo(t_expression *expression, t_process *process, t_shell_var *shell_var);
