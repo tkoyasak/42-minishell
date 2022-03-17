@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec_single_process.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/12 09:02:46 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/15 22:54:30 by jkosaka          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 int	exec_single_external(t_expression *expression, t_process *process, t_shell_var *shell_var)
@@ -18,7 +6,6 @@ int	exec_single_external(t_expression *expression, t_process *process, t_shell_v
 	t_list		*process_list;
 
 	process_list = expression->process_list;
-	// set_redirections_and_commands(expression, shell_var);
 	process = process_list->content;
 	expression->pid[0] = fork();
 	if (expression->pid[0] == 0)

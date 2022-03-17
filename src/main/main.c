@@ -37,8 +37,9 @@ void minish_loop(t_shell_var *shell_var)
 		else
 		{
 			// token_list = lexer(line);
-			// astree = parser(line);
-			astree = expansion(line, shell_var);
+			astree = parser(line);
+			astree = convert_to_expression_tree(astree);
+			set_heredoc(astree, shell_var);
 			error_status = execution(astree, shell_var);
 			printf("error_status: %d\n", error_status);
 		}

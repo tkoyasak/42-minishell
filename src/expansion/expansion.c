@@ -215,14 +215,14 @@ t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
 	return (expanded_token_list);
 }
 
-void	handle_process(t_node *node, t_shell_var *shell_var)
+void	handle_process(t_process *process, t_shell_var *shell_var)
 {
 	t_list	*itr; //token_list_itr
 	t_list	*next;
 	t_list	*prev;
 	bool	is_delimiter;
 
-	itr = node->token_list;
+	itr = process->token_list;
 	prev = NULL;
 	is_delimiter = false;
 	while (itr)
@@ -236,13 +236,13 @@ void	handle_process(t_node *node, t_shell_var *shell_var)
 			if (prev)
 				prev->next = itr;
 			else
-				node->token_list = itr;
+				process->token_list = itr;
 			continue ;
 		}
 		if (prev)
 			prev->next = itr;
 		else
-			node->token_list = itr;
+			process->token_list = itr;
 		while (itr->next != NULL && itr->next != next)
 			itr = itr->next;
 		is_delimiter = false;
@@ -254,32 +254,16 @@ void	handle_process(t_node *node, t_shell_var *shell_var)
 	}
 }
 
-void	expansion_sub(t_node *node, t_shell_var *shell_var)
+void	expansion(t_expression *expression, t_shell_var *shell_var)
 {
-	if (node->kind == ND_PROCESS)
-		handle_process(node, shell_var);
-	if (node->lhs)
-		expansion_sub(node->lhs, shell_var);
-	if (node->rhs)
-		expansion_sub(node->rhs, shell_var);
-}
+	t_list	*itr;
 
-t_node	*expansion(char *argv, t_shell_var *shell_var)
-{
-	t_node	*tree;
-
-	// shell_var = ft_calloc(1, sizeof(t_shell_var));
-	// shell_var->env_list = init_envlist();
-
-	// t_list *itr = shell_var->env_list;
-	// while(itr)
-	// {
-	// 	printf("%s\n", ((t_env *)(itr->content))->key);
-	// 	itr = itr->next;
-	// }
-	tree = parser(argv);
-	expansion_sub(tree, shell_var);
-	return (tree);
+	itr = expression->process_list;
+	while(itr)
+	{
+		handle_process((t_process *)(itr->content), shell_var);
+		itr = itr->next;
+	}
 }
 
 // static void	dfs(t_node *tree)

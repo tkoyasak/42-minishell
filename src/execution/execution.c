@@ -5,7 +5,7 @@ void	init_expression(t_expression *expression)
 {
 	int	pipe_cnt;
 
-	expression->process_cnt = ft_lstsize(expression->process_list);  // 3
+	// expression->process_cnt = ft_lstsize(expression->process_list);  // 3
 	pipe_cnt = expression->process_cnt - 1;
 	expression->pipefd = (int **)ft_calloc(pipe_cnt, sizeof(int *)); // prepare_pipe pipeは2つ用意
 	expression->pid = (pid_t *)ft_calloc(expression->process_cnt, sizeof(pid_t));
@@ -18,6 +18,7 @@ int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 	int		stdout_copy;
 
 	init_expression(expression);
+	expansion(expression, shell_var);
 	if (((t_process *)(expression->process_list->content))->token_list == NULL)
 		g_exit_status = 0;
 	else if (expression->process_cnt == 1)
@@ -38,42 +39,42 @@ int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 // ls -al | cat | head -n2 ; ls ;  cat < file
 int	execution(t_node *tree, t_shell_var *shell_var)
 {
-	int				error_status;
 	t_list			*expression_list;
 	t_expression	*expression;
+	pid_t			pid;
+	int				wstatus;
 
-	expression_list = convert_to_expression_list(tree);
-	set_heredoc(expression_list, shell_var);
-	while (expression_list)
+	if (tree->kind == ND_SUBSHELL)
 	{
-		expression = expression_list->content;
-		error_status = evaluate_expression(expression, shell_var);
-		if (((t_expression *)(expression_list->content))->end_of_expression == ND_DAND \
-				&& error_status != 0)
-			break ;
-		if (((t_expression *)(expression_list->content))->end_of_expression == ND_DPIPE \
-				&& error_status == 0)
-			break ;
-		expression_list = expression_list->next;
+		pid = fork();
+		if (pid == 0)
+		{
+			g_exit_status = execution(tree->lhs, shell_var);
+			exit(g_exit_status);
+		}
+		else
+		{
+			waitpid(pid, &wstatus, WUNTRACED);
+			g_exit_status = wstatus;
+		}
 	}
-	return (error_status);
+	else if (ND_SEMICOLON <= tree->kind && tree->kind <= ND_DPIPE)
+	{
+		if (tree->lhs)
+			g_exit_status = execution(tree->lhs, shell_var);
+		if (tree->kind == ND_DAND && g_exit_status != 0)
+			exit(g_exit_status);
+		if (tree->kind == ND_DPIPE && g_exit_status == 0)
+			exit(g_exit_status);
+		if (tree->rhs)
+			g_exit_status = execution(tree->rhs, shell_var);
+	}
+	else
+	{
+		g_exit_status = evaluate_expression(tree->expression, shell_var);
+	}
+	return (g_exit_status);
 }
-
-// int	main(void)
-// {
-// 	t_shell_var	*shell_var;
-
-// 	shell_var = NULL;
-// 	// t_node *tree = expansion("cat < infile | echo | 'hello'; $SHELL . ppp && echo hey! > outfile");
-// 	// t_node *tree = expansion("ls -al | head -n4 | cat");
-// 	t_node *tree = expansion("cd ..");
-// 	// t_node *tree = expansion("cd docs");
-// 	// t_node *tree = expansion("export | head -n6 | cat");
-// 	// t_list *expression_list = convert_to_expression_list(tree);
-// 	int	error_status = execution(tree, shell_var);
-
-// 	printf("41:%d\n", error_status);
-// }
 
 // int	main(void)
 // {

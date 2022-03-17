@@ -200,28 +200,28 @@ void	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 	}
 }
 
-void	set_heredoc(t_list *expression_list, t_shell_var *shell_var)
+void	set_heredoc(t_node *tree, t_shell_var *shell_var)
 {
-	t_list				*head;
-	t_expression		*expression;
-	t_process			*process;
-	t_list				*process_list;
-	int					cmd_idx;
+	t_list	*itr;
 
-	head = expression_list;
-	while (expression_list)
+	if (ND_SUBSHELL <= tree->kind && tree->kind <= ND_DPIPE)
 	{
-		expression = expression_list->content;
-		cmd_idx = 0;
-		process_list = expression->process_list;
-		expression->process_cnt = ft_lstsize(expression->process_list);
-		while (cmd_idx < expression->process_cnt)
+		if (tree->lhs)
 		{
-			process = process_list->content;
-			set_heredoc_in_process(process, shell_var);
-			cmd_idx++;
+			set_heredoc(tree->lhs, shell_var);
 		}
-		expression_list = expression_list->next;
+		if (tree->rhs)
+		{
+			set_heredoc(tree->rhs, shell_var);
+		}
 	}
-	expression_list = head;
+	else
+	{
+		itr = tree->expression->process_list;
+		while (itr)
+		{
+			set_heredoc_in_process((t_process *)itr->content, shell_var);
+			itr = itr->next;
+		}
+	}
 }
