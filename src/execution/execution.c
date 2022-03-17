@@ -63,9 +63,9 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 		if (tree->lhs)
 			g_exit_status = execution(tree->lhs, shell_var);
 		if (tree->kind == ND_DAND && g_exit_status != 0)
-			exit(g_exit_status);
+			return (g_exit_status);
 		if (tree->kind == ND_DPIPE && g_exit_status == 0)
-			exit(g_exit_status);
+			return (g_exit_status);
 		if (tree->rhs)
 			g_exit_status = execution(tree->rhs, shell_var);
 	}
