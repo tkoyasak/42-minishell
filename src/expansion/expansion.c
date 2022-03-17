@@ -210,6 +210,8 @@ t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
 	// token->strをt_exp_strlist_typeで分割・分類する
 	// 環境変数の展開
 	expansion_list = get_expansion_list(((t_token *)(token_list->content))->str, false, shell_var); // t_expansionのリスト
+	// *のfilename expansion展開
+	expansion_list = get_filename_expansion(expansion_list);
 	expansion_list = remove_quotes(expansion_list); // t_expansionのリスト
 	expanded_token_list = convert_to_token(expansion_list); // t_tokenのリスト
 	return (expanded_token_list);
