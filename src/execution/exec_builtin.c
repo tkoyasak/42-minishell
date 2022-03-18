@@ -17,10 +17,10 @@ bool	is_builtin(char *cmd)
 }
 
 /*  return exit status  */
-int	exec_builtin(t_expression *expression, t_process *process, t_shell_var *shell_var)
+int	exec_builtin(t_process *process, t_shell_var *shell_var)
 {
 	const char *builtin_str[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit"};
-	int (*builtin_func[]) (t_expression *, t_process *, t_shell_var *) = \
+	int (*builtin_func[]) (t_process *, t_shell_var *) = \
 			{&builtin_echo, &builtin_cd, &builtin_pwd, &builtin_export, \
 			&builtin_unset, &builtin_env, &builtin_exit};
 	char	*cmd;
@@ -31,7 +31,7 @@ int	exec_builtin(t_expression *expression, t_process *process, t_shell_var *shel
 	while (i < 7)
 	{
 		if (strcmp(cmd, builtin_str[i]) == 0)
-			return ((*builtin_func[i])(expression, process, shell_var));
+			return ((*builtin_func[i])(process, shell_var));
 		i++;
 	}
 	return (1);

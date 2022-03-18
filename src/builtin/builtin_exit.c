@@ -34,7 +34,7 @@ int	a_to_uchar(const char *str)
 	return ((unsigned char)(ret * sign));
 }
 
-int		builtin_exit(t_expression *expression, t_process *process, t_shell_var *shell_var)
+int		builtin_exit(t_process *process, t_shell_var *shell_var)
 {
 	char	**command;
 

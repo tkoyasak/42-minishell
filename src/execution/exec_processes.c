@@ -160,7 +160,7 @@ void	exec_child(t_expression *expression, t_process *process, const int cmd_idx,
 	dup2_func(expression, process, cmd_idx);
 	close_func(expression, process, cmd_idx);
 	if (is_builtin(cmd))
-		exit(exec_builtin(expression, process, shell_var));
+		exit(exec_builtin(process, shell_var));
 	fullpath_cmd = get_fullpath_cmd(cmd, shell_var);
 	if (cmd_idx < expression->process_cnt - 1)
 		g_exit_status = 0;

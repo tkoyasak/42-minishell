@@ -36,13 +36,12 @@ static bool validate_args(char *arg)
 }
 
 
-int	builtin_export(t_expression *expression, t_process *process, t_shell_var *shell_var)
+int	builtin_export(t_process *process, t_shell_var *shell_var)
 {
 	char	*arg;
 	char	*key;
 	char	*val;
 
-	(void)expression;
 	if (ft_lstsize((t_list *)(process->token_list)) == 1)
 		builtin_export_print(shell_var->env_list);
 	else

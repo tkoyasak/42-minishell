@@ -16,7 +16,7 @@ bool	is_valid_option(char *str)
 	return (true);
 }
 
-int	builtin_echo(t_expression *expression, t_process *process, t_shell_var *shell_var)
+int	builtin_echo(t_process *process, t_shell_var *shell_var)
 {
 	t_list			*itr;
 	bool			has_endl;

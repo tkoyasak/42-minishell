@@ -26,7 +26,7 @@ int	exec_single_process(t_expression *expression, t_shell_var *shell_var)
 	dup2_func(expression, process, 0);
 	close_func(expression, process, 0);
 	if (is_builtin(process->command[0]))
-		return (exec_builtin(expression, process, shell_var));
+		return (exec_builtin(process, shell_var));
 	else
 		return (exec_single_external(expression, process, shell_var));
 }

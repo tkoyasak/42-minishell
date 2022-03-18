@@ -21,7 +21,7 @@ int			execution(t_node *tree, t_shell_var *shell_var);
 // void		set_heredoc(t_list *expression_list, t_shell_var *shell_var);
 void		set_heredoc(t_node *tree, t_shell_var *shell_var);
 void		set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var);
-int			exec_builtin(t_expression *expression, t_process *process, t_shell_var *shell_var);
+int			exec_builtin(t_process *process, t_shell_var *shell_var);
 bool		is_builtin(char *cmd);
 int			exec_processes(t_expression *expression, t_shell_var *shell_var);
 int			exec_single_process(t_expression *expression, t_shell_var *shell_var);
