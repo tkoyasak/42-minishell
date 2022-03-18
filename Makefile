@@ -1,4 +1,4 @@
-NAME		:= a.out
+NAME		:= minishell
 
 LIBROOT		:= lib
 LIBFTDIR	:= $(addprefix $(LIBROOT)/, libft)
