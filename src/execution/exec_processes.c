@@ -110,7 +110,7 @@ static void	create_pipe(t_expression *expression, const int cmd_idx)
 void	dup2_func(t_expression *expression, t_process *process, const int cmd_idx)
 {
 	if (process->kind[0] == NONE && cmd_idx > 0) // cmd_idx > 0 かつ redirectionがない
-		dup2(expression->pipefd[cmd_idx - 1][PIPEIN], STDIN_FILENO);
+		safe_func(dup2(expression->pipefd[cmd_idx - 1][PIPEIN], STDIN_FILENO));
 	else if (process->kind[0] == HEREDOC)
 	{
 		process->here_pipefd = ft_calloc(2, sizeof(int));
@@ -120,33 +120,33 @@ void	dup2_func(t_expression *expression, t_process *process, const int cmd_idx)
 			exit(EXIT_FAILURE);
 		// heredocの$?を展開
 		write(process->here_pipefd[1], process->heredoc, ft_strlen(process->heredoc));
-		dup2(process->here_pipefd[0], STDIN_FILENO);
+		safe_func(dup2(process->here_pipefd[0], STDIN_FILENO));
 	}
 	else if (process->kind[0] != NONE)
-		dup2(process->fd[0], STDIN_FILENO);
+		safe_func(dup2(process->fd[0], STDIN_FILENO));
 
 	if (process->kind[1] == NONE && cmd_idx < expression->process_cnt - 1)
-		dup2(expression->pipefd[cmd_idx][PIPEOUT], STDOUT_FILENO);
+		safe_func(dup2(expression->pipefd[cmd_idx][PIPEOUT], STDOUT_FILENO));
 	else if (process->kind[1] != NONE)
-		dup2(process->fd[1], STDOUT_FILENO);
+		safe_func(dup2(process->fd[1], STDOUT_FILENO));
 }
 
 void	close_func(t_expression *expression, t_process *process, const int cmd_idx)
 {
 	if (process->kind[0] == HEREDOC)
 	{
-		close(process->here_pipefd[0]);
-		close(process->here_pipefd[1]);
+		safe_func(close(process->here_pipefd[0]));
+		safe_func(close(process->here_pipefd[1]));
 	}
 	if (cmd_idx > 0)
 	{
-		close(expression->pipefd[cmd_idx - 1][PIPEIN]);
-		close(expression->pipefd[cmd_idx - 1][PIPEOUT]);
+		safe_func(close(expression->pipefd[cmd_idx - 1][PIPEIN]));
+		safe_func(close(expression->pipefd[cmd_idx - 1][PIPEOUT]));
 	}
 	if (cmd_idx < expression->process_cnt - 1)
 	{
-		close(expression->pipefd[cmd_idx][PIPEIN]);
-		close(expression->pipefd[cmd_idx][PIPEOUT]);
+		safe_func(close(expression->pipefd[cmd_idx][PIPEIN]));
+		safe_func(close(expression->pipefd[cmd_idx][PIPEOUT]));
 	}
 }
 
