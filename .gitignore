@@ -1,7 +1,8 @@
 # For me
 .vscode
-build
+minishell
 obj
+build
 
 # Prerequisites
 *.d
