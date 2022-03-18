@@ -97,7 +97,6 @@ t_list	*get_expansion_list(char *str, bool par_in_dquote, t_shell_var *shell_var
 		if (exp->kind == ENV)
 		{
 			exp->str = get_env_value(exp->str + 1, shell_var);
-			// printf("97: %s\n", exp->str);
 			if (prev == NULL)
 				head = get_expansion_list(exp->str, exp->in_dquote, shell_var);
 			else
@@ -143,7 +142,10 @@ size_t	token_str_len(t_list *src_list)
 
 	len = 0;
 	itr = src_list;
-	while (itr && ((t_expansion *)(itr->content))->kind != NAKED_SPACE)
+	if (((t_expansion *)(itr->content))->kind == FILENAME_EXPANSION)
+		return (((t_expansion *)(itr->content))->len);
+	while (itr && ((t_expansion *)(itr->content))->kind != NAKED_SPACE && \
+		((t_expansion *)(itr->content))->kind != FILENAME_EXPANSION)
 	{
 		exp = (t_expansion *)(itr->content);
 		len += exp->len;
@@ -160,7 +162,14 @@ char	*token_str_join(t_list **src_list, char *buf)
 
 	len = 0;
 	itr = *src_list;
-	while (itr && ((t_expansion *)(itr->content))->kind != NAKED_SPACE)
+	if (((t_expansion *)(itr->content))->kind == FILENAME_EXPANSION)
+	{
+		ft_strlcat(buf, ((t_expansion *)(itr->content))->str, ((t_expansion *)(itr->content))->len + 1);
+		*src_list = (*src_list)->next;
+		return (buf);
+	}
+	while (itr && ((t_expansion *)(itr->content))->kind != NAKED_SPACE && \
+		((t_expansion *)(itr->content))->kind != FILENAME_EXPANSION)
 	{
 		exp = (t_expansion *)(itr->content);
 		len += exp->len;

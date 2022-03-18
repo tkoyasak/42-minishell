@@ -38,7 +38,8 @@ typedef enum e_expansion_kind
 	DQUOTE,
 	ENV,
 	STRING,
-	NAKED_SPACE
+	NAKED_SPACE,
+	FILENAME_EXPANSION
 }	t_expansion_kind;
 
 typedef struct s_expansion

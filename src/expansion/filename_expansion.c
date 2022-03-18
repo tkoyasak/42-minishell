@@ -1,18 +1,5 @@
 #include "minishell.h"
 
-char	*join_path_name(char *prefix, char **slash_splitted_str)
-{
-	char	*path_name;
-
-	path_name = prefix;
-	while (*slash_splitted_str)
-	{
-		path_name = ft_strjoin_free(path_name, *slash_splitted_str, false);
-		slash_splitted_str++;
-	}
-	return (path_name);
-}
-
 t_list	*get_opened_directory(char *prefix, char **slash_splitted_str)
 {
 	t_expansion		*expansion;
@@ -28,6 +15,7 @@ t_list	*get_opened_directory(char *prefix, char **slash_splitted_str)
 		expansion = ft_calloc(1, sizeof(t_expansion));
 		expansion->str = prefix;
 		expansion->len = ft_strlen(prefix);
+		expansion->kind = FILENAME_EXPANSION;
 		return (ft_lstnew(expansion));
 	}
 	head = NULL;
@@ -40,27 +28,27 @@ t_list	*get_opened_directory(char *prefix, char **slash_splitted_str)
 		path_name = ft_strjoin(path_name, "/");
 		slash_splitted_str++;
 	}
-	dp = opendir(path_name);
+	char	*cwd_path = getcwd(NULL, 0);
+	if (*path_name == '\0')
+		dp = opendir(cwd_path);
+	else
+		dp = opendir(path_name);
 	if (dp == NULL)
-	{
-		expansion = ft_calloc(1, sizeof(t_expansion));
-		expansion->str = join_path_name(path_name, slash_splitted_str);
-		printf("94: %s\n", expansion->str);
-		expansion->len = ft_strlen(expansion->str);
-		return (ft_lstnew(expansion));
-	}
+		return (NULL);
 	while ((dirp = readdir(dp)) != NULL)
 	{
-		// 一致するのを探す
+		if (match_given_pattern(dirp->d_name, *(slash_splitted_str)) == false)
+			continue ;
 		joined_path_name = ft_strjoin(path_name, dirp->d_name);
-		// printf("79: %s\n", joined_path_name);
+		if (*(slash_splitted_str + 1) != NULL)
+			joined_path_name = ft_strjoin(joined_path_name, "/");
 		tmp = get_opened_directory(joined_path_name, slash_splitted_str + 1);
 		ft_lstadd_back(&head, tmp);
 	}
+	closedir(dp);
 	return (head);
 }
 
-// ./ppp/  /iii/pppp/*/ooooo    docs
 t_list	*get_expanded_filename_token(t_list *expansion_list)
 {
 	t_expansion	*expansion;
@@ -75,10 +63,8 @@ t_list	*get_expanded_filename_token(t_list *expansion_list)
 	slash_splitted_str = ft_split(str, '/');
 	if (*str == '/')
 		head = get_opened_directory("/", slash_splitted_str);
-	else if (*str == '.')
-		head = get_opened_directory("", slash_splitted_str);
 	else
-		head = get_opened_directory("./", slash_splitted_str);
+		head = get_opened_directory("", slash_splitted_str);
 	if (head == NULL)
 		return (expansion_list);
 	return (head);
@@ -95,7 +81,7 @@ t_list	*get_filename_expansion(t_list *expansion_list)
 	bool	is_delimiter;
 
 	head.next = NULL;
-	prev = &head; 
+	prev = &head;
 	itr = expansion_list;
 	is_delimiter = false;
 	while (itr)
