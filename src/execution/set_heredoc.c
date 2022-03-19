@@ -189,7 +189,7 @@ void	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 		{
 			kind = get_redirection_kind(((t_token *)(itr->content))->str);
 			itr = itr->next;
-			if (kind == INPUT || kind == HEREDOC)
+			if (kind == HEREDOC)
 			{
 				process->kind[0] = kind;
 				process->filename[0] = ((t_token *)(itr->content))->str;

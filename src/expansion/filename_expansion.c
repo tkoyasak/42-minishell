@@ -78,25 +78,20 @@ t_list	*get_filename_expansion(t_list *expansion_list)
 	t_list	*itr; //expansion_list_itr
 	t_list	*next;
 	t_list	*prev;
-	bool	is_delimiter;
 
 	head.next = NULL;
 	prev = &head;
 	itr = expansion_list;
-	is_delimiter = false;
 	while (itr)
 	{
 		next = itr->next;
-		if (!is_delimiter && ((t_expansion *)(itr->content))->kind == STRING && \
+		if (((t_expansion *)(itr->content))->kind == STRING && \
 			((t_expansion *)(itr->content))->in_dquote == false && \
 			((t_expansion *)(itr->content))->in_squote == false )
 			itr = get_expanded_filename_token(itr);
 		prev->next = itr;
 		while (itr->next != NULL && itr->next != next)
 			itr = itr->next;
-		is_delimiter = false;
-		if (((t_expansion *)(itr->content))->kind == TK_REDIRECT && ft_strcmp(((t_expansion *)(itr->content))->str, "<<") == 0)
-			is_delimiter = true;
 		itr->next = next;
 		prev = itr;
 		itr = itr->next;
