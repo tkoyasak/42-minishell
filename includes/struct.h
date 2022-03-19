@@ -67,7 +67,7 @@ typedef struct s_process
 	int					fd[2];
 	char				*filename[2];
 	char				*heredoc;
-	int					*here_pipefd;
+	int					here_pipefd[2];
 	char				**command;
 }	t_process;
 
