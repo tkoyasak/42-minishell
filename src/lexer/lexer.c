@@ -45,7 +45,9 @@ static int	token_string_len(char *p)
 	char	quote;
 
 	idx = 0;
-	while (p[idx] && !ft_isspace(p[idx]) && !ft_strchr(RESERVED_CHAR, p[idx]) && !ft_strchr(PARENTHESIS_CHAR, p[idx]))
+	while (p[idx] && !ft_isspace(p[idx]) && \
+		!ft_strchr(RESERVED_CHAR, p[idx]) && \
+		!ft_strchr(PARENTHESIS_CHAR, p[idx]))
 	{
 		if (p[idx] && ft_strchr(QUOTE_CHAR, p[idx]))
 		{
@@ -83,10 +85,7 @@ static bool	set_token_len_and_kind(char *p, int *len, t_token_kind *kind)
 	else if (ft_strchr(PARENTHESIS_CHAR, *p))
 	{
 		*len = 1;
-		if (*p == '(')
-			*kind = TK_L_PARENTHESIS;
-		else
-			*kind = TK_R_PARENTHESIS;
+		*kind = TK_L_PARENTHESIS + (*p == ')');
 	}
 	else
 	{
@@ -134,8 +133,8 @@ static t_list	*tokenize(char *p)
 			itr = consume_new_token(itr, &p, len, kind);
 			continue ;
 		}
-		// free必要 error_handler(free_all(&head, ___));
-		exit(1);
+		ft_lstclear(&head.next, delete_token);
+		return (NULL);
 	}
 	return (head.next);
 }
