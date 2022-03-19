@@ -150,9 +150,6 @@ void	dup2_func(t_expression *expression, t_process *process, const int cmd_idx)
 		safe_func(dup2(expression->pipefd[cmd_idx - 1][PIPEIN], STDIN_FILENO));
 	else if (process->kind[0] == HEREDOC)
 	{
-		process->here_pipefd = ft_calloc(2, sizeof(int));
-		if (!process->here_pipefd)
-			exit(EXIT_FAILURE);
 		if (pipe(process->here_pipefd) < 0)
 			exit(EXIT_FAILURE);
 		// heredocの$?を展開

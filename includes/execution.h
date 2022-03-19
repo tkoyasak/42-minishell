@@ -30,6 +30,5 @@ void		exec_child(t_expression *expression, t_process *process, const int cmd_idx
 t_redirection_kind	get_redirection_kind(char *redirect_str);
 void		dup2_func(t_expression *expression, t_process *process, const int cmd_idx);
 void		close_func(t_expression *expression, t_process *process, const int cmd_idx);
-ssize_t		safe_func(ssize_t res);
 
 #endif
