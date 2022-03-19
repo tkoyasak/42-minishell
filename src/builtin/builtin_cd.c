@@ -38,7 +38,7 @@ int		builtin_cd(t_process *process, t_shell_var *shell_var)
 	}
 	if (chdir(path_name) == -1)
 	{
-		ft_putstr_fd("cd: ", STDERR_FILENO);
+		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
 		ft_putstr_fd(path_name, STDERR_FILENO);
 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 		free(path_name);

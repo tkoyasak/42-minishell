@@ -54,6 +54,7 @@ void	test_one_line(t_shell_var *shell_var, int argc, char *argv[])
 	if (!analyzer(argv[2], &tree, shell_var))
 		g_exit_status = execution(tree, shell_var);
 	// delete tree
+	exit(g_exit_status);
 }
 
 int	main(int argc, char **argv)
