@@ -1,6 +1,15 @@
 #include "minishell.h"
 
-static t_node	*create_astree(t_list **itr);
+static t_node	*create_astree(t_list **itr, int *parser_result);
+
+t_node	*parser_error_handler(char *str, int *parser_result)
+{
+	*parser_result = 1;
+	ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
+	ft_putstr_fd(str, STDERR_FILENO);
+	ft_putstr_fd("'\n", STDERR_FILENO);
+	return (NULL);
+}
 
 static t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs)
 {
@@ -27,7 +36,7 @@ static bool	consume_node_kind(t_list **itr, char *op)
 }
 
 // 次の|か;か一番最後までを塊として読む
-static t_node	*create_process_node(t_list **itr)
+static t_node	*create_process_node(t_list **itr, int *parser_result)
 {
 	t_node	*node;
 	t_list	*tail;
@@ -42,30 +51,31 @@ static t_node	*create_process_node(t_list **itr)
 	{
 		if (((t_token *)(*itr)->content)->kind == TK_REDIRECT && \
 				((t_token *)((*itr)->next->content))->kind == TK_REDIRECT)
-			exit(1); // error_handler(); // < や << などが連続したらエラー
+		{
+			return (parser_error_handler(((t_token *)(*itr)->content)->str, parser_result));
+		}
 		*itr = (*itr)->next;
 	}
-	if (((t_token *)(*itr)->content)->kind == TK_REDIRECT)
-		exit(1); // error_handler(); // TK_REDIRECTが一番最後にあるとエラー
 	tail = *itr;
 	*itr = tail->next;
 	tail->next = NULL;
+	if (((t_token *)tail->content)->kind == TK_REDIRECT || \
+		(*itr && ((t_token *)(*itr)->content)->kind == TK_L_PARENTHESIS))
+	{
+		return (parser_error_handler(((t_token *)tail->content)->str, parser_result));
+	}
 	return (node);
 }
 
-static t_list	**expect_process(t_list **itr)
+static void	expect_process(t_list **itr, int *parser_result)
 {
 	if (((t_token *)((*itr)->content))->kind != TK_STRING)
 	{
-		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
-		ft_putstr_fd(((t_token *)((*itr)->content))->str, STDERR_FILENO);
-		ft_putstr_fd("'\n", STDERR_FILENO);
-		exit(1); // error_handler();
+		parser_error_handler(((t_token *)((*itr)->content))->str, parser_result);
 	}
-	return (itr);
 }
 
-static t_node	*create_subshell_tree(t_list **itr)
+static t_node	*create_subshell_tree(t_list **itr, int *parser_result)
 {
 	t_node	*node;
 
@@ -73,52 +83,50 @@ static t_node	*create_subshell_tree(t_list **itr)
 	{
 		node = ft_calloc(1, sizeof(t_node));
 		node->kind = ND_SUBSHELL;
-		// printf("%s\n", ((t_token *)((*itr)->content))->str);
-		node->lhs = create_astree(itr);
-		// printf("%s\n", ((t_token *)((*itr)->content))->str);
+		node->lhs = create_astree(itr, parser_result);
 		if (consume_node_kind(itr, ")") == false)
 		{
-			ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
-			ft_putstr_fd(((t_token *)((*itr)->content))->str, STDERR_FILENO);
-			ft_putstr_fd("'\n", STDERR_FILENO);
-			exit(1); // error_handler();
+			return (parser_error_handler("(", parser_result));
 		}
 		return (node);
 	}
-	return (create_process_node(expect_process(itr)));
+	expect_process(itr, parser_result);
+	if (*parser_result)
+		return (NULL);
+	return (create_process_node(itr, parser_result));
 }
 
 // semicolon間の部分木
-static t_node	*create_sub_astree(t_list **itr)
+static t_node	*create_sub_astree(t_list **itr, int *parser_result)
 {
 	t_node	*node;
 
 	if (*itr == NULL)
 		return (NULL);
-	node = create_subshell_tree(itr);
+	node = create_subshell_tree(itr, parser_result);
 	while (true)
 	{
 		if (consume_node_kind(itr, "|"))
-			node = node_new(ND_PIPE, node, create_subshell_tree(itr));
+			node = node_new(ND_PIPE, node, create_subshell_tree(itr, parser_result));
 		else
 			return (node);
 	}
 }
 
 // 全体のrootのnodeへのポインタを返す
-static t_node	*create_astree(t_list **itr)
+static t_node	*create_astree(t_list **itr, int *parser_result)
 {
 	t_node		*node;
 
-	node = create_sub_astree(itr);
+	node = create_sub_astree(itr, parser_result);
 	while (true)
 	{
 		if (consume_node_kind(itr, ";"))
-			node = node_new(ND_SEMICOLON, node, create_sub_astree(itr));
+			node = node_new(ND_SEMICOLON, node, create_sub_astree(itr, parser_result));
 		else if (consume_node_kind(itr, "&&"))
-			node = node_new(ND_DAND, node, create_sub_astree(itr));
+			node = node_new(ND_DAND, node, create_sub_astree(itr, parser_result));
 		else if (consume_node_kind(itr, "||"))
-			node = node_new(ND_DPIPE, node, create_sub_astree(itr));
+			node = node_new(ND_DPIPE, node, create_sub_astree(itr, parser_result));
 		else
 			return (node);
 	}
@@ -140,15 +148,15 @@ static t_node	*create_astree(t_list **itr)
 
 /*  token_listからND_SEMICOLON, ND_PIPE, ND_PROCESSの
 nodeで形成されるtreeのrootを返す  */
-t_node	*parser(char *argv)
+int	parser(t_node **tree, t_list *token_list)
 {
-	t_list	*token_list;
-	t_node	*tree;
+	int	parser_result;
 
-	token_list = lexer(argv);
-	tree = create_astree(&token_list);
+	parser_result = 0;
+	*tree = create_astree(&token_list, &parser_result);
+	// printf("168: %d\n", parser_result);
 	// dfs(tree);
-	return (tree);
+	return (parser_result);
 }
 
 // int	main()
