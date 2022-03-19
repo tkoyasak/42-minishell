@@ -45,6 +45,27 @@ void	remove_redirection_token(t_process *process)
 	process->token_list = head;
 }
 
+void	open_error_handler(char *filename)
+{
+	printf("errno:%d\n", errno);
+	if (errno == EACCES)
+	{
+		ft_putstr_fd(filename, STDERR_FILENO);
+		ft_putendl_fd(": Permission denied", STDERR_FILENO);
+	}
+	else if (errno == ENOENT)
+	{
+		ft_putstr_fd(filename, STDERR_FILENO);
+		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	}
+	else if (errno == EISDIR)
+	{
+		ft_putstr_fd(filename, STDERR_FILENO);
+		ft_putendl_fd(": Is a directory", STDERR_FILENO);
+	}
+
+}
+
 // ls -al > file           ls -al  output_kind = OUTPUT
 void	set_redirection_params(t_process *process, t_shell_var *shell_var)
 {
@@ -63,18 +84,34 @@ void	set_redirection_params(t_process *process, t_shell_var *shell_var)
 				process->kind[0] = kind;
 				process->filename[0] = ((t_token *)(itr->content))->str;
 				if (kind == INPUT)
-					process->fd[0] = open(process->filename[0], R_OK); //調べる
-				// else
-				// 	set_heredoc_sub(process, process->filename[0], shell_var);
+				{
+					if (process->fd[0])
+						close(process->fd[0]);
+					process->fd[0] = open(process->filename[0], R_OK);
+					if (process->fd[0] == -1)
+					{
+						open_error_handler(process->filename[0]);
+						g_exit_status = 1;
+						return ;
+					}
+				}
 			}
 			else if (kind == OUTPUT || kind == APPEND)
 			{
+				if (process->fd[1])
+					close(process->fd[1]);
 				process->kind[1] = kind;
 				process->filename[1] = ((t_token *)(itr->content))->str;
 				if (kind == OUTPUT)
 					process->fd[1] = open(process->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
 				else
 					process->fd[1] = open(process->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
+				if (process->fd[1] == -1)
+				{
+					open_error_handler(process->filename[1]);
+					g_exit_status = 1;
+					return ;
+				}
 			}
 		}
 		itr = itr->next;
@@ -194,6 +231,8 @@ void	set_redirections_and_commands(t_expression *expression, t_shell_var *shell_
 	{
 		process = process_list->content;
 		set_redirection_params(process, shell_var);
+		if (g_exit_status)
+			return ;
 		set_command(process);
 		process_list = process_list->next;
 		cmd_idx++;
@@ -211,6 +250,8 @@ int	exec_processes(t_expression *expression, t_shell_var *shell_var)
 	cmd_idx = 0;
 	process_list = expression->process_list;
 	set_redirections_and_commands(expression, shell_var);
+	if (g_exit_status)
+		return (g_exit_status);
 	while (cmd_idx < expression->process_cnt)
 	{
 		process = process_list->content;

@@ -19,8 +19,9 @@ int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 
 	init_expression(expression);
 	expansion(expression, shell_var);
+	g_exit_status = 0;
 	if (((t_process *)(expression->process_list->content))->token_list == NULL)
-		g_exit_status = 0;
+		;
 	else if (expression->process_cnt == 1)
 	{
 		stdin_copy = safe_func(dup(STDIN_FILENO));

@@ -21,6 +21,8 @@ int	exec_single_process(t_expression *expression, t_shell_var *shell_var)
 	t_process	*process;
 
 	set_redirections_and_commands(expression, shell_var);
+	if (g_exit_status)
+		return (g_exit_status);
 	process_list = expression->process_list;
 	process = process_list->content;
 	dup2_func(expression, process, 0);
