@@ -1,6 +1,7 @@
 # For me
 .vscode
 minishell
+minishell_tester
 obj
 build
 
