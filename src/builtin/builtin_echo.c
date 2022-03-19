@@ -30,7 +30,7 @@ int	builtin_echo(t_process *process, t_shell_var *shell_var)
 	}
 	if (is_valid_option(((t_token *)(itr->content))->str))
 		has_endl = false;
-	while (is_valid_option(((t_token *)(itr->content))->str))
+	while (itr && is_valid_option(((t_token *)(itr->content))->str))
 		itr = itr->next;
 	while (itr)
 	{
