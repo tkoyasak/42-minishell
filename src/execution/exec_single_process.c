@@ -7,11 +7,11 @@ int	exec_single_external(t_expression *expression, t_process *process, t_shell_v
 
 	process_list = expression->process_list;
 	process = process_list->content;
-	expression->pid[0] = fork();
+	expression->pid[0] = safe_func(fork());
 	if (expression->pid[0] == 0)
 		exec_child(expression, process, 0, shell_var);
 	process_list = process_list->next;
-	waitpid(expression->pid[0], &wstatus, WUNTRACED);
+	safe_func(waitpid(expression->pid[0], &wstatus, WUNTRACED));
 	return (WEXITSTATUS(wstatus));
 }
 

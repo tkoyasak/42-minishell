@@ -23,13 +23,13 @@ int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 		g_exit_status = 0;
 	else if (expression->process_cnt == 1)
 	{
-		stdin_copy = dup(STDIN_FILENO);
-		stdout_copy = dup(STDOUT_FILENO);
+		stdin_copy = safe_func(dup(STDIN_FILENO));
+		stdout_copy = safe_func(dup(STDOUT_FILENO));
 		g_exit_status = exec_single_process(expression, shell_var);
-		dup2(stdin_copy, STDIN_FILENO);
-		dup2(stdout_copy, STDOUT_FILENO);
-		close(stdin_copy);
-		close(stdout_copy);
+		safe_func(dup2(stdin_copy, STDIN_FILENO));
+		safe_func(dup2(stdout_copy, STDOUT_FILENO));
+		safe_func(close(stdin_copy));
+		safe_func(close(stdout_copy));
 	}
 	else
 		g_exit_status = exec_processes(expression, shell_var);
@@ -46,7 +46,7 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 
 	if (tree->kind == ND_SUBSHELL)
 	{
-		pid = fork();
+		pid = safe_func(fork());
 		if (pid == 0)
 		{
 			g_exit_status = execution(tree->lhs, shell_var);
@@ -54,7 +54,7 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 		}
 		else
 		{
-			waitpid(pid, &wstatus, WUNTRACED);
+			safe_func(waitpid(pid, &wstatus, WUNTRACED));
 			g_exit_status = wstatus;
 		}
 	}
