@@ -14,6 +14,7 @@
 # include "execution.h"
 # include "shell_var.h"
 # include "builtin.h"
+# include "utils.h"
 
 # define RED "\x1b[31m"
 # define GREEN "\x1b[32m"
@@ -22,6 +23,9 @@
 # define MAGENTA "\x1b[35m"
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
+
+# define PROMPT CYAN"minish$ "RESET
+# define HEREDOC_PROMPT "> "
 
 extern volatile sig_atomic_t	g_exit_status;
 

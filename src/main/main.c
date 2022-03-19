@@ -2,16 +2,6 @@
 
 volatile sig_atomic_t	g_exit_status;
 
-void	sigint_handler(int sig)
-{
-	(void)sig;
-	ft_putchar_fd('\n', STDOUT_FILENO);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_exit_status = 1;
-}
-
 void	init_shell_var(t_shell_var *shell_var)
 {
 	shell_var->env_list = init_envlist();
@@ -19,31 +9,40 @@ void	init_shell_var(t_shell_var *shell_var)
 	shell_var->oldpwd = NULL;
 }
 
+int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
+{
+	t_list	*token_list;
+
+	(void)token_list;
+	// *token_list = lexer(line);
+	// if (!token_list)
+	// 	return (1);
+	*tree = parser(line);
+	if (!tree)
+		return (1);
+	*tree = convert_to_expression_tree(*tree);
+	set_heredoc(*tree, shell_var);
+	return (0);
+}
+
 void minish_loop(t_shell_var *shell_var)
 {
 	char		*line;
-	t_list		*token_list;
-	t_node		*astree;
-	int 		error_status;
+	t_node		*tree;
 
-	(void)token_list;
 	while (1)
 	{
-		line = readline(CYAN"minish$ "RESET);
-		while (line == NULL)
-			line = readline("");
-		if (ft_strlen(line) == 0)
-			continue ;
-		else
+		line = readline(PROMPT);
+		if (line == NULL)
+			exit(g_exit_status);
+		if (ft_strlen(line))
 		{
-			// token_list = lexer(line);
-			astree = parser(line);
-			astree = convert_to_expression_tree(astree);
-			set_heredoc(astree, shell_var);
-			error_status = execution(astree, shell_var);
-			printf("error_status: %d\n", error_status);
+			add_history(line);
+			if (!analyzer(line, &tree, shell_var))
+				g_exit_status = execution(tree, shell_var);
+			// clear tree
 		}
-		add_history(line);
+		printf("g_exit_status:%d\n", g_exit_status);
 		free(line);
 	}
 }
@@ -57,5 +56,6 @@ int	main(void)
 		return (1);
 	init_shell_var(&shell_var);
 	minish_loop(&shell_var);
+	// delete shell_var
 	return (0);
 }
