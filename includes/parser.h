@@ -5,6 +5,6 @@
 # include "struct.h"
 # include "lexer.h"
 
-t_node	*parser(char *argv);
+int		parser(t_node **tree, t_list *token_list);
 
 #endif
