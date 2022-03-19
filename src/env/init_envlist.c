@@ -16,13 +16,15 @@ t_list	*init_envlist(void)
 	t_list		*env_list;
 	t_list		*itr;
 	extern char	**environ;
+	char		**env;
 
+	env = environ;
 	env_list = ft_lstnew(NULL);
 	itr = env_list;
-	while (*environ)
+	while (*env)
 	{
-		itr = consume_new_env(itr, *environ);
-		environ++;
+		itr = consume_new_env(itr, *env);
+		env++;
 	}
 	return (env_list);
 }

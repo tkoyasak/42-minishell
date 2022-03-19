@@ -15,4 +15,5 @@ char	*get_env_value(char *key, t_shell_var *shell_var)
 	}
 	if (itr == NULL)
 		return (ft_strdup(""));
+	return (NULL);
 }
