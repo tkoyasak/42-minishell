@@ -28,13 +28,12 @@ static bool validate_args(char *arg)
 	}
 	if (!valid)
 	{
-		ft_putstr_fd("bash: export: `", STDERR_FILENO);
+		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
 		ft_putstr_fd(arg, STDERR_FILENO);
 		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 	}
 	return (valid);
 }
-
 
 int	builtin_export(t_process *process, t_shell_var *shell_var)
 {

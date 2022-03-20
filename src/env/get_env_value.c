@@ -13,7 +13,16 @@ char	*get_env_value(char *key, t_shell_var *shell_var)
 			return (ft_strdup(((t_env *)(itr->content))->val));
 		itr = itr->next;
 	}
-	if (itr == NULL)
-		return (ft_strdup(""));
 	return (NULL);
+}
+
+char	*get_env_value_str(char *key, t_shell_var *shell_var)
+{
+	char	*val;
+
+	val = get_env_value(key, shell_var);
+	if (val)
+		return (val);
+	else
+		return (ft_strdup(""));
 }

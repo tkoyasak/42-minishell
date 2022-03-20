@@ -31,6 +31,8 @@ int	a_to_uchar(const char *str)
 		ret = ret * 10 + (*str - '0');
 		str++;
 	}
+	if (*str)
+		return (-1);
 	return ((unsigned char)(ret * sign));
 }
 
@@ -44,11 +46,14 @@ int		builtin_exit(t_process *process, t_shell_var *shell_var)
 	g_exit_status = a_to_uchar(command[1]);
 	if (g_exit_status == -1)
 	{
-		ft_putstr_fd("numeric argument required\n", STDERR_FILENO);
+		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+		ft_putstr_fd(command[1], STDERR_FILENO);
+		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 		g_exit_status = 255;
 	}
 	else if (command[2])
 	{
+		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd("too many arguments\n", STDERR_FILENO);
 		g_exit_status = 1;
 	}

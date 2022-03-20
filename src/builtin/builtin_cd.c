@@ -30,10 +30,14 @@ int		builtin_cd(t_process *process, t_shell_var *shell_var)
 	if (path_name == NULL)
 	{
 		path_name = get_env_value("HOME", shell_var);
+		if (path_name == NULL)
+		{
+			ft_putendl_fd("minishell: cd: HOME not set", STDERR_FILENO);
+			return (1);
+		}
 		if (*path_name == '\0')
 		{
-			ft_putendl_fd("cd: HOME not set", STDERR_FILENO);
-			return (1);
+			return (0);
 		}
 	}
 	if (chdir(path_name) == -1)

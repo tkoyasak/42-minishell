@@ -72,7 +72,7 @@ t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_shell_var *s
 		exp = (t_expansion *)(itr->content);
 		if (exp->kind == ENV)
 		{
-			exp->str = get_env_value(exp->str + 1, shell_var);
+			exp->str = get_env_value_str(exp->str + 1, shell_var);
 			if (prev == NULL)
 				head = get_expansion_list_heredoc(exp->str, exp->in_dquote, shell_var);
 			else
