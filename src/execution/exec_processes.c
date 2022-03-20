@@ -149,13 +149,7 @@ void	dup2_func(t_expression *expression, t_process *process, const int cmd_idx)
 	if (process->kind[0] == NONE && cmd_idx > 0) // cmd_idx > 0 かつ redirectionがない
 		safe_func(dup2(expression->pipefd[cmd_idx - 1][PIPEIN], STDIN_FILENO));
 	else if (process->kind[0] == HEREDOC)
-	{
-		if (pipe(process->here_pipefd) < 0)
-			exit(EXIT_FAILURE);
-		// heredocの$?を展開
-		write(process->here_pipefd[1], process->heredoc, ft_strlen(process->heredoc));
-		safe_func(dup2(process->here_pipefd[0], STDIN_FILENO));
-	}
+		safe_func(dup2(process->here_fd, STDIN_FILENO));
 	else if (process->kind[0] != NONE)
 		safe_func(dup2(process->fd[0], STDIN_FILENO));
 
@@ -168,10 +162,7 @@ void	dup2_func(t_expression *expression, t_process *process, const int cmd_idx)
 void	close_func(t_expression *expression, t_process *process, const int cmd_idx)
 {
 	if (process->kind[0] == HEREDOC)
-	{
-		safe_func(close(process->here_pipefd[0]));
-		safe_func(close(process->here_pipefd[1]));
-	}
+		safe_func(close(process->here_fd));
 	if (cmd_idx > 0)
 	{
 		safe_func(close(expression->pipefd[cmd_idx - 1][PIPEIN]));
