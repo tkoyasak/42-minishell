@@ -235,5 +235,4 @@ void	set_heredoc(t_node *tree, t_shell_var *shell_var)
 			itr = itr->next;
 		}
 	}
-	printf("242\n");
 }
