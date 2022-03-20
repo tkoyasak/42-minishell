@@ -169,7 +169,6 @@ void	set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var)
 		// free_one(&temp);
 		res = get_next_line(STDIN_FILENO, &temp);
 	}
-	printf("172\n");
 	// free(limiter);
 	// free_one(&temp);
 	if (write(process->here_pipefd[1], new_document, ft_strlen(new_document)) == -1)
@@ -198,10 +197,7 @@ void	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 				pipe(process->here_pipefd);
 				pid = fork();
 				if (pid == 0)
-				{
 					set_heredoc_sub(process, process->filename[0], shell_var);
-					exit(0);
-				}
 				else
 				{
 					process->here_fd = process->here_pipefd[0];
