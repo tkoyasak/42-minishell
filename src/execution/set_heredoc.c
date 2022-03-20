@@ -151,6 +151,7 @@ void	set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var)
 	int		res;
 	bool	in_quote;
 
+	close(process->here_pipefd[0]);
 	limiter = remove_quote_heredoc(limiter, &in_quote);
 	new_document = ft_strdup("");
 	if (!new_document)
@@ -163,24 +164,24 @@ void	set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var)
 		if (in_quote == false)
 			temp = expansion_heredoc(temp, shell_var);
 		new_document = ft_strjoin(new_document, temp);
-		if (!new_document)
-		{
+		// if (!new_document)
 			// free_one(&temp);
-			// exit(free_all(NULL, pdata, true));
-		}
-		// free_one(&(pdata->total_doc));
 		// free_one(&temp);
 		res = get_next_line(STDIN_FILENO, &temp);
 	}
 	// free(limiter);
 	// free_one(&temp);
-	process->heredoc = new_document;
+	if (write(process->here_pipefd[1], new_document, ft_strlen(new_document)) == -1)
+		printf("179error\n");
+	exit(0);
 }
 
 void	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 {
 	t_list				*itr; // token_list;
 	t_redirection_kind	kind;
+	pid_t				pid;
+	int					wstatus;
 
 	itr = process->token_list;
 	while (itr)
@@ -193,7 +194,16 @@ void	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 			{
 				process->kind[0] = kind;
 				process->filename[0] = ((t_token *)(itr->content))->str;
-				set_heredoc_sub(process, process->filename[0], shell_var);
+				pipe(process->here_pipefd);
+				pid = fork();
+				if (pid == 0)
+					set_heredoc_sub(process, process->filename[0], shell_var);
+				else
+				{
+					process->here_fd = process->here_pipefd[0];
+					close(process->here_pipefd[1]);
+					waitpid(pid, &wstatus, WUNTRACED);
+				}
 			}
 		}
 		itr = itr->next;
@@ -203,6 +213,7 @@ void	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 void	set_heredoc(t_node *tree, t_shell_var *shell_var)
 {
 	t_list	*itr;
+	pid_t	pid;
 
 	if (ND_SUBSHELL <= tree->kind && tree->kind <= ND_DPIPE)
 	{
@@ -224,4 +235,5 @@ void	set_heredoc(t_node *tree, t_shell_var *shell_var)
 			itr = itr->next;
 		}
 	}
+	printf("242\n");
 }
