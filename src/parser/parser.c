@@ -2,12 +2,17 @@
 
 static t_node	*create_astree(t_list **itr, int *parser_result);
 
-t_node	*parser_error_handler(char *str, int *parser_result)
+t_node	*parser_error_handler(t_list **itr, char *str, int *parser_result, int line)
 {
-	*parser_result = 1;
-	ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
-	ft_putstr_fd(str, STDERR_FILENO);
-	ft_putstr_fd("'\n", STDERR_FILENO);
+	if (*parser_result != 1)
+	{
+		*parser_result = 1;
+		printf("syntax:%d\n", line);
+		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putstr_fd("'\n", STDERR_FILENO);
+	}
+	ft_lstclear(itr, delete_token);
 	return (NULL);
 }
 
@@ -25,11 +30,13 @@ static t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs)
 // 比較と，一致していれば進める
 static bool	consume_node_kind(t_list **itr, char *op)
 {
-	if (*itr == NULL)
-		return (false);
-	if (ft_strcmp(((t_token *)((*itr)->content))->str, op) == 0)
+	t_list	*delete_itr;
+
+	if (*itr && ft_strcmp(((t_token *)((*itr)->content))->str, op) == 0)
 	{
+		delete_itr = *itr;
 		*itr = (*itr)->next;
+		ft_lstdelone(delete_itr, delete_token); // 元のトークンはいらなくなるので，deleteが必要．
 		return (true);
 	}
 	return (false);
@@ -52,7 +59,10 @@ static t_node	*create_process_node(t_list **itr, int *parser_result)
 		if (((t_token *)(*itr)->content)->kind == TK_REDIRECT && \
 				((t_token *)((*itr)->next->content))->kind == TK_REDIRECT)
 		{
-			return (parser_error_handler(((t_token *)(*itr)->content)->str, parser_result));
+			parser_error_handler(itr, ((t_token *)((*itr)->next->content))->str, parser_result, __LINE__);
+			return (node);
+			// return (parser_error_handler(itr, ((t_token *)(*itr)->content)->str, parser_result, __LINE__));
+			// ここでNULLが返ると，tokenをフリーできなくなる．
 		}
 		*itr = (*itr)->next;
 	}
@@ -62,7 +72,8 @@ static t_node	*create_process_node(t_list **itr, int *parser_result)
 	if (((t_token *)tail->content)->kind == TK_REDIRECT || \
 		(*itr && ((t_token *)(*itr)->content)->kind == TK_L_PARENTHESIS))
 	{
-		return (parser_error_handler(((t_token *)tail->content)->str, parser_result));
+		parser_error_handler(itr, ((t_token *)tail->content)->str, parser_result, __LINE__);
+		return (node);
 	}
 	return (node);
 }
@@ -71,7 +82,7 @@ static void	expect_process(t_list **itr, int *parser_result)
 {
 	if (((t_token *)((*itr)->content))->kind != TK_STRING)
 	{
-		parser_error_handler(((t_token *)((*itr)->content))->str, parser_result);
+		parser_error_handler(itr, ((t_token *)((*itr)->content))->str, parser_result, __LINE__);
 	}
 }
 
@@ -86,31 +97,44 @@ static t_node	*create_subshell_tree(t_list **itr, int *parser_result)
 		node->lhs = create_astree(itr, parser_result);
 		if (consume_node_kind(itr, ")") == false)
 		{
-			return (parser_error_handler("(", parser_result));
+			// printf("95\n");
+			parser_error_handler(itr, "(", parser_result, __LINE__);
+			return (node);
 		}
 		return (node);
 	}
-	expect_process(itr, parser_result);
-	if (*parser_result)
+	if (*itr == NULL)
 		return (NULL);
-	return (create_process_node(itr, parser_result));
+	else if (((t_token *)((*itr)->content))->kind == TK_STRING)
+		return (create_process_node(itr, parser_result));
+	else if (((t_token *)((*itr)->content))->kind == TK_PROCESS_DELIM)
+		return (parser_error_handler(itr, ((t_token *)((*itr)->content))->str, parser_result, __LINE__));
+	else
+		return (NULL);
 }
 
 // semicolon間の部分木
 static t_node	*create_sub_astree(t_list **itr, int *parser_result)
 {
 	t_node	*node;
+	t_node	*r_node;
 
 	if (*itr == NULL)
 		return (NULL);
 	node = create_subshell_tree(itr, parser_result);
-	while (true)
+	while (*parser_result == 0)
 	{
 		if (consume_node_kind(itr, "|"))
-			node = node_new(ND_PIPE, node, create_subshell_tree(itr, parser_result));
+		{
+			r_node = create_subshell_tree(itr, parser_result);
+			if (r_node == NULL)
+				return (parser_error_handler(itr, "|", parser_result, __LINE__));
+			node = node_new(ND_PIPE, node, r_node);
+		}
 		else
 			return (node);
 	}
+	return (node);
 }
 
 // 全体のrootのnodeへのポインタを返す
@@ -118,8 +142,10 @@ static t_node	*create_astree(t_list **itr, int *parser_result)
 {
 	t_node		*node;
 
+	if (*itr == NULL)
+		return (NULL);
 	node = create_sub_astree(itr, parser_result);
-	while (true)
+	while (*parser_result == 0)
 	{
 		if (consume_node_kind(itr, ";"))
 			node = node_new(ND_SEMICOLON, node, create_sub_astree(itr, parser_result));
@@ -130,6 +156,7 @@ static t_node	*create_astree(t_list **itr, int *parser_result)
 		else
 			return (node);
 	}
+	return (node);
 }
 
 // static void	dfs(t_node *tree)
@@ -156,6 +183,7 @@ int	parser(t_node **tree, t_list *token_list)
 	*tree = create_astree(&token_list, &parser_result);
 	// printf("168: %d\n", parser_result);
 	// dfs(tree);
+	// printf("parser_result: %d\n", parser_result);
 	return (parser_result);
 }
 
