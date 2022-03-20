@@ -35,7 +35,9 @@ void minish_loop(t_shell_var *shell_var)
 		if (ft_strlen(line))
 		{
 			add_history(line);
-			if (!analyzer(line, &tree, shell_var))
+			if (analyzer(line, &tree, shell_var) == 1)
+				g_exit_status = 258;
+			else
 				g_exit_status = execution(tree, shell_var);
 			// clear tree
 		}
