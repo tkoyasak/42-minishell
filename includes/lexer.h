@@ -16,6 +16,6 @@
 # define QUOTE_CHAR "\"\'"
 # define PARENTHESIS_CHAR "()"
 
-t_list		*lexer(char *line);
+int		lexer(char *line, t_list **token_list);
 
 #endif

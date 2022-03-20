@@ -139,10 +139,37 @@ static t_list	*tokenize(char *p)
 	return (head.next);
 }
 
-t_list	*lexer(char *line)
+int	validate_syntax(t_list *token_list)
 {
-	t_list	*token_list;
+	t_list	*itr;
+	size_t	parenthesis;
 
-	token_list = tokenize(line);
-	return (token_list);
+	itr = token_list;
+	parenthesis = 0;
+	while (itr)
+	{
+		if (((t_token *)(itr->content))->kind == TK_L_PARENTHESIS)
+			parenthesis++;
+		else if (((t_token *)(itr->content))->kind == TK_R_PARENTHESIS)
+			parenthesis--;
+		if (parenthesis < 0)
+			return (1);
+		itr = itr->next;
+	}
+	return (parenthesis != 0);
+}
+
+int	lexer(char *line, t_list **token_list)
+{
+	*token_list = tokenize(line);
+	if (*token_list == NULL)
+		return (1);
+	if (validate_syntax(*token_list))
+	{
+		// syntax error ")"
+		ft_lstclear(token_list, delete_token);
+		return (1);
+	}
+	// return (token_list);
+	return (0);
 }
