@@ -8,6 +8,7 @@ void	delete_env(void *arg)
 	free(env->key);
 	free(env->val);
 	free(env);
+	env = NULL;
 }
 
 void	delete_token(void *arg)
@@ -17,6 +18,7 @@ void	delete_token(void *arg)
 	token = (t_token *)arg;
 	free(token->str);
 	free(token);
+	token = NULL;
 }
 
 void	delete_expansion(void *arg)
@@ -26,6 +28,7 @@ void	delete_expansion(void *arg)
 	expansion = (t_expansion *)arg;
 	free(expansion->str);
 	free(expansion);
+	expansion = NULL;
 }
 
 void	delete_process(void *arg)
@@ -45,12 +48,12 @@ void	delete_process(void *arg)
 		safe_func(close(process->here_pipefd[1]));
 	free(process->filename[0]);
 	free(process->filename[1]);
-	free(process->heredoc);
 	i = -1;
 	while (process->command[++i])
 		free(process->command[i]);
 	free(process->command);
 	free(process);
+	process = NULL;
 }
 
 void	delete_expression(void *arg)
@@ -61,10 +64,11 @@ void	delete_expression(void *arg)
 	expression = (t_expression *)arg;
 	ft_lstclear(&expression->process_list, delete_process);
 	i = -1;
-	while (expression->pipefd[++i])
+	while (++i < expression->process_cnt - 1)
 		free(expression->pipefd[i]);
 	free(expression->pipefd);
 	free(expression);
+	expression = NULL;
 }
 
 void	delete_node(void *arg)
@@ -75,6 +79,7 @@ void	delete_node(void *arg)
 	ft_lstclear(&node->token_list, delete_token);
 	delete_expression(node->expression);
 	free(node);
+	node = NULL;
 }
 
 void	delete_astree(t_node *node)

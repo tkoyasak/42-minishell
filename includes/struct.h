@@ -66,7 +66,6 @@ typedef struct s_process
 	t_redirection_kind	kind[2];
 	int					fd[2];
 	char				*filename[2];
-	char				*heredoc; // 削除予定
 	int					here_pipefd[2];
 	int					here_fd;
 	char				**command;
