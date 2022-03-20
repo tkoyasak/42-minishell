@@ -13,11 +13,8 @@ int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
 {
 	t_list	*token_list;
 
-	// (void)token_list;
-	token_list = lexer(line);
-	if (!token_list)
+	if (lexer(line, &token_list) == 1)
 		return (1);
-	// *tree = parser(tree, token_list);
 	if (parser(tree, token_list) == 1)
 		return (1);
 	*tree = convert_to_expression_tree(*tree);
@@ -42,7 +39,7 @@ void minish_loop(t_shell_var *shell_var)
 				g_exit_status = execution(tree, shell_var);
 			// clear tree
 		}
-		printf("g_exit_status:%d\n", g_exit_status);
+		// printf("g_exit_status:%d\n", g_exit_status);
 		free(line);
 	}
 }
@@ -54,6 +51,8 @@ void	test_one_line(t_shell_var *shell_var, int argc, char *argv[])
 	if (!analyzer(argv[2], &tree, shell_var))
 		g_exit_status = execution(tree, shell_var);
 	// delete tree
+	// analyzer(argv[2], &tree, shell_var);
+	// delete_astree(tree);
 	exit(g_exit_status);
 }
 
