@@ -61,9 +61,9 @@ void	test_one_line(t_shell_var *shell_var, int argc, char *argv[])
 {
 	t_node		*tree;
 
-	if (analyzer(argv[2], &tree, shell_var) == 1)
-		g_exit_status = 258;
-	else
+	if (ft_strlen(argv[2]) == 0)
+		exit(0);
+	if (analyzer(argv[2], &tree, shell_var) == 0)
 		g_exit_status = execution(tree, shell_var);
 	// delete tree
 	// analyzer(argv[2], &tree, shell_var);

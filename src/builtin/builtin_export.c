@@ -7,7 +7,11 @@ void	builtin_export_print(t_list *env_list)
 	itr = env_list->next;
 	while (itr)
 	{
-		printf("declare -x %s=\"%s\"\n", ((t_env *)(itr->content))->key, ((t_env *)(itr->content))->val);
+		printf("declare -x %s", ((t_env *)(itr->content))->key);
+		if (((t_env *)(itr->content))->val)
+			printf("=\"%s\"\n", ((t_env *)(itr->content))->val);
+		else
+			printf("\n");
 		itr = itr->next;
 	}
 }
