@@ -66,6 +66,44 @@ void	open_error_handler(char *filename)
 	}
 }
 
+int	set_redirection_input(t_process *process, t_list *itr, t_redirection_kind kind)
+{
+	process->kind[0] = kind;
+	process->filename[0] = ((t_token *)(itr->content))->str;
+	if (kind == INPUT)
+	{
+		if (process->fd[0])
+			safe_func(close(process->fd[0]));
+		process->fd[0] = open(process->filename[0], R_OK);
+		if (process->fd[0] == -1)
+		{
+			open_error_handler(process->filename[0]);
+			g_exit_status = 1;
+			return (-1);
+		}
+	}
+	return (0);
+}
+
+int	set_redirection_output(t_process *process, t_list *itr, t_redirection_kind kind)
+{
+	if (process->fd[1])
+		close(process->fd[1]);
+	process->kind[1] = kind;
+	process->filename[1] = ((t_token *)(itr->content))->str;
+	if (kind == OUTPUT)
+		process->fd[1] = open(process->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
+	else
+		process->fd[1] = open(process->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
+	if (process->fd[1] == -1)
+	{
+		open_error_handler(process->filename[1]);
+		g_exit_status = 1;
+		return (-1);
+	}
+	return (0);
+}
+
 // ls -al > file           ls -al  output_kind = OUTPUT
 void	set_redirection_params(t_process *process, t_shell_var *shell_var)
 {
@@ -81,37 +119,13 @@ void	set_redirection_params(t_process *process, t_shell_var *shell_var)
 			itr = itr->next;
 			if (kind == INPUT || kind == HEREDOC)
 			{
-				process->kind[0] = kind;
-				process->filename[0] = ((t_token *)(itr->content))->str;
-				if (kind == INPUT)
-				{
-					if (process->fd[0])
-						close(process->fd[0]);
-					process->fd[0] = open(process->filename[0], R_OK);
-					if (process->fd[0] == -1)
-					{
-						open_error_handler(process->filename[0]);
-						g_exit_status = 1;
-						return ;
-					}
-				}
+				if (set_redirection_input(process, itr, kind) == -1)
+					return ;
 			}
 			else if (kind == OUTPUT || kind == APPEND)
 			{
-				if (process->fd[1])
-					close(process->fd[1]);
-				process->kind[1] = kind;
-				process->filename[1] = ((t_token *)(itr->content))->str;
-				if (kind == OUTPUT)
-					process->fd[1] = open(process->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
-				else
-					process->fd[1] = open(process->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
-				if (process->fd[1] == -1)
-				{
-					open_error_handler(process->filename[1]);
-					g_exit_status = 1;
+				if (set_redirection_output(process, itr, kind) == -1)
 					return ;
-				}
 			}
 		}
 		itr = itr->next;
