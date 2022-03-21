@@ -7,6 +7,8 @@ int		builtin_unset(t_process *process, t_shell_var *shell_var)
 	t_list	*prev;
 	char	*key;
 
+	if (process->token_list->next == NULL)
+		return (0);
 	key = ((t_token *)(process->token_list->next->content))->str;
 	prev = shell_var->env_list;
 	itr = shell_var->env_list->next;
