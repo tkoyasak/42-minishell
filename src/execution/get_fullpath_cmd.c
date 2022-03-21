@@ -37,7 +37,7 @@ static char	*get_fullcmd_core(char *cmd, char **all_paths)
 	return (NULL);
 }
 
-/*  return (NULL) if fail  */
+/*  return NULL if command not found  */
 char	*get_fullpath_cmd(char *cmd, t_shell_var *shell_var)
 {
 	char	**all_paths;

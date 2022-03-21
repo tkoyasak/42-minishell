@@ -143,12 +143,13 @@ char	*remove_quote_heredoc(char *limiter, bool *in_quote)
 	return (dst);
 }
 
-void	set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var)
+int	heredoc_child(t_process *process, char *limiter, t_shell_var *shell_var)
 {
 	size_t	len;
 	char	*temp;
 	bool	in_quote;
 
+	safe_func((ssize_t)signal(SIGINT, SIG_DFL));
 	safe_func(close(process->here_pipefd[0]));
 	limiter = remove_quote_heredoc(limiter, &in_quote);
 	len = ft_strlen(limiter);
@@ -165,12 +166,6 @@ void	set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var)
 	free(temp);
 	// free(limiter);
 	exit(0);
-}
-
-int	heredoc_child(t_process *process, char *limiter, t_shell_var *shell_var)
-{
-	safe_func((ssize_t)signal(SIGINT, SIG_DFL));
-	set_heredoc_sub(process, limiter, shell_var);
 }
 
 int	heredoc_parent(t_process *process, pid_t pid)
@@ -245,15 +240,11 @@ int	set_heredoc(t_node *tree, t_shell_var *shell_var)
 	if (ND_SUBSHELL <= tree->kind && tree->kind <= ND_DPIPE)
 	{
 		if (tree->lhs)
-		{
 			if (set_heredoc(tree->lhs, shell_var) == 1)
 				return (1);
-		}
 		if (tree->rhs)
-		{
 			if (set_heredoc(tree->rhs, shell_var) == 1)
 				return (1);
-		}
 	}
 	else
 	{
