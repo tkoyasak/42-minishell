@@ -196,11 +196,27 @@ int	heredoc_parent(t_process *process, pid_t pid)
 	}
 }
 
+int	set_heredoc_in_token(t_process *process, t_shell_var *shell_var)
+{
+	pid_t				pid;
+
+	safe_func((ssize_t)signal(SIGINT, SIG_IGN));
+	pipe(process->here_pipefd);
+	pid = fork();
+	if (pid == 0)
+		heredoc_child(process, process->filename[0], shell_var);
+	else
+	{
+		if (heredoc_parent(process, pid))
+			return (1);
+	}
+	return (0);
+}
+
 int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 {
 	t_list				*itr; // token_list;
 	t_redirection_kind	kind;
-	pid_t				pid;
 	int					wstatus;
 
 	itr = process->token_list;
@@ -210,20 +226,12 @@ int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 		{
 			kind = get_redirection_kind(((t_token *)(itr->content))->str);
 			itr = itr->next;
+			process->kind[0] = kind;
+			process->filename[0] = ((t_token *)(itr->content))->str;
 			if (kind == HEREDOC)
 			{
-				safe_func((ssize_t)signal(SIGINT, SIG_IGN));
-				process->kind[0] = kind;
-				process->filename[0] = ((t_token *)(itr->content))->str;
-				pipe(process->here_pipefd);
-				pid = fork();
-				if (pid == 0)
-					heredoc_child(process, process->filename[0], shell_var);
-				else
-				{
-					if (heredoc_parent(process, pid))
-						return (1);
-				}
+				if (set_heredoc_in_token(process, shell_var) == 1)
+					return (1);
 			}
 		}
 		itr = itr->next;
@@ -232,6 +240,7 @@ int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 	return (0);
 }
 
+// shell_varいらないような
 int	set_heredoc(t_node *tree, t_shell_var *shell_var)
 {
 	t_list	*itr;
