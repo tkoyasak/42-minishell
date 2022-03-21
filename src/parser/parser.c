@@ -7,8 +7,8 @@ t_node	*parser_error_handler(t_list **itr, char *str, int *parser_result, int li
 	if (*parser_result != 1)
 	{
 		*parser_result = 1;
-		printf("syntax:%d\n", line);
-		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
+		// printf("syntax:%d\n", line);
+		ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
 		ft_putstr_fd("'\n", STDERR_FILENO);
 	}
@@ -57,7 +57,7 @@ static t_node	*create_process_node(t_list **itr, int *parser_result)
 		((t_token *)((*itr)->next->content))->kind != TK_R_PARENTHESIS)
 	{
 		if (((t_token *)(*itr)->content)->kind == TK_REDIRECT && \
-				((t_token *)((*itr)->next->content))->kind == TK_REDIRECT)
+				((t_token *)((*itr)->next->content))->kind != TK_STRING)
 		{
 			parser_error_handler(itr, ((t_token *)((*itr)->next->content))->str, parser_result, __LINE__);
 			return (node);
@@ -105,7 +105,8 @@ static t_node	*create_subshell_tree(t_list **itr, int *parser_result)
 	}
 	if (*itr == NULL)
 		return (NULL);
-	else if (((t_token *)((*itr)->content))->kind == TK_STRING)
+	else if (((t_token *)((*itr)->content))->kind == TK_STRING || \
+		((t_token *)((*itr)->content))->kind == TK_REDIRECT)
 		return (create_process_node(itr, parser_result));
 	else if (((t_token *)((*itr)->content))->kind == TK_PROCESS_DELIM)
 		return (parser_error_handler(itr, ((t_token *)((*itr)->content))->str, parser_result, __LINE__));

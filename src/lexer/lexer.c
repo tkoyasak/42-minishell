@@ -20,7 +20,7 @@ static bool	is_valid_str(char *p)
 		is_valid = false;
 	if (!is_valid)
 	{
-		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
+		ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
 		ft_putnchar_fd(p, idx, STDERR_FILENO);
 		ft_putstr_fd("'\n", STDERR_FILENO);
 	}

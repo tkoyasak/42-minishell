@@ -14,11 +14,21 @@ int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
 	t_list	*token_list;
 
 	if (lexer(line, &token_list) == 1)
+	{
+		g_exit_status = 258;
 		return (1);
+	}
 	if (parser(tree, token_list) == 1)
+	{
+		g_exit_status = 258;
 		return (1);
+	}
 	*tree = convert_to_expression_tree(*tree);
-	set_heredoc(*tree, shell_var);
+	if(set_heredoc(*tree, shell_var) == 1)
+	{
+		g_exit_status = 1;
+		return (1);
+	}
 	return (0);
 }
 
@@ -31,13 +41,14 @@ void minish_loop(t_shell_var *shell_var)
 	{
 		line = readline(PROMPT);
 		if (line == NULL)
-			exit(g_exit_status);
+		{
+			printf("exit\n");
+			line = ft_strdup("exit");
+		}
 		if (ft_strlen(line))
 		{
 			add_history(line);
-			if (analyzer(line, &tree, shell_var) == 1)
-				g_exit_status = 258;
-			else
+			if (analyzer(line, &tree, shell_var) == 0)
 				g_exit_status = execution(tree, shell_var);
 			// clear tree
 		}
@@ -50,7 +61,9 @@ void	test_one_line(t_shell_var *shell_var, int argc, char *argv[])
 {
 	t_node		*tree;
 
-	if (!analyzer(argv[2], &tree, shell_var))
+	if (analyzer(argv[2], &tree, shell_var) == 1)
+		g_exit_status = 258;
+	else
 		g_exit_status = execution(tree, shell_var);
 	// delete tree
 	// analyzer(argv[2], &tree, shell_var);
