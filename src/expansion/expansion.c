@@ -223,6 +223,7 @@ t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
 	expansion_list = get_filename_expansion(expansion_list);
 	expansion_list = remove_quotes(expansion_list); // t_expansionのリスト
 	expanded_token_list = convert_to_token(expansion_list); // t_tokenのリスト
+	// printf("226: |%s|\n", ((t_token *)(expanded_token_list->content))->str);
 	return (expanded_token_list);
 }
 
@@ -273,6 +274,7 @@ void	expansion(t_expression *expression, t_shell_var *shell_var)
 	while(itr)
 	{
 		handle_process((t_process *)(itr->content), shell_var);
+		g_exit_status = 0; // bashの挙動に合わせた
 		itr = itr->next;
 	}
 }
