@@ -20,6 +20,14 @@ char		*get_fullpath_cmd(char *cmd, t_shell_var *shell_var);
 int			execution(t_node *tree, t_shell_var *shell_var);
 int			set_heredoc(t_node *tree, t_shell_var *shell_var);
 void		set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var);
+size_t		get_word_len_heredoc(char *str);
+t_list		*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expansion_kind kind);
+t_list		*split_str_heredoc(char *str, bool par_in_dquote);
+t_list		*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_shell_var *shell_var);
+size_t		get_expanded_len_heredoc(t_list *exp_list);
+char		*expansion_heredoc(char *str, t_shell_var *shell_var);
+char		*remove_quote_heredoc(char *limiter, bool *in_quote);
+
 int			exec_builtin(t_process *process, t_shell_var *shell_var);
 bool		is_builtin(char *cmd);
 int			exec_processes(t_expression *expression, t_shell_var *shell_var);
