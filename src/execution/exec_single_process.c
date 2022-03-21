@@ -7,13 +7,22 @@ int	exec_single_external(t_expression *expression, t_process *process, t_shell_v
 
 	process_list = expression->process_list;
 	process = process_list->content;
+	signal(SIGINT, SIG_IGN);
 	expression->pid[0] = safe_func(fork());
 	if (expression->pid[0] == 0)
-	{
 		exec_child(expression, process, 0, shell_var);
-	}
-	process_list = process_list->next;
 	safe_func(waitpid(expression->pid[0], &wstatus, WUNTRACED));
+	if (WIFSIGNALED(wstatus))
+	{
+		if (WTERMSIG(wstatus) == SIGQUIT)
+			ft_putendl_fd("Quit: 3", STDERR_FILENO);
+		else if (WTERMSIG(wstatus) == SIGINT)
+			ft_putchar_fd('\n', STDERR_FILENO);
+		g_exit_status = WTERMSIG(wstatus) + 128;
+	}
+	else
+		g_exit_status = WEXITSTATUS(wstatus);
+	signal(SIGINT, sigint_handler);
 	return (WEXITSTATUS(wstatus));
 }
 

@@ -124,6 +124,12 @@ void	set_command(t_process *process)
 	int		cmd_idx;
 
 	remove_redirection_token(process);
+	if (ft_lstsize(process->token_list) == 0)
+	{
+		process->command = ft_calloc(2, sizeof(char *));
+		process->command[0] = ft_strdup("");
+		return ;
+	}
 	process->command = ft_calloc(ft_lstsize(process->token_list) + 1, sizeof(char *));
 	itr = process->token_list;
 	cmd_idx = 0;
@@ -181,14 +187,14 @@ void	exec_child(t_expression *expression, t_process *process, const int cmd_idx,
 	char	*cmd;
 	char	*fullpath_cmd;
 
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	cmd = ((t_token *)(process->token_list->content))->str;
 	dup2_func(expression, process, cmd_idx);
 	close_func(expression, process, cmd_idx);
 	if (is_builtin(cmd))
 		exit(exec_builtin(process, shell_var));
 	fullpath_cmd = get_fullpath_cmd(cmd, shell_var);
-	if (cmd_idx < expression->process_cnt - 1)
-		g_exit_status = 0;
 	execve(fullpath_cmd, process->command, get_environ(shell_var));
 	exit(NOCMD);
 }
@@ -245,6 +251,7 @@ int	exec_processes(t_expression *expression, t_shell_var *shell_var)
 		process = process_list->content;
 		if (cmd_idx < expression->process_cnt - 1)
 			create_pipe(expression, cmd_idx);
+		signal(SIGINT, SIG_IGN);
 		expression->pid[cmd_idx] = fork();
 		if (expression->pid[cmd_idx] == 0)
 			exec_child(expression, process, cmd_idx, shell_var);
@@ -259,5 +266,6 @@ int	exec_processes(t_expression *expression, t_shell_var *shell_var)
 		cmd_idx++;
 	}
 	wstatus = wait_all_processes(expression);
+	signal(SIGINT, sigint_handler);
 	return (WEXITSTATUS(wstatus));
 }

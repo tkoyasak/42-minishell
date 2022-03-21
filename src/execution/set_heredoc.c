@@ -147,36 +147,61 @@ void	set_heredoc_sub(t_process *process, char *limiter, t_shell_var *shell_var)
 {
 	size_t	len;
 	char	*temp;
-	char	*new_document;
-	int		res;
 	bool	in_quote;
 
-	close(process->here_pipefd[0]);
+	safe_func(close(process->here_pipefd[0]));
 	limiter = remove_quote_heredoc(limiter, &in_quote);
-	new_document = ft_strdup("");
-	if (!new_document)
-		return ;
 	len = ft_strlen(limiter);
-	limiter[len] = '\n';
-	res = get_next_line(STDIN_FILENO, &temp);
+	limiter[len] = '\0';
+	temp = readline(HEREDOC_PROMPT);
 	while (temp && ft_strncmp(temp, limiter, len + 1))
 	{
 		if (in_quote == false)
 			temp = expansion_heredoc(temp, shell_var);
-		new_document = ft_strjoin(new_document, temp);
-		// if (!new_document)
-			// free_one(&temp);
-		// free_one(&temp);
-		res = get_next_line(STDIN_FILENO, &temp);
+		ft_putendl_fd(temp, process->here_pipefd[1]);
+		free(temp);
+		temp = readline(HEREDOC_PROMPT);
 	}
+	free(temp);
 	// free(limiter);
-	// free_one(&temp);
-	if (write(process->here_pipefd[1], new_document, ft_strlen(new_document)) == -1)
-		printf("179error\n");
 	exit(0);
 }
 
-void	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
+int	heredoc_child(t_process *process, char *limiter, t_shell_var *shell_var)
+{
+	safe_func((ssize_t)signal(SIGINT, SIG_DFL));
+	set_heredoc_sub(process, limiter, shell_var);
+}
+
+int	heredoc_parent(t_process *process, pid_t pid)
+{
+	int	wstatus;
+	int	child_status;
+
+	process->here_fd = process->here_pipefd[0];
+	safe_func(close(process->here_pipefd[1]));
+	waitpid(pid, &wstatus, WUNTRACED);
+	if (WIFSIGNALED(wstatus) && (WTERMSIG(wstatus) == SIGINT))
+	{
+		safe_func(close(process->here_pipefd[0]));
+		ft_putchar_fd('\n', STDOUT_FILENO);
+		g_exit_status = 1;
+		return (1);
+	}
+	else
+	{
+		child_status = WEXITSTATUS(wstatus);
+		if (child_status == 1)
+		{
+			g_exit_status = 1;
+			return (1);
+		}
+		else
+			return (0);
+	}
+}
+
+int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 {
 	t_list				*itr; // token_list;
 	t_redirection_kind	kind;
@@ -192,25 +217,27 @@ void	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 			itr = itr->next;
 			if (kind == HEREDOC)
 			{
+				safe_func((ssize_t)signal(SIGINT, SIG_IGN));
 				process->kind[0] = kind;
 				process->filename[0] = ((t_token *)(itr->content))->str;
 				pipe(process->here_pipefd);
 				pid = fork();
 				if (pid == 0)
-					set_heredoc_sub(process, process->filename[0], shell_var);
+					heredoc_child(process, process->filename[0], shell_var);
 				else
 				{
-					process->here_fd = process->here_pipefd[0];
-					close(process->here_pipefd[1]);
-					waitpid(pid, &wstatus, WUNTRACED);
+					if (heredoc_parent(process, pid))
+						return (1);
 				}
 			}
 		}
 		itr = itr->next;
 	}
+	safe_func((ssize_t)signal(SIGINT, sigint_handler));
+	return (0);
 }
 
-void	set_heredoc(t_node *tree, t_shell_var *shell_var)
+int	set_heredoc(t_node *tree, t_shell_var *shell_var)
 {
 	t_list	*itr;
 	pid_t	pid;
@@ -219,11 +246,13 @@ void	set_heredoc(t_node *tree, t_shell_var *shell_var)
 	{
 		if (tree->lhs)
 		{
-			set_heredoc(tree->lhs, shell_var);
+			if (set_heredoc(tree->lhs, shell_var) == 1)
+				return (1);
 		}
 		if (tree->rhs)
 		{
-			set_heredoc(tree->rhs, shell_var);
+			if (set_heredoc(tree->rhs, shell_var) == 1)
+				return (1);
 		}
 	}
 	else
@@ -231,8 +260,10 @@ void	set_heredoc(t_node *tree, t_shell_var *shell_var)
 		itr = tree->expression->process_list;
 		while (itr)
 		{
-			set_heredoc_in_process((t_process *)itr->content, shell_var);
+			if (set_heredoc_in_process((t_process *)itr->content, shell_var) == 1)
+				return (1);
 			itr = itr->next;
 		}
 	}
+	return (0);
 }
