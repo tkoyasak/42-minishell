@@ -43,7 +43,7 @@ size_t	token_str_len(t_list *src_list)
 	return (len);
 }
 
-char	*token_str_join(t_list **src_list, char *buf)
+char	*consume_token_str_join(t_list **src_list, char *buf)
 {
 	t_list		*itr;
 	size_t		len;
@@ -70,15 +70,26 @@ char	*token_str_join(t_list **src_list, char *buf)
 	return (buf);
 }
 
+t_list	*join_token_new(t_list **itr)
+{
+	size_t		len;
+	char		*str;
+	t_token		*token;
+
+	token = ft_calloc(1, sizeof(t_token));
+	len = token_str_len(*itr);
+	str = ft_calloc(len + 1, sizeof(char));
+	token->str = consume_token_str_join(itr, str);
+	token->kind = TK_STRING;
+	return (ft_lstnew(token));
+}
+
 // naked spaceで分割し、文字列(t_exp_strlist)を連結してトークン化する
 t_list	*convert_to_token_list(t_list *expansion_list)
 {
 	t_list		*head;
 	t_list		*itr;
-	size_t		len;
-	char		*str;
 	t_expansion	*exp;
-	t_token		*token;
 
 	head = NULL;
 	itr = expansion_list;
@@ -86,16 +97,9 @@ t_list	*convert_to_token_list(t_list *expansion_list)
 	{
 		exp = (t_expansion *)(itr->content);
 		if (exp->kind == NAKED_SPACE)
-		{
 			itr = itr->next;
-			continue ;
-		}
-		token = ft_calloc(1, sizeof(t_token));
-		len = token_str_len(itr);
-		str = ft_calloc(len + 1, sizeof(char));
-		token->str = token_str_join(&itr, str);
-		token->kind = TK_STRING;
-		ft_lstadd_back(&head, ft_lstnew(token));
+		else
+			ft_lstadd_back(&head, join_token_new(&itr));
 	}
 	return (head);
 }
