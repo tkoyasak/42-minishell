@@ -11,7 +11,7 @@ static int	is_over(unsigned long n, int m, int sign)
 int	a_to_uchar(const char *str)
 {
 	unsigned long	ret;
-	int		sign;
+	int				sign;
 
 	sign = 1;
 	ret = 0;
@@ -36,7 +36,7 @@ int	a_to_uchar(const char *str)
 	return ((unsigned char)(ret * sign));
 }
 
-int		builtin_exit(t_process *process, t_shell_var *shell_var)
+int	builtin_exit(t_process *process, t_shell_var *shell_var)
 {
 	char	**command;
 
@@ -49,7 +49,7 @@ int		builtin_exit(t_process *process, t_shell_var *shell_var)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(command[1], STDERR_FILENO);
 		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
-		g_exit_status = 255;
+		g_exit_status = EXIT_OUT_RANGE;
 	}
 	else if (command[2])
 	{

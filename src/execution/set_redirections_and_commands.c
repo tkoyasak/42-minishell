@@ -96,9 +96,11 @@ int	set_redirection_output(t_process *process, t_list *itr, t_redirection_kind k
 	process->kind[1] = kind;
 	process->filename[1] = ((t_token *)(itr->content))->str;
 	if (kind == OUTPUT)
-		process->fd[1] = open(process->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
+		process->fd[1] = \
+			open(process->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
 	else
-		process->fd[1] = open(process->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
+		process->fd[1] = \
+			open(process->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
 	if (process->fd[1] == -1)
 	{
 		open_error_handler(process->filename[1]);
@@ -109,9 +111,10 @@ int	set_redirection_output(t_process *process, t_list *itr, t_redirection_kind k
 }
 
 // ls -al > file           ls -al  output_kind = OUTPUT
+// itr は token_list
 void	set_redirection_params(t_process *process, t_shell_var *shell_var)
 {
-	t_list					*itr;  // token_list
+	t_list					*itr;
 	t_redirection_kind		kind;
 
 	itr = process->token_list;
@@ -143,11 +146,12 @@ void	set_command(t_process *process)
 
 	if (ft_lstsize(process->token_list) == 0)
 	{
-		process->command = ft_calloc(2, sizeof(char *));
-		process->command[0] = ft_strdup("");
+		process->command = ft_xcalloc(2, sizeof(char *));
+		process->command[0] = ft_xstrdup("");
 		return ;
 	}
-	process->command = ft_calloc(ft_lstsize(process->token_list) + 1, sizeof(char *));
+	process->command = \
+			ft_xcalloc(ft_lstsize(process->token_list) + 1, sizeof(char *));
 	itr = process->token_list;
 	cmd_idx = 0;
 	while (itr)

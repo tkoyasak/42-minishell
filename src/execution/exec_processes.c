@@ -2,11 +2,8 @@
 
 static void	create_pipe(t_expression *expression, const int cmd_idx)
 {
-	expression->pipefd[cmd_idx] = (int *)ft_calloc(2, sizeof(int));
-	if (!expression->pipefd[cmd_idx])
-		exit(EXIT_FAILURE);
-	if (pipe(expression->pipefd[cmd_idx]) < 0)
-		exit(EXIT_FAILURE);
+	expression->pipefd[cmd_idx] = (int *)ft_xcalloc(2, sizeof(int));
+	safe_func(pipe(expression->pipefd[cmd_idx]));
 }
 
 static int	wait_all_processes(t_expression *expression)
@@ -17,7 +14,7 @@ static int	wait_all_processes(t_expression *expression)
 	cmd_idx = 0;
 	while (cmd_idx < expression->process_cnt)
 	{
-		waitpid(expression->pid[cmd_idx], &wstatus, WUNTRACED);
+		safe_func(waitpid(expression->pid[cmd_idx], &wstatus, WUNTRACED));
 		cmd_idx++;
 	}
 	return (wstatus);

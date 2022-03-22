@@ -1,13 +1,15 @@
 #include "minishell.h"
 
 /*  initialize expression. prepare pipefd and pid  */
+// pipe_fdはprocess_cnt-1個用意
 void	init_expression(t_expression *expression)
 {
 	int	pipe_cnt;
 
 	pipe_cnt = expression->process_cnt - 1;
-	expression->pipefd = (int **)ft_calloc(pipe_cnt, sizeof(int *)); // prepare pipe pipeはprocess_cnt-1個用意
-	expression->pid = (pid_t *)ft_calloc(expression->process_cnt, sizeof(pid_t));
+	expression->pipefd = (int **)ft_xcalloc(pipe_cnt, sizeof(int *));
+	expression->pid = \
+			(pid_t *)ft_xcalloc(expression->process_cnt, sizeof(pid_t));
 }
 
 /*  expression is between semicolon, double ampersand, and double pipe  */
@@ -66,7 +68,7 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 	{
 		if (tree->lhs)
 			g_exit_status = execution(tree->lhs, shell_var);
-		if (g_exit_status == 130 || g_exit_status == 131)
+		if (g_exit_status == SIG_INT || g_exit_status == 131)
 			return (g_exit_status);
 		if (tree->kind == ND_DAND && g_exit_status != 0)
 			return (g_exit_status);

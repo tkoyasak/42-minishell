@@ -24,8 +24,8 @@ static char	*get_fullcmd_core(char *cmd, char **all_paths)
 	path_index = -1;
 	while (all_paths[++path_index])
 	{
-		temp = ft_strjoin(all_paths[path_index], "/");
-		fullcmd = ft_strjoin(temp, cmd);
+		temp = ft_xstrjoin(all_paths[path_index], "/");
+		fullcmd = ft_xstrjoin(temp, cmd);
 		free_str(&temp);
 		if (!(fullcmd))
 			exit(EXIT_FAILURE);
@@ -55,7 +55,7 @@ char	*get_fullpath_cmd(char *cmd, t_shell_var *shell_var)
 		cmd_not_found(cmd);
 		return (NULL);
 	}
-	all_paths = ft_split(&(path_env[PATH_PREFIX]), ':');
+	all_paths = ft_xsplit(&(path_env[PATH_PREFIX]), ':');
 	if (!all_paths)
 		exit(EXIT_FAILURE);
 	return (get_fullcmd_core(cmd, all_paths));

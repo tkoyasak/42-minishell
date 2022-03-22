@@ -28,11 +28,13 @@ t_list	*split_str_heredoc(char *str, bool par_in_dquote)
 		return (NULL);
 	head = NULL;
 	if (*str == '\0')
-		ft_lstadd_back(&head, extract_word_heredoc(&str, false, par_in_dquote, STRING));
+		ft_lstadd_back(&head, extract_word_heredoc(&str, false, \
+				par_in_dquote, STRING));
 	in_dquote = false;
 	while (*str)
 	{
-		ft_lstadd_back(&head, extract_word_heredoc(&str, false, par_in_dquote | in_dquote, STRING));
+		ft_lstadd_back(&head, extract_word_heredoc(&str, false, \
+				par_in_dquote | in_dquote, STRING));
 	}
 	return (head);
 }
@@ -57,7 +59,7 @@ char	*remove_quote_heredoc(char *limiter, bool *in_quote)
 	size_t	src_idx;
 	size_t	dst_idx;
 
-	dst = ft_calloc(ft_strlen(limiter) + 1, sizeof(char));
+	dst = ft_xcalloc(ft_strlen(limiter) + 1, sizeof(char));
 	src_idx = 0;
 	dst_idx = 0;
 	while (limiter[src_idx])

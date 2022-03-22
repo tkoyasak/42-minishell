@@ -1,5 +1,5 @@
 #ifndef UTILS_H
-#define UTILS_H
+# define UTILS_H
 
 # include <stdlib.h>
 
@@ -21,5 +21,6 @@ char		*ft_xsubstr(char const *s, unsigned int start, size_t len);
 char		*ft_xstrjoin(char *s1, char *s2);
 char		**ft_xsplit(char *s, char c);
 char		*ft_xitoa(int n);
+t_list		*ft_xlstnew(void *content);
 
 #endif

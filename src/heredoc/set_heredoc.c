@@ -21,7 +21,7 @@ int	heredoc_child(t_process *process, char *limiter, t_shell_var *shell_var)
 		temp = readline(HEREDOC_PROMPT);
 	}
 	free(temp);
-	// free(limiter);
+	free(limiter);
 	exit(0);
 }
 
@@ -58,8 +58,8 @@ int	set_heredoc_in_token(t_process *process, t_shell_var *shell_var)
 	pid_t				pid;
 
 	safe_func((ssize_t)signal(SIGINT, SIG_IGN));
-	pipe(process->here_pipefd);
-	pid = fork();
+	safe_func(pipe(process->here_pipefd));
+	pid = safe_func(fork());
 	if (pid == 0)
 		heredoc_child(process, process->filename[0], shell_var);
 	else
@@ -70,9 +70,10 @@ int	set_heredoc_in_token(t_process *process, t_shell_var *shell_var)
 	return (0);
 }
 
+// itr  token_list;
 int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 {
-	t_list				*itr; // token_list;
+	t_list				*itr;
 	t_redirection_kind	kind;
 	pid_t				pid;
 	int					wstatus;
@@ -117,7 +118,8 @@ int	set_heredoc(t_node *tree, t_shell_var *shell_var)
 		itr = tree->expression->process_list;
 		while (itr)
 		{
-			if (set_heredoc_in_process((t_process *)itr->content, shell_var) == 1)
+			if (set_heredoc_in_process((t_process *)itr->content, shell_var) \
+					== 1)
 				return (1);
 			itr = itr->next;
 		}

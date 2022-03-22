@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-int		builtin_cd_pwd_update(char *path_name, t_shell_var *shell_var)
+int	builtin_cd_pwd_update(char *path_name, t_shell_var *shell_var)
 {
-	char *relative_path;
+	char	*relative_path;
 
 	shell_var->oldpwd = shell_var->pwd;
 	if (getcwd(NULL, 0) == NULL)
@@ -22,7 +22,7 @@ int		builtin_cd_pwd_update(char *path_name, t_shell_var *shell_var)
 	return (0);
 }
 
-int		builtin_cd(t_process *process, t_shell_var *shell_var)
+int	builtin_cd(t_process *process, t_shell_var *shell_var)
 {
 	char	*path_name;
 

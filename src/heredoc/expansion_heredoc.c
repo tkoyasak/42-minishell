@@ -5,8 +5,9 @@ t_list	*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expan
 	t_list		*new;
 	t_expansion	*exp;
 
-	exp = ft_calloc(1, sizeof(t_expansion));
-	exp->str = ft_substr(*str, 0, get_word_len_heredoc(*str, in_squote, in_dquote));
+	exp = ft_xcalloc(1, sizeof(t_expansion));
+	exp->str = \
+		ft_xsubstr(*str, 0, get_word_len_heredoc(*str, in_squote, in_dquote));
 	exp->len = ft_strlen(exp->str);
 	*str += exp->len;
 	exp->in_squote = in_squote;
@@ -14,7 +15,7 @@ t_list	*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expan
 	exp->kind = kind;
 	if (exp->str && exp->str[0] == '$' && ft_isalnum(exp->str[1]) && !in_squote)
 		exp->kind = ENV;
-	new = ft_lstnew(exp);
+	new = ft_xlstnew(exp);
 	return (new);
 }
 
@@ -24,7 +25,8 @@ void	connect_expansion_list_heredoc(t_expansion *exp, t_list *head, t_list *prev
 	if (prev == NULL)
 		head = get_expansion_list_heredoc(exp->str, exp->in_dquote, shell_var);
 	else
-		prev->next = get_expansion_list_heredoc(exp->str, exp->in_dquote, shell_var);
+		prev->next = \
+				get_expansion_list_heredoc(exp->str, exp->in_dquote, shell_var);
 	prev = ft_lstlast(head);
 }
 
@@ -66,7 +68,7 @@ char	*expansion_heredoc(char *str, t_shell_var *shell_var)
 
 	exp_list = get_expansion_list_heredoc(str, false, shell_var);
 	len = get_expanded_len_heredoc(exp_list);
-	dst = (char *)malloc(sizeof(char) * (len + 1));
+	dst = (char *)ft_xmalloc(sizeof(char) * (len + 1));
 	dst[0] = '\0';
 	while (exp_list)
 	{
