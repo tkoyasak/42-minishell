@@ -1,269 +1,77 @@
 #include "minishell.h"
 
-size_t	get_word_len(char *str, bool in_squote, bool in_dquote)
-{
-	char	*head;
-
-	head = str;
-	if ((in_squote && *str == '\'') || (!in_squote && *str == '\"'))
-		return (1);
-	if (in_squote)
-		return (ft_strchr(str, '\'') - str);
-	if (*str == '$')
-	{
-		str++;
-		if (*str == '?')
-			return (2);
-		while (*str && (ft_isalnum(*str) || *str == '_'))
-			str++;
-	}
-	else if (in_dquote)
-		while (*str && *str != '$' && *str != '\"')
-			str++;
-	else if(ft_isspace(*str))
-		while (*str && ft_isspace(*str))
-			str++;
-	else
-		while (*str && !ft_strchr("\'\"$ ", *str))
-			str++;
-	return (str - head);
-}
-
-t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expansion_kind kind)
-{
-	t_list		*new;
-	t_expansion	*exp;
-
-	exp = ft_calloc(1, sizeof(t_expansion));
-	exp->str = ft_substr(*str, 0, get_word_len(*str, in_squote, in_dquote));
-	exp->len = ft_strlen(exp->str);
-	*str += exp->len;
-	exp->in_squote = in_squote;
-	exp->in_dquote = in_dquote;
-	exp->kind = kind;
-	if (exp->str && exp->str[0] == '$' && (ft_isalnum(exp->str[1]) || exp->str[1] == '_' || exp->str[1] == '?') && !in_squote)
-		exp->kind = ENV;
-	if (exp->str && exp->str[0] == ' ' && !in_squote && !in_dquote)
-		exp->kind = NAKED_SPACE;
-	new = ft_lstnew(exp);
-	return (new);
-}
-
-t_list	*split_str(char *str, bool par_in_dquote)
-{
-	t_list	*head;
-	bool	in_dquote;
-
-	if (!str)
-		return (NULL);
-	head = NULL;
-	if (*str == '\0')
-		ft_lstadd_back(&head, extract_word(&str, false, par_in_dquote, STRING));
-	in_dquote = false;
-	while (*str)
-	{
-		if (!in_dquote && *str == '\'')
-		{
-			ft_lstadd_back(&head, extract_word(&str, true, par_in_dquote | in_dquote, SQUOTE));
-			ft_lstadd_back(&head, extract_word(&str, true, par_in_dquote | in_dquote, STRING));
-			ft_lstadd_back(&head, extract_word(&str, true, par_in_dquote | in_dquote, SQUOTE));
-		}
-		else if (*str == '\"')
-		{
-			in_dquote ^= 1;
-			ft_lstadd_back(&head, extract_word(&str, false, true, DQUOTE));
-		}
-		else
-			ft_lstadd_back(&head, extract_word(&str, false, par_in_dquote | in_dquote, STRING));
-	}
-	return (head);
-}
-
-t_list	*get_expansion_list(char *str, bool par_in_dquote, t_shell_var *shell_var)
-{
-	t_list	*head;
-	t_list	*itr;
-	t_list	*prev;
-	t_list	*next;
-	t_expansion	*exp;
-
-	prev = NULL;
-	head = split_str(str, par_in_dquote);
-	itr = head;
-	while (itr)
-	{
-		next = itr->next;
-		exp = (t_expansion *)(itr->content);
-		if (exp->kind == ENV)
-		{
-			exp->str = get_env_value_str(exp->str + 1, shell_var);
-			if (prev == NULL)
-				head = get_expansion_list(exp->str, exp->in_dquote, shell_var);
-			else
-				prev->next = get_expansion_list(exp->str, exp->in_dquote, shell_var);
-			prev = ft_lstlast(head);
-			prev->next = next;
-		}
-		else
-			prev = itr;
-		itr = next;
-	}
-	return (head);
-}
-
-t_list	*remove_quotes(t_list *src_list)
-{
-	t_list	*head;
-	t_list	*itr;
-	t_list	*next;
-	t_expansion	*exp;
-
-	head = NULL;
-	itr = src_list;
-	while (itr)
-	{
-		next = itr->next;
-		itr->next = NULL;
-		exp = (t_expansion *)(itr->content);
-		if (exp->kind == SQUOTE || exp->kind == DQUOTE)
-			; // exp_strlist_delone(itr);
-		else
-			ft_lstadd_back(&head, itr);
-		itr = next;
-	}
-	return (head);
-}
-
-size_t	token_str_len(t_list *src_list)
-{
-	size_t		len;
-	t_list		*itr;
-	t_expansion	*exp;
-
-	len = 0;
-	itr = src_list;
-	if (((t_expansion *)(itr->content))->kind == FILENAME_EXPANSION)
-		return (((t_expansion *)(itr->content))->len);
-	while (itr && ((t_expansion *)(itr->content))->kind != NAKED_SPACE && \
-		((t_expansion *)(itr->content))->kind != FILENAME_EXPANSION)
-	{
-		exp = (t_expansion *)(itr->content);
-		len += exp->len;
-		itr = itr->next;
-	}
-	return (len);
-}
-
-char	*token_str_join(t_list **src_list, char *buf)
-{
-	t_list		*itr;
-	size_t		len;
-	t_expansion	*exp;
-
-	len = 0;
-	itr = *src_list;
-	if (((t_expansion *)(itr->content))->kind == FILENAME_EXPANSION)
-	{
-		ft_strlcat(buf, ((t_expansion *)(itr->content))->str, ((t_expansion *)(itr->content))->len + 1);
-		*src_list = (*src_list)->next;
-		return (buf);
-	}
-	while (itr && ((t_expansion *)(itr->content))->kind != NAKED_SPACE && \
-		((t_expansion *)(itr->content))->kind != FILENAME_EXPANSION)
-	{
-		exp = (t_expansion *)(itr->content);
-		len += exp->len;
-		ft_strlcat(buf, exp->str, len + 1);
-		itr = itr->next;
-	}
-	*src_list = itr;
-	return (buf);
-}
-
-// naked spaceで分割し、文字列(t_exp_strlist)を連結してトークン化する
-t_list *convert_to_token(t_list *expansion_list)
-{
-	t_list	*head; // token_list
-	t_list	*itr;
-	size_t	len;
-	char	*str;
-	t_expansion	*exp;
-	t_token		*token;
-
-	head = NULL;
-	itr = expansion_list;
-	while (itr)
-	{
-		exp = (t_expansion *)(itr->content);
-		if (exp->kind == NAKED_SPACE)
-		{
-			itr = itr->next;
-			continue ;
-		}
-		token = ft_calloc(1, sizeof(t_token));
-		len = token_str_len(itr);
-		str = ft_calloc(len + 1, sizeof(char));
-		token->str = token_str_join(&itr, str);
-		token->kind = TK_STRING;
-		ft_lstadd_back(&head, ft_lstnew(token));
-	}
-	return (head);
-}
-
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
+// token->strをt_exp_strlist_typeで分割・分類する
+// 環境変数の展開
 t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
 {
-	t_list			*expansion_list;
-	t_list			*expanded_token_list;
+	t_token	*token;
+	t_list	*expansion_list;
+	t_list	*expanded_token_list;
 
-	// token->strをt_exp_strlist_typeで分割・分類する
-	// 環境変数の展開
-	expansion_list = get_expansion_list(((t_token *)(token_list->content))->str, false, shell_var); // t_expansionのリスト
-	// *のfilename expansion展開
+	token = token_list->content;
+	expansion_list = get_expansion_list(token->str, false, shell_var);
 	expansion_list = get_filename_expansion(expansion_list);
-	expansion_list = remove_quotes(expansion_list); // t_expansionのリスト
-	expanded_token_list = convert_to_token(expansion_list); // t_tokenのリスト
-	// printf("226: |%s|\n", ((t_token *)(expanded_token_list->content))->str);
+	expansion_list = remove_quotes(expansion_list);
+	expanded_token_list = convert_to_token_list(expansion_list);
+	ft_lstdelone(token_list, delete_token);
+	ft_lstclear(&expansion_list, delete_expansion);
 	return (expanded_token_list);
 }
 
-void	handle_process(t_process *process, t_shell_var *shell_var)
+void	consume_token_to_expansion(t_list **itr, t_list **prev, t_list **next, t_shell_var *shell_var)
 {
-	t_list	*itr; //token_list_itr
+	*itr = get_expanded_token(*itr, shell_var);
+	if (itr == NULL)
+	{
+		*itr = *next;
+		(*prev)->next = *itr;
+	}
+	else
+	{
+		(*prev)->next = *itr;
+		*itr = ft_lstlast(*itr);
+		(*itr)->next = *next;
+		*prev = *itr;
+		*itr = (*itr)->next;
+	}
+}
+
+void	consume_token_if_delimiter(t_list **itr, t_list **prev, t_list **next, bool *is_delimiter)
+{
+	t_token	*token;
+
+	*is_delimiter = false;
+	token = (t_token *)(*itr)->content;
+	if (token->kind == TK_REDIRECT && ft_strcmp(token->str, "<<") == 0)
+		*is_delimiter = true;
+	(*itr)->next = *next;
+	*prev = *itr;
+	*itr = (*itr)->next;
+}
+
+void	handle_process(t_list **token_list, t_shell_var *shell_var)
+{
+	t_list	head;
+	t_list	*itr;
 	t_list	*next;
 	t_list	*prev;
 	bool	is_delimiter;
 
-	itr = process->token_list;
-	prev = NULL;
+	head.next = *token_list;
+	itr = *token_list;
+	prev = &head;
 	is_delimiter = false;
 	while (itr)
 	{
 		next = itr->next;
+		itr->next = NULL;
 		if (!is_delimiter && ((t_token *)(itr->content))->kind == TK_STRING)
-			itr = get_expanded_token(itr, shell_var);
-		if (itr == NULL)
-		{
-			itr = next;
-			if (prev)
-				prev->next = itr;
-			else
-				process->token_list = itr;
-			continue ;
-		}
-		if (prev)
-			prev->next = itr;
+			consume_token_to_expansion(&itr, &prev, &next, shell_var);
 		else
-			process->token_list = itr;
-		while (itr->next != NULL && itr->next != next)
-			itr = itr->next;
-		is_delimiter = false;
-		if (((t_token *)(itr->content))->kind == TK_REDIRECT && ft_strcmp(((t_token *)(itr->content))->str, "<<") == 0)
-			is_delimiter = true;
-		itr->next = next;
-		prev = itr;
-		itr = itr->next;
+			consume_token_if_delimiter(&itr, &prev, &next, &is_delimiter);
 	}
+	*token_list = head.next;
 }
 
 void	expansion(t_expression *expression, t_shell_var *shell_var)
@@ -271,9 +79,9 @@ void	expansion(t_expression *expression, t_shell_var *shell_var)
 	t_list	*itr;
 
 	itr = expression->process_list;
-	while(itr)
+	while (itr)
 	{
-		handle_process((t_process *)(itr->content), shell_var);
+		handle_process(&((t_process *)(itr->content))->token_list, shell_var);
 		g_exit_status = 0; // bashの挙動に合わせた
 		itr = itr->next;
 	}
