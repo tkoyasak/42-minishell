@@ -59,9 +59,6 @@ void	exec_subshell(t_node *tree, t_shell_var *shell_var)
 /*  evaluate expression of tree, or ececute lhs of tree ans rhs of tree  */
 int	execution(t_node *tree, t_shell_var *shell_var)
 {
-	t_list			*expression_list;
-	t_expression	*expression;
-
 	if (tree->kind == ND_SUBSHELL)
 		exec_subshell(tree, shell_var);
 	else if (ND_SEMICOLON <= tree->kind && tree->kind <= ND_DPIPE)

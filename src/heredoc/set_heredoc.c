@@ -75,8 +75,6 @@ int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 {
 	t_list				*itr;
 	t_redirection_kind	kind;
-	pid_t				pid;
-	int					wstatus;
 
 	itr = process->token_list;
 	while (itr)
@@ -102,7 +100,6 @@ int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 int	set_heredoc(t_node *tree, t_shell_var *shell_var)
 {
 	t_list	*itr;
-	pid_t	pid;
 
 	if (ND_SUBSHELL <= tree->kind && tree->kind <= ND_DPIPE)
 	{
