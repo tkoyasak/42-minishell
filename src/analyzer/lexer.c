@@ -143,7 +143,7 @@ static t_list	*tokenize(char *p)
 int	validate_syntax(t_list *token_list)
 {
 	t_list	*itr;
-	size_t	parenthesis;
+	int		parenthesis;
 
 	itr = token_list;
 	parenthesis = 0;

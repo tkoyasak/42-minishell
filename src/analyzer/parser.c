@@ -4,6 +4,7 @@ static t_node	*create_astree(t_list **itr, int *parser_result);
 
 t_node	*parser_error_handler(t_list **itr, char *str, int *parser_result, int line)
 {
+	(void)line;
 	if (*parser_result != 1)
 	{
 		*parser_result = 1;
@@ -77,14 +78,6 @@ static t_node	*create_process_node(t_list **itr, int *parser_result)
 		return (node);
 	}
 	return (node);
-}
-
-static void	expect_process(t_list **itr, int *parser_result)
-{
-	if (((t_token *)((*itr)->content))->kind != TK_STRING)
-	{
-		parser_error_handler(itr, ((t_token *)((*itr)->content))->str, parser_result, __LINE__);
-	}
 }
 
 static t_node	*create_subshell_tree(t_list **itr, int *parser_result)
