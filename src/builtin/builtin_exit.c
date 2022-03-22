@@ -3,7 +3,7 @@
 static int	is_over(unsigned long n, int m, int sign)
 {
 	if (sign > 0)
-		return (n > (LONG_MAX - m) / 10);
+		return (n > (unsigned long)(LONG_MAX - m) / 10);
 	else
 		return (n > ((unsigned long)LONG_MAX + 1 - m) / 10);
 }
@@ -40,6 +40,7 @@ int	builtin_exit(t_process *process, t_shell_var *shell_var)
 {
 	char	**command;
 
+	(void)shell_var;
 	command = process->command;
 	if (command[1] == NULL)
 		exit(0);

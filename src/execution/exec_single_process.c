@@ -33,7 +33,7 @@ int	exec_single_process(t_expression *expression, t_shell_var *shell_var)
 	t_list		*process_list;
 	t_process	*process;
 
-	set_redirections_and_commands(expression, shell_var);
+	set_redirections_and_commands(expression);
 	if (g_exit_status)
 		return (g_exit_status);
 	process_list = expression->process_list;

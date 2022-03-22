@@ -112,7 +112,7 @@ int	set_redirection_output(t_process *process, t_list *itr, t_redirection_kind k
 
 // ls -al > file           ls -al  output_kind = OUTPUT
 // itr は token_list
-void	set_redirection_params(t_process *process, t_shell_var *shell_var)
+void	set_redirection_params(t_process *process)
 {
 	t_list					*itr;
 	t_redirection_kind		kind;
@@ -162,7 +162,7 @@ void	set_command(t_process *process)
 	}
 }
 
-void	set_redirections_and_commands(t_expression *expression, t_shell_var *shell_var)
+void	set_redirections_and_commands(t_expression *expression)
 {
 	int			cmd_idx;
 	t_list		*process_list;
@@ -173,7 +173,7 @@ void	set_redirections_and_commands(t_expression *expression, t_shell_var *shell_
 	while (cmd_idx < expression->process_cnt)
 	{
 		process = process_list->content;
-		set_redirection_params(process, shell_var);
+		set_redirection_params(process);
 		if (g_exit_status)
 			return ;
 		remove_redirection_token(process);
