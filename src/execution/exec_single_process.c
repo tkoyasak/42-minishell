@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-/*  execute single external command  */
 int	exec_single_external(t_expression *expression, t_process *process, t_shell_var *shell_var)
 {
 	int			wstatus;
@@ -27,7 +26,6 @@ int	exec_single_external(t_expression *expression, t_process *process, t_shell_v
 	return (WEXITSTATUS(wstatus));
 }
 
-/*  execute single process  */
 int	exec_single_process(t_expression *expression, t_shell_var *shell_var)
 {
 	t_list		*process_list;

@@ -1,16 +1,17 @@
 #include "minishell.h"
 
-/*  initialize expression. prepare pipefd and pid  */
+// pipefd[0] = {input fd, output fd}
 void	init_expression(t_expression *expression)
 {
 	int	pipe_cnt;
 
+	// expression->process_cnt = ft_lstsize(expression->process_list);  // 3
 	pipe_cnt = expression->process_cnt - 1;
-	expression->pipefd = (int **)ft_calloc(pipe_cnt, sizeof(int *)); // prepare pipe pipeはprocess_cnt-1個用意
+	expression->pipefd = (int **)ft_calloc(pipe_cnt, sizeof(int *)); // prepare_pipe pipeは2つ用意
 	expression->pid = (pid_t *)ft_calloc(expression->process_cnt, sizeof(pid_t));
 }
 
-/*  expression is between semicolon, double ampersand, and double pipe  */
+// ls -al |  cat  |  head -n2  ここがpipex
 int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 {
 	int		stdin_copy;
@@ -18,6 +19,7 @@ int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 
 	init_expression(expression);
 	expansion(expression, shell_var);
+	// g_exit_status = 0; なぜここで０にしてるかわからない
 	if (((t_process *)(expression->process_list->content))->token_list == NULL)
 		;
 	else if (expression->process_cnt == 1)
@@ -35,33 +37,28 @@ int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
 	return (g_exit_status);
 }
 
-/*  execute subshell. does not affect outside  */
-void	exec_subshell(t_node *tree, t_shell_var *shell_var)
-{
-	int				wstatus;
-	pid_t			pid;
-
-	pid = safe_func(fork());
-	if (pid == 0)
-	{
-		g_exit_status = execution(tree->lhs, shell_var);
-		exit(g_exit_status);
-	}
-	else
-	{
-		safe_func(waitpid(pid, &wstatus, WUNTRACED));
-		g_exit_status = wstatus;
-	}
-}
-
-/*  evaluate expression of tree, or ececute lhs of tree ans rhs of tree  */ 
+// ls -al | cat | head -n2 ; ls ;  cat < file
 int	execution(t_node *tree, t_shell_var *shell_var)
 {
 	t_list			*expression_list;
 	t_expression	*expression;
+	pid_t			pid;
+	int				wstatus;
 
 	if (tree->kind == ND_SUBSHELL)
-		exec_subshell(tree, shell_var);
+	{
+		pid = safe_func(fork());
+		if (pid == 0)
+		{
+			g_exit_status = execution(tree->lhs, shell_var);
+			exit(g_exit_status);
+		}
+		else
+		{
+			safe_func(waitpid(pid, &wstatus, WUNTRACED));
+			g_exit_status = wstatus;
+		}
+	}
 	else if (ND_SEMICOLON <= tree->kind && tree->kind <= ND_DPIPE)
 	{
 		if (tree->lhs)
@@ -76,7 +73,9 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 			g_exit_status = execution(tree->rhs, shell_var);
 	}
 	else
+	{
 		g_exit_status = evaluate_expression(tree->expression, shell_var);
+	}
 	return (g_exit_status);
 }
 
