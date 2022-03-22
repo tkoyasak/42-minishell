@@ -24,7 +24,7 @@ int	exec_single_external(t_expression *expression, t_process *process, t_shell_v
 	else
 		g_exit_status = WEXITSTATUS(wstatus);
 	signal(SIGINT, sigint_handler);
-	return (WEXITSTATUS(wstatus));
+	return (g_exit_status);
 }
 
 /*  execute single process  */

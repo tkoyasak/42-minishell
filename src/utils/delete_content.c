@@ -34,7 +34,7 @@ void	delete_expansion(void *arg)
 void	delete_process(void *arg)
 {
 	t_process	*process;
-	size_t		i;
+	int			i;
 
 	process = (t_process *)arg;
 	ft_lstclear(&process->token_list, delete_token);
@@ -59,7 +59,7 @@ void	delete_process(void *arg)
 void	delete_expression(void *arg)
 {
 	t_expression	*expression;
-	size_t			i;
+	int				i;
 
 	expression = (t_expression *)arg;
 	ft_lstclear(&expression->process_list, delete_process);
