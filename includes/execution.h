@@ -12,7 +12,6 @@
 # define NOFILE -2
 # define NO_CMD 127
 # define NO_PERMISSION 126
-# define SIG_INT 130
 # define EXIT_OUT_RANGE 255
 # define FD_MAX 256
 # define PATH_PREFIX 5
