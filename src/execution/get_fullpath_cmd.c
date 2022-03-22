@@ -45,6 +45,8 @@ char	*get_fullpath_cmd(char *cmd, t_shell_var *shell_var)
 
 	if (!cmd)
 		exit(EXIT_FAILURE);
+	if (!cmd[0])
+		return (cmd);
 	if (!access(cmd, X_OK))
 		return (cmd);
 	path_env = get_env_value_str("PATH", shell_var);
