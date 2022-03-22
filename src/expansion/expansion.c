@@ -1,28 +1,5 @@
 #include "minishell.h"
 
-t_list	*remove_quotes(t_list *src_list)
-{
-	t_list		*head;
-	t_list		*itr;
-	t_list		*next;
-	t_expansion	*exp;
-
-	head = NULL;
-	itr = src_list;
-	while (itr)
-	{
-		next = itr->next;
-		itr->next = NULL;
-		exp = (t_expansion *)(itr->content);
-		if (exp->kind == SQUOTE || exp->kind == DQUOTE)
-			ft_lstdelone(itr, delete_expansion);
-		else
-			ft_lstadd_back(&head, itr);
-		itr = next;
-	}
-	return (head);
-}
-
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
 t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
 {

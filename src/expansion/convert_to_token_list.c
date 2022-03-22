@@ -1,5 +1,28 @@
 #include "minishell.h"
 
+t_list	*remove_quotes(t_list *src_list)
+{
+	t_list		*head;
+	t_list		*itr;
+	t_list		*next;
+	t_expansion	*exp;
+
+	head = NULL;
+	itr = src_list;
+	while (itr)
+	{
+		next = itr->next;
+		itr->next = NULL;
+		exp = (t_expansion *)(itr->content);
+		if (exp->kind == SQUOTE || exp->kind == DQUOTE)
+			ft_lstdelone(itr, delete_expansion);
+		else
+			ft_lstadd_back(&head, itr);
+		itr = next;
+	}
+	return (head);
+}
+
 size_t	token_str_len(t_list *src_list)
 {
 	size_t		len;
@@ -57,7 +80,6 @@ t_list	*convert_to_token_list(t_list *expansion_list)
 	t_expansion	*exp;
 	t_token		*token;
 
-	// expansion_list = remove_quotes(expansion_list);
 	head = NULL;
 	itr = expansion_list;
 	while (itr)
