@@ -52,16 +52,18 @@ t_list	*split_token_str(char *str, bool par_in_dquote)
 {
 	t_list	*head;
 	bool	in_dquote;
+	bool	flag;
 
 	head = NULL;
 	in_dquote = false;
 	while (*str)
 	{
+		flag = par_in_dquote | in_dquote;
 		if (!in_dquote && *str == '\'')
 		{
-			ft_lstadd_back(&head, extract_word(&str, true, par_in_dquote | in_dquote, SQUOTE));
-			ft_lstadd_back(&head, extract_word(&str, true, par_in_dquote | in_dquote, STRING));
-			ft_lstadd_back(&head, extract_word(&str, true, par_in_dquote | in_dquote, SQUOTE));
+			ft_lstadd_back(&head, extract_word(&str, true, flag, SQUOTE));
+			ft_lstadd_back(&head, extract_word(&str, true, flag, STRING));
+			ft_lstadd_back(&head, extract_word(&str, true, flag, SQUOTE));
 		}
 		else if (*str == '\"')
 		{
@@ -69,7 +71,7 @@ t_list	*split_token_str(char *str, bool par_in_dquote)
 			ft_lstadd_back(&head, extract_word(&str, false, true, DQUOTE));
 		}
 		else
-			ft_lstadd_back(&head, extract_word(&str, false, par_in_dquote | in_dquote, STRING));
+			ft_lstadd_back(&head, extract_word(&str, false, flag, STRING));
 	}
 	return (head);
 }
