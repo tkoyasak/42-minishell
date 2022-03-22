@@ -20,7 +20,7 @@ void	remove_one_token(t_list **itr)
 	t_list	*tmp;
 
 	tmp = (*itr)->next;
-	// ft_lstdelone(*itr, del_token);
+	ft_lstdelone(*itr, delete_token);
 	*itr = tmp;
 }
 
