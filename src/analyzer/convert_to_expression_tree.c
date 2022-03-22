@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-t_list *convert_to_process_list(t_node *tree)
+t_list	*convert_to_process_list(t_node *tree)
 {
 	t_list		*process_list;
 	t_process	*process;
@@ -22,9 +22,9 @@ t_list *convert_to_process_list(t_node *tree)
 	return (process_list);
 }
 
-t_node *convert_to_expression_tree(t_node *tree)
+t_node	*convert_to_expression_tree(t_node *tree)
 {
-	t_expression 	*expression;
+	t_expression	*expression;
 
 	if (ND_SUBSHELL <= tree->kind && tree->kind <= ND_DPIPE)
 	{

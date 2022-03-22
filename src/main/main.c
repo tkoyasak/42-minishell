@@ -24,7 +24,7 @@ int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
 		return (1);
 	}
 	*tree = convert_to_expression_tree(*tree);
-	if(set_heredoc(*tree, shell_var) == 1)
+	if (set_heredoc(*tree, shell_var) == 1)
 	{
 		g_exit_status = 1;
 		return (1);
@@ -32,7 +32,7 @@ int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
 	return (0);
 }
 
-void minish_loop(t_shell_var *shell_var)
+void	minish_loop(t_shell_var *shell_var)
 {
 	char		*line;
 	t_node		*tree;

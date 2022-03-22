@@ -2,7 +2,8 @@
 
 void	lexer_error(char *p, int idx)
 {
-	ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+	ft_putstr_fd("minishell: syntax error near unexpected token `", \
+		STDERR_FILENO);
 	ft_putnchar_fd(p, idx, STDERR_FILENO);
 	ft_putstr_fd("'\n", STDERR_FILENO);
 }
