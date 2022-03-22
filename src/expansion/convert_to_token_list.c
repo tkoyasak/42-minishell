@@ -70,7 +70,7 @@ char	*consume_token_str_join(t_list **src_list, char *buf)
 	return (buf);
 }
 
-t_list	*join_token_new(t_list **itr)
+t_list	*consume_new_joined_token(t_list **itr)
 {
 	size_t		len;
 	char		*str;
@@ -99,7 +99,7 @@ t_list	*convert_to_token_list(t_list *expansion_list)
 		if (exp->kind == NAKED_SPACE)
 			itr = itr->next;
 		else
-			ft_lstadd_back(&head, join_token_new(&itr));
+			ft_lstadd_back(&head, consume_new_joined_token(&itr));
 	}
 	return (head);
 }

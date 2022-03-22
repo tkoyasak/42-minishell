@@ -1,22 +1,53 @@
 #include "minishell.h"
 
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
+// token->strをt_exp_strlist_typeで分割・分類する
+// 環境変数の展開
 t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
 {
-	t_list			*expansion_list;
-	t_list			*expanded_token_list;
+	t_token	*token;
+	t_list	*expansion_list;
+	t_list	*expanded_token_list;
 
-	// token_list->next = NULL;
-	// token->strをt_exp_strlist_typeで分割・分類する
-	// 環境変数の展開
-	expansion_list = get_expansion_list(((t_token *)(token_list->content))->str, false, shell_var); // t_expansionのリスト
-	// *のfilename expansion展開
+	token = token_list->content;
+	expansion_list = get_expansion_list(token->str, false, shell_var);
 	expansion_list = get_filename_expansion(expansion_list);
-	expansion_list = remove_quotes(expansion_list); // t_expansionのリスト
-	expanded_token_list = convert_to_token_list(expansion_list); // t_tokenのリスト
+	expansion_list = remove_quotes(expansion_list);
+	expanded_token_list = convert_to_token_list(expansion_list);
 	ft_lstdelone(token_list, delete_token);
 	ft_lstclear(&expansion_list, delete_expansion);
 	return (expanded_token_list);
+}
+
+void	consume_token_to_expansion(t_list **itr, t_list **prev, t_list **next, t_shell_var *shell_var)
+{
+	*itr = get_expanded_token(*itr, shell_var);
+	if (itr == NULL)
+	{
+		*itr = *next;
+		(*prev)->next = *itr;
+	}
+	else
+	{
+		(*prev)->next = *itr;
+		*itr = ft_lstlast(*itr);
+		(*itr)->next = *next;
+		*prev = *itr;
+		*itr = (*itr)->next;
+	}
+}
+
+void	consume_token_if_delimiter(t_list **itr, t_list **prev, t_list **next, bool *is_delimiter)
+{
+	t_token	*token;
+
+	*is_delimiter = false;
+	token = (t_token *)(*itr)->content;
+	if (token->kind == TK_REDIRECT && ft_strcmp(token->str, "<<") == 0)
+		*is_delimiter = true;
+	(*itr)->next = *next;
+	*prev = *itr;
+	*itr = (*itr)->next;
 }
 
 void	handle_process(t_list **token_list, t_shell_var *shell_var)
@@ -36,27 +67,9 @@ void	handle_process(t_list **token_list, t_shell_var *shell_var)
 		next = itr->next;
 		itr->next = NULL;
 		if (!is_delimiter && ((t_token *)(itr->content))->kind == TK_STRING)
-		{
-			itr = get_expanded_token(itr, shell_var);
-			if (itr == NULL)
-			{
-				itr = next;
-				prev->next = itr;
-				continue ;
-			}
-			prev->next = itr;
-			itr = ft_lstlast(itr);
-		}
+			consume_token_to_expansion(&itr, &prev, &next, shell_var);
 		else
-		{
-			is_delimiter = false;
-			if (((t_token *)(itr->content))->kind == TK_REDIRECT && \
-				ft_strcmp(((t_token *)(itr->content))->str, "<<") == 0)
-				is_delimiter = true;
-		}
-		itr->next = next;
-		prev = itr;
-		itr = itr->next;
+			consume_token_if_delimiter(&itr, &prev, &next, &is_delimiter);
 	}
 	*token_list = head.next;
 }
@@ -66,7 +79,7 @@ void	expansion(t_expression *expression, t_shell_var *shell_var)
 	t_list	*itr;
 
 	itr = expression->process_list;
-	while(itr)
+	while (itr)
 	{
 		handle_process(&((t_process *)(itr->content))->token_list, shell_var);
 		g_exit_status = 0; // bashの挙動に合わせた
