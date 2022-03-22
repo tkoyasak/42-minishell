@@ -24,7 +24,7 @@ int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
 		return (1);
 	}
 	*tree = convert_to_expression_tree(*tree);
-	if(set_heredoc(*tree, shell_var) == 1)
+	if (set_heredoc(*tree, shell_var) == 1)
 	{
 		g_exit_status = 1;
 		return (1);
@@ -32,7 +32,7 @@ int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
 	return (0);
 }
 
-void minish_loop(t_shell_var *shell_var)
+void	minish_loop(t_shell_var *shell_var)
 {
 	char		*line;
 	t_node		*tree;
@@ -57,18 +57,18 @@ void minish_loop(t_shell_var *shell_var)
 	}
 }
 
-void	test_one_line(t_shell_var *shell_var, int argc, char *argv[])
+void	test_one_line(char *line, t_shell_var *shell_var)
 {
 	t_node		*tree;
 
-	if (ft_strlen(argv[2]) == 0)
+	if (ft_strlen(line) == 0)
 		exit(0);
-	if (analyzer(argv[2], &tree, shell_var) == 0)
+	if (analyzer(line, &tree, shell_var) == 0)
 		g_exit_status = execution(tree, shell_var);
 	// delete tree
 	// analyzer(argv[2], &tree, shell_var);
 	// delete_astree(tree);
-	exit(g_exit_status);
+	// exit(g_exit_status);
 }
 
 int	main(int argc, char **argv)
@@ -80,9 +80,9 @@ int	main(int argc, char **argv)
 		return (1);
 	init_shell_var(&shell_var);
 	if (argc == 3 && !ft_strcmp("-c", argv[1]))
-		test_one_line(&shell_var, argc, argv);
+		test_one_line(argv[2], &shell_var);
 	else
 		minish_loop(&shell_var);
 	// delete shell_var
-	return (0);
+	return (g_exit_status);
 }

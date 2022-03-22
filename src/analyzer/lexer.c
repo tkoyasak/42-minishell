@@ -2,7 +2,8 @@
 
 void	lexer_error(char *p, int idx)
 {
-	ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+	ft_putstr_fd("minishell: syntax error near unexpected token `", \
+		STDERR_FILENO);
 	ft_putnchar_fd(p, idx, STDERR_FILENO);
 	ft_putstr_fd("'\n", STDERR_FILENO);
 }
@@ -143,7 +144,7 @@ static t_list	*tokenize(char *p)
 int	validate_syntax(t_list *token_list)
 {
 	t_list	*itr;
-	size_t	parenthesis;
+	int		parenthesis;
 
 	itr = token_list;
 	parenthesis = 0;
