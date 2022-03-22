@@ -39,3 +39,13 @@ char	*ft_xitoa(int n)
 		error_handler("malloc");
 	return (ret);
 }
+
+t_list	*ft_xlstnew(void *content)
+{
+	t_list	*ret;
+
+	ret = ft_lstnew(content);
+	if (!ret)
+		error_handler("malloc");
+	return (ret);
+}
