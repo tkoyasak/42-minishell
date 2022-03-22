@@ -1,5 +1,12 @@
 #include "minishell.h"
 
+void	lexer_error(char *p, int idx)
+{
+	ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+	ft_putnchar_fd(p, idx, STDERR_FILENO);
+	ft_putstr_fd("'\n", STDERR_FILENO);
+}
+
 // <<< などを弾く
 static bool	is_valid_str(char *p)
 {
@@ -19,11 +26,7 @@ static bool	is_valid_str(char *p)
 	if (idx > 2)
 		is_valid = false;
 	if (!is_valid)
-	{
-		ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
-		ft_putnchar_fd(p, idx, STDERR_FILENO);
-		ft_putstr_fd("'\n", STDERR_FILENO);
-	}
+		lexer_error(p, idx);
 	return (is_valid);
 }
 
@@ -57,9 +60,7 @@ static int	token_string_len(char *p)
 				idx++;
 			if (p[idx] != quote)
 			{
-				ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
-				ft_putnchar_fd(p, idx, STDERR_FILENO);
-				ft_putstr_fd("'\n", STDERR_FILENO);
+				lexer_error(p, idx);
 				return (-1);
 			}
 		}
@@ -166,10 +167,9 @@ int	lexer(char *line, t_list **token_list)
 		return (1);
 	if (validate_syntax(*token_list))
 	{
-		// syntax error ")"
+		lexer_error("(", 1);
 		ft_lstclear(token_list, delete_token);
 		return (1);
 	}
-	// return (token_list);
 	return (0);
 }

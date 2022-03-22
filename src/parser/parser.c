@@ -59,7 +59,8 @@ static t_node	*create_process_node(t_list **itr, int *parser_result)
 		if (((t_token *)(*itr)->content)->kind == TK_REDIRECT && \
 				((t_token *)((*itr)->next->content))->kind != TK_STRING)
 		{
-			parser_error_handler(itr, ((t_token *)((*itr)->next->content))->str, parser_result, __LINE__);
+			*parser_result = 1;
+			// parser_error_handler(itr, ((t_token *)((*itr)->next->content))->str, parser_result, __LINE__);
 			return (node);
 			// return (parser_error_handler(itr, ((t_token *)(*itr)->content)->str, parser_result, __LINE__));
 			// ここでNULLが返ると，tokenをフリーできなくなる．
