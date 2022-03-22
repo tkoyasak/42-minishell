@@ -76,12 +76,12 @@ t_list	*consume_new_joined_token(t_list **itr)
 	char		*str;
 	t_token		*token;
 
-	token = ft_calloc(1, sizeof(t_token));
+	token = ft_xcalloc(1, sizeof(t_token));
 	len = token_str_len(*itr);
-	str = ft_calloc(len + 1, sizeof(char));
+	str = ft_xcalloc(len + 1, sizeof(char));
 	token->str = consume_token_str_join(itr, str);
 	token->kind = TK_STRING;
-	return (ft_lstnew(token));
+	return (ft_xlstnew(token));
 }
 
 // naked spaceで分割し、文字列(t_exp_strlist)を連結してトークン化する

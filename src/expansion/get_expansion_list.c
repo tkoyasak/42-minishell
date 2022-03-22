@@ -33,8 +33,8 @@ t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expansion_kin
 {
 	t_expansion	*exp;
 
-	exp = ft_calloc(1, sizeof(t_expansion));
-	exp->str = ft_substr(*str, 0, get_word_len(*str, in_squote, in_dquote));
+	exp = ft_xcalloc(1, sizeof(t_expansion));
+	exp->str = ft_xsubstr(*str, 0, get_word_len(*str, in_squote, in_dquote));
 	exp->len = ft_strlen(exp->str);
 	*str += exp->len;
 	exp->in_squote = in_squote;
@@ -45,7 +45,7 @@ t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expansion_kin
 		exp->kind = ENV;
 	if (!in_squote && !in_dquote && exp->str && exp->str[0] == ' ')
 		exp->kind = NAKED_SPACE;
-	return (ft_lstnew(exp));
+	return (ft_xlstnew(exp));
 }
 
 t_list	*split_token_str(char *str, bool par_in_dquote)
