@@ -2,7 +2,7 @@
 
 t_redirection_kind	get_redirection_kind(char *redirect_str)
 {
-	const char	*redirect_strs[] = {"", "<", "<<", ">", ">>"};
+	const char			*redirect_strs[] = {"", "<", "<<", ">", ">>"};
 	t_redirection_kind	kind;
 
 	kind = INPUT;
@@ -15,11 +15,20 @@ t_redirection_kind	get_redirection_kind(char *redirect_str)
 	return (NONE);
 }
 
+void	remove_one_token(t_list **itr)
+{
+	t_list	*tmp;
+
+	tmp = (*itr)->next;
+	// ft_lstdelone(*itr, del_token);
+	*itr = tmp;
+}
+
 void	remove_redirection_token(t_process *process)
 {
-	t_list					*itr;  // token_list
-	t_list					*head;
-	t_list					*tmp;
+	t_list	*itr;  // token_list
+	t_list	*head;
+	t_list	*tmp;
 
 	head = NULL;
 	itr = process->token_list;
@@ -27,12 +36,8 @@ void	remove_redirection_token(t_process *process)
 	{
 		if (((t_token *)(itr->content))->kind == TK_REDIRECT)
 		{
-			tmp = itr->next;
-			// ft_lstdelone(&itr, del_token);
-			itr = tmp;
-			tmp = itr->next;
-			// ft_lstdelone(&itr, del_token);
-			itr = tmp;
+			remove_one_token(&itr);
+			remove_one_token(&itr);
 		}
 		else
 		{
@@ -63,7 +68,44 @@ void	open_error_handler(char *filename)
 		ft_putstr_fd(filename, STDERR_FILENO);
 		ft_putendl_fd(": Is a directory", STDERR_FILENO);
 	}
+}
 
+int	set_redirection_input(t_process *process, t_list *itr, t_redirection_kind kind)
+{
+	process->kind[0] = kind;
+	process->filename[0] = ((t_token *)(itr->content))->str;
+	if (kind == INPUT)
+	{
+		if (process->fd[0])
+			safe_func(close(process->fd[0]));
+		process->fd[0] = open(process->filename[0], R_OK);
+		if (process->fd[0] == -1)
+		{
+			open_error_handler(process->filename[0]);
+			g_exit_status = 1;
+			return (-1);
+		}
+	}
+	return (0);
+}
+
+int	set_redirection_output(t_process *process, t_list *itr, t_redirection_kind kind)
+{
+	if (process->fd[1])
+		safe_func(close(process->fd[1]));
+	process->kind[1] = kind;
+	process->filename[1] = ((t_token *)(itr->content))->str;
+	if (kind == OUTPUT)
+		process->fd[1] = open(process->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
+	else
+		process->fd[1] = open(process->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
+	if (process->fd[1] == -1)
+	{
+		open_error_handler(process->filename[1]);
+		g_exit_status = 1;
+		return (-1);
+	}
+	return (0);
 }
 
 // ls -al > file           ls -al  output_kind = OUTPUT
@@ -81,37 +123,13 @@ void	set_redirection_params(t_process *process, t_shell_var *shell_var)
 			itr = itr->next;
 			if (kind == INPUT || kind == HEREDOC)
 			{
-				process->kind[0] = kind;
-				process->filename[0] = ((t_token *)(itr->content))->str;
-				if (kind == INPUT)
-				{
-					if (process->fd[0])
-						close(process->fd[0]);
-					process->fd[0] = open(process->filename[0], R_OK);
-					if (process->fd[0] == -1)
-					{
-						open_error_handler(process->filename[0]);
-						g_exit_status = 1;
-						return ;
-					}
-				}
+				if (set_redirection_input(process, itr, kind) == -1)
+					return ;
 			}
 			else if (kind == OUTPUT || kind == APPEND)
 			{
-				if (process->fd[1])
-					close(process->fd[1]);
-				process->kind[1] = kind;
-				process->filename[1] = ((t_token *)(itr->content))->str;
-				if (kind == OUTPUT)
-					process->fd[1] = open(process->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
-				else
-					process->fd[1] = open(process->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
-				if (process->fd[1] == -1)
-				{
-					open_error_handler(process->filename[1]);
-					g_exit_status = 1;
+				if (set_redirection_output(process, itr, kind) == -1)
 					return ;
-				}
 			}
 		}
 		itr = itr->next;
@@ -123,7 +141,6 @@ void	set_command(t_process *process)
 	t_list	*itr;
 	int		cmd_idx;
 
-	remove_redirection_token(process);
 	if (ft_lstsize(process->token_list) == 0)
 	{
 		process->command = ft_calloc(2, sizeof(char *));
@@ -155,6 +172,7 @@ void	set_redirections_and_commands(t_expression *expression, t_shell_var *shell_
 		set_redirection_params(process, shell_var);
 		if (g_exit_status)
 			return ;
+		remove_redirection_token(process);
 		set_command(process);
 		process_list = process_list->next;
 		cmd_idx++;
