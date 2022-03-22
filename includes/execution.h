@@ -30,4 +30,15 @@ t_redirection_kind	get_redirection_kind(char *redirect_str);
 void		dup2_func(t_expression *expression, t_process *process, const int cmd_idx);
 void		close_func(t_expression *expression, t_process *process, const int cmd_idx);
 
+
+t_redirection_kind	get_redirection_kind(char *redirect_str);
+void	remove_redirection_token(t_process *process);
+void	open_error_handler(char *filename);
+void	set_redirection_params(t_process *process, t_shell_var *shell_var);
+void	set_command(t_process *process);
+void	set_redirections_and_commands(t_expression *expression, t_shell_var *shell_var);
+void	exec_child(t_expression *expression, t_process *process, const int cmd_idx, t_shell_var *shell_var);
+
+
+
 #endif
