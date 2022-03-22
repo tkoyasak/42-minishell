@@ -56,7 +56,7 @@ int	builtin_exit(t_process *process, t_shell_var *shell_var)
 	{
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd("too many arguments\n", STDERR_FILENO);
-		g_exit_status = 1;
+		return (1);
 	}
 	exit(g_exit_status);
 }
