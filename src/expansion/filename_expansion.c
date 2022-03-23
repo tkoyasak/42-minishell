@@ -15,7 +15,7 @@ t_list	*get_opened_directory(char *prefix, char **slash_splitted_str)
 		expansion = ft_calloc(1, sizeof(t_expd));
 		expansion->str = prefix;
 		expansion->len = ft_strlen(prefix);
-		expansion->kind = FILENAME_EXPANSION;
+		expansion->kind = PD_FILENAME;
 		return (ft_lstnew(expansion));
 	}
 	head = NULL;
@@ -85,7 +85,7 @@ t_list	*get_filename_expansion(t_list *expansion_list)
 	while (itr)
 	{
 		next = itr->next;
-		if (((t_expd *)(itr->content))->kind == STRING && \
+		if (((t_expd *)(itr->content))->kind == PD_STRING && \
 			((t_expd *)(itr->content))->in_dquote == false && \
 			((t_expd *)(itr->content))->in_squote == false )
 			itr = get_expanded_filename_token(itr);

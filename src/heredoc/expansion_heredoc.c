@@ -14,7 +14,7 @@ t_list	*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expd_
 	exp->in_dquote = in_dquote;
 	exp->kind = kind;
 	if (exp->str && exp->str[0] == '$' && ft_isalnum(exp->str[1]) && !in_squote)
-		exp->kind = ENV;
+		exp->kind = PD_ENV;
 	new = ft_xlstnew(exp);
 	return (new);
 }
@@ -36,7 +36,7 @@ t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_shell_var *s
 	t_list		*itr;
 	t_list		*prev;
 	t_list		*next;
-	t_expd	*exp;
+	t_expd		*exp;
 
 	prev = NULL;
 	head = split_str_heredoc(str, par_in_dquote);
@@ -45,7 +45,7 @@ t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_shell_var *s
 	{
 		next = itr->next;
 		exp = (t_expd *)(itr->content);
-		if (exp->kind == ENV)
+		if (exp->kind == PD_ENV)
 		{
 			exp->str = get_env_value_str(exp->str + 1, shell_var);
 			connect_expansion_list_heredoc(exp, head, prev, shell_var);

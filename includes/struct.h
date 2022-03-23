@@ -33,20 +33,20 @@ typedef struct s_token
 
 typedef enum e_expd_kind
 {
-	SQUOTE,
-	DQUOTE,
-	ENV,
-	STRING,
-	NAKED_SPACE,
-	FILENAME_EXPANSION
+	PD_SQUOTE,
+	PD_DQUOTE,
+	PD_ENV,
+	PD_STRING,
+	PD_NAKED_SP,
+	PD_FILENAME
 }	t_expd_kind;
 
 typedef struct s_expd
 {
-	int					len;
-	char				*str;
-	bool				in_squote;
-	bool				in_dquote;
+	int			len;
+	char		*str;
+	bool		in_squote;
+	bool		in_dquote;
 	t_expd_kind	kind;
 }	t_expd;
 
@@ -94,7 +94,7 @@ typedef struct s_node
 {
 	t_node_kind		kind;
 	t_list			*token_list;
-	t_expr	*expr;
+	t_expr			*expr;
 	struct s_node	*lhs;
 	struct s_node	*rhs;
 }	t_node;

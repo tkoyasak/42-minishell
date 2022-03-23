@@ -223,7 +223,7 @@ void	func_get_expansion_list(t_list *expansion_list, char *expected_expansion_li
 // 	setenv("VAR", "hello", 0);
 // 	char		*input = "$VAR | cat";
 // 	char		*expected_expansion_list[] = {"hello", " ", "|", " ", "cat"};
-// 	t_expd_kind	expected_exp_kind[] = {STRING, NAKED_SPACE, STRING, NAKED_SPACE, STRING};
+// 	t_expd_kind	expected_exp_kind[] = {PD_STRING, PD_NAKED_SP, PD_STRING, PD_NAKED_SP, PD_STRING};
 // 	t_list *res = get_expansion_list(input, false);
 
 // 	func_get_expansion_list(res, expected_expansion_list, expected_exp_kind);
@@ -235,7 +235,7 @@ void	func_get_expansion_list(t_list *expansion_list, char *expected_expansion_li
 // 	setenv("VAR", "hello world", 0);
 // 	char		*input = "$VAR$PATH '| cat'";
 // 	char		*expected_expansion_list[] = {"hello", " ", "world", get_env_value("PATH"), " ", "\'", "| cat", "\'"};
-// 	t_expd_kind	expected_exp_kind[] = {STRING, NAKED_SPACE, STRING, STRING, NAKED_SPACE, SQUOTE, STRING, SQUOTE};
+// 	t_expd_kind	expected_exp_kind[] = {PD_STRING, PD_NAKED_SP, PD_STRING, PD_STRING, PD_NAKED_SP, PD_SQUOTE, PD_STRING, PD_SQUOTE};
 // 	t_list *res = get_expansion_list(input, false);
 
 // 	func_get_expansion_list(res, expected_expansion_list, expected_exp_kind);
@@ -247,7 +247,7 @@ void	func_get_expansion_list(t_list *expansion_list, char *expected_expansion_li
 // 	setenv("VAR", "'hell''o world'", 0);
 // 	char		*input = "$VAR$ | $";
 // 	char		*expected_expansion_list[] = {"\'", "hell", "\'", "\'", "o world", "\'", "$", " ", "|", " ", "$"};
-// 	t_expd_kind	expected_exp_kind[] = {SQUOTE, STRING, SQUOTE, SQUOTE, STRING, SQUOTE, STRING, NAKED_SPACE, STRING, NAKED_SPACE, STRING};
+// 	t_expd_kind	expected_exp_kind[] = {PD_SQUOTE, PD_STRING, PD_SQUOTE, PD_SQUOTE, PD_STRING, PD_SQUOTE, PD_STRING, PD_NAKED_SP, PD_STRING, PD_NAKED_SP, PD_STRING};
 // 	t_list *res = get_expansion_list(input, false);
 
 // 	func_get_expansion_list(res, expected_expansion_list, expected_exp_kind);
@@ -260,7 +260,7 @@ void	func_get_expansion_list(t_list *expansion_list, char *expected_expansion_li
 // 	setenv("VAR2", "$VAR1", 0);
 // 	char		*input = "a$VAR2";
 // 	char		*expected_expansion_list[] = {"a", "hello", " ", "world"};
-// 	t_expd_kind	expected_exp_kind[] = {STRING, STRING, NAKED_SPACE, STRING};
+// 	t_expd_kind	expected_exp_kind[] = {PD_STRING, PD_STRING, PD_NAKED_SP, PD_STRING};
 // 	t_list *res = get_expansion_list(input, false);
 
 // 	func_get_expansion_list(res, expected_expansion_list, expected_exp_kind);
@@ -274,7 +274,7 @@ void	func_get_expansion_list(t_list *expansion_list, char *expected_expansion_li
 // 	setenv("VAR2", "$VAR1", 0);
 // 	char		*input = "a\"$VAR2\"";
 // 	char		*expected_expansion_list[] = {"a", "\"", "hello  world", "\""};
-// 	t_expd_kind	expected_exp_kind[] = {STRING, DQUOTE, STRING, DQUOTE};
+// 	t_expd_kind	expected_exp_kind[] = {PD_STRING, PD_DQUOTE, PD_STRING, PD_DQUOTE};
 // 	t_list *res = get_expansion_list(input, false);
 
 // 	func_get_expansion_list(res, expected_expansion_list, expected_exp_kind);
@@ -289,7 +289,7 @@ void	func_get_expansion_list(t_list *expansion_list, char *expected_expansion_li
 // 	setenv("VAR", "hello  world", 0);
 // 	char		*input = "a\"$VAR\"";
 // 	char		*expected_expansion_list[] = {"a", "hello  world"};
-// 	t_expd_kind	expected_exp_kind[] = {STRING, STRING};
+// 	t_expd_kind	expected_exp_kind[] = {PD_STRING, PD_STRING};
 // 	t_list *res = get_expansion_list(input, false);
 // 	res = remove_quotes(res);
 
@@ -302,7 +302,7 @@ void	func_get_expansion_list(t_list *expansion_list, char *expected_expansion_li
 // 	setenv("VAR", "hello  world", 0);
 // 	char		*input = "a$VAR";
 // 	char		*expected_expansion_list[] = {"a", "hello", "  ",  "world"};
-// 	t_expd_kind	expected_exp_kind[] = {STRING, STRING, NAKED_SPACE, STRING};
+// 	t_expd_kind	expected_exp_kind[] = {PD_STRING, PD_STRING, PD_NAKED_SP, PD_STRING};
 // 	t_list *res = get_expansion_list(input, false);
 // 	res = remove_quotes(res);
 
@@ -315,7 +315,7 @@ void	func_get_expansion_list(t_list *expansion_list, char *expected_expansion_li
 // 	setenv("VAR", "hello  w'orl'd", 0);
 // 	char		*input = "a\"$VAR\"";
 // 	char		*expected_expansion_list[] = {"a", "hello  w'orl'd"};
-// 	t_expd_kind	expected_exp_kind[] = {STRING, STRING};
+// 	t_expd_kind	expected_exp_kind[] = {PD_STRING, PD_STRING};
 // 	t_list *res = get_expansion_list(input, false);
 // 	res = remove_quotes(res);
 
@@ -328,7 +328,7 @@ void	func_get_expansion_list(t_list *expansion_list, char *expected_expansion_li
 // 	setenv("VAR", "hello  w'orl'd", 0);
 // 	char		*input = "a$VAR";
 // 	char		*expected_expansion_list[] = {"a", "hello", "  ", "w", "orl", "d"};
-// 	t_expd_kind	expected_exp_kind[] = {STRING, STRING, NAKED_SPACE, STRING, STRING, STRING};
+// 	t_expd_kind	expected_exp_kind[] = {PD_STRING, PD_STRING, PD_NAKED_SP, PD_STRING, PD_STRING, PD_STRING};
 // 	t_list *res = get_expansion_list(input, false);
 // 	res = remove_quotes(res);
 

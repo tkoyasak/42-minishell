@@ -29,12 +29,12 @@ t_list	*split_str_heredoc(char *str, bool par_in_dquote)
 	head = NULL;
 	if (*str == '\0')
 		ft_lstadd_back(&head, extract_word_heredoc(&str, false, \
-				par_in_dquote, STRING));
+				par_in_dquote, PD_STRING));
 	in_dquote = false;
 	while (*str)
 	{
 		ft_lstadd_back(&head, extract_word_heredoc(&str, false, \
-				par_in_dquote | in_dquote, STRING));
+				par_in_dquote | in_dquote, PD_STRING));
 	}
 	return (head);
 }

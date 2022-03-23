@@ -14,7 +14,7 @@ t_list	*remove_quotes(t_list *src_list)
 		next = itr->next;
 		itr->next = NULL;
 		exp = (t_expd *)(itr->content);
-		if (exp->kind == SQUOTE || exp->kind == DQUOTE)
+		if (exp->kind == PD_SQUOTE || exp->kind == PD_DQUOTE)
 			ft_lstdelone(itr, delete_expansion);
 		else
 			ft_lstadd_back(&head, itr);
@@ -31,10 +31,10 @@ static size_t	token_str_len(t_list *src_list)
 
 	len = 0;
 	itr = src_list;
-	if (((t_expd *)(itr->content))->kind == FILENAME_EXPANSION)
+	if (((t_expd *)(itr->content))->kind == PD_FILENAME)
 		return (((t_expd *)(itr->content))->len);
-	while (itr && ((t_expd *)(itr->content))->kind != NAKED_SPACE && \
-		((t_expd *)(itr->content))->kind != FILENAME_EXPANSION)
+	while (itr && ((t_expd *)(itr->content))->kind != PD_NAKED_SP && \
+		((t_expd *)(itr->content))->kind != PD_FILENAME)
 	{
 		exp = (t_expd *)(itr->content);
 		len += exp->len;
@@ -51,15 +51,15 @@ static char	*consume_token_str_join(t_list **src_list, char *buf)
 
 	len = 0;
 	itr = *src_list;
-	if (((t_expd *)(itr->content))->kind == FILENAME_EXPANSION)
+	if (((t_expd *)(itr->content))->kind == PD_FILENAME)
 	{
 		exp = (t_expd *)(itr->content);
 		ft_strlcat(buf, exp->str, exp->len + 1);
 		*src_list = (*src_list)->next;
 		return (buf);
 	}
-	while (itr && ((t_expd *)(itr->content))->kind != NAKED_SPACE && \
-		((t_expd *)(itr->content))->kind != FILENAME_EXPANSION)
+	while (itr && ((t_expd *)(itr->content))->kind != PD_NAKED_SP && \
+		((t_expd *)(itr->content))->kind != PD_FILENAME)
 	{
 		exp = (t_expd *)(itr->content);
 		len += exp->len;
@@ -96,7 +96,7 @@ t_list	*convert_to_token_list(t_list *expansion_list)
 	while (itr)
 	{
 		exp = (t_expd *)(itr->content);
-		if (exp->kind == NAKED_SPACE)
+		if (exp->kind == PD_NAKED_SP)
 			itr = itr->next;
 		else
 			ft_lstadd_back(&head, consume_new_joined_token(&itr));

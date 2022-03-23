@@ -42,9 +42,9 @@ static t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expd_k
 	exp->kind = kind;
 	if (!in_squote && exp->str && exp->str[0] == '$' && \
 		(ft_isalnum(exp->str[1]) || exp->str[1] == '_' || exp->str[1] == '?'))
-		exp->kind = ENV;
+		exp->kind = PD_ENV;
 	if (!in_squote && !in_dquote && exp->str && exp->str[0] == ' ')
-		exp->kind = NAKED_SPACE;
+		exp->kind = PD_NAKED_SP;
 	return (ft_xlstnew(exp));
 }
 
@@ -61,17 +61,17 @@ static t_list	*split_token_str(char *str, bool par_in_dquote)
 		flag = par_in_dquote | in_dquote;
 		if (!in_dquote && *str == '\'')
 		{
-			ft_lstadd_back(&head, extract_word(&str, true, flag, SQUOTE));
-			ft_lstadd_back(&head, extract_word(&str, true, flag, STRING));
-			ft_lstadd_back(&head, extract_word(&str, true, flag, SQUOTE));
+			ft_lstadd_back(&head, extract_word(&str, true, flag, PD_SQUOTE));
+			ft_lstadd_back(&head, extract_word(&str, true, flag, PD_STRING));
+			ft_lstadd_back(&head, extract_word(&str, true, flag, PD_SQUOTE));
 		}
 		else if (*str == '\"')
 		{
 			in_dquote ^= 1;
-			ft_lstadd_back(&head, extract_word(&str, false, true, DQUOTE));
+			ft_lstadd_back(&head, extract_word(&str, false, true, PD_DQUOTE));
 		}
 		else
-			ft_lstadd_back(&head, extract_word(&str, false, flag, STRING));
+			ft_lstadd_back(&head, extract_word(&str, false, flag, PD_STRING));
 	}
 	return (head);
 }
@@ -81,7 +81,7 @@ static t_list	*get_split_token_list(char *str, bool par_in_dquote)
 	if (!str)
 		return (NULL);
 	if (*str == '\0')
-		return (extract_word(&str, false, par_in_dquote, STRING));
+		return (extract_word(&str, false, par_in_dquote, PD_STRING));
 	return (split_token_str(str, par_in_dquote));
 }
 
@@ -100,7 +100,7 @@ t_list	*get_expansion_list(char *str, bool par_in_dquote, t_shell_var *shell_var
 	{
 		next = itr->next;
 		exp = (t_expd *)(itr->content);
-		if (exp->kind == ENV)
+		if (exp->kind == PD_ENV)
 		{
 			exp->str = get_env_value_str(exp->str + 1, shell_var);
 			prev->next = get_expansion_list(exp->str, exp->in_dquote, shell_var);
