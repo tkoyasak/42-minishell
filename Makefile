@@ -47,6 +47,9 @@ fclean: clean
 
 re: fclean all
 
+debug: CFLAGS += -g3 -fsanitize=address
+debug: re
+
 gtest:
 	cmake -S ./test/gtest -B ./test/gtest/build && cmake --build ./test/gtest/build && ./test/gtest/build/main
 
