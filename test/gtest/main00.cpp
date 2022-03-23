@@ -75,7 +75,7 @@ TEST(lexer, lexer_test05)
 {
 	char *input = "ls>>file.txt";
 	char	*expected[] = {"ls", ">>", "file.txt"};
-	t_token_kind expected_kind[] = {TK_STRING, TK_REDIRECT, TK_STRING};
+	t_token_kind expected_kind[] = {TK_STRING, TK_IO, TK_STRING};
 
 	t_list *token_list = lexer(input);
 	func(token_list, expected, expected_kind);
@@ -85,7 +85,7 @@ TEST(lexer, lexer_test06)
 {
 	char *input = "cat \"abc'def\">>file.txt";
 	char	*expected[] = {"cat", "\"abc'def\"",">>", "file.txt"};
-	t_token_kind expected_kind[] = {TK_STRING, TK_STRING, TK_REDIRECT, TK_STRING};
+	t_token_kind expected_kind[] = {TK_STRING, TK_STRING, TK_IO, TK_STRING};
 
 	t_list *token_list = lexer(input);
 	func(token_list, expected, expected_kind);
@@ -95,7 +95,7 @@ TEST(lexer, lexer_test07)
 {
 	char *input = "ls|cat>file.txt";
 	char	*expected[] = {"ls", "|", "cat", ">", "file.txt"};
-	t_token_kind expected_kind[] = {TK_STRING, TK_DELIM, TK_STRING, TK_REDIRECT, TK_STRING};
+	t_token_kind expected_kind[] = {TK_STRING, TK_DELIM, TK_STRING, TK_IO, TK_STRING};
 
 	t_list *token_list = lexer(input);
 	func(token_list, expected, expected_kind);
@@ -105,7 +105,7 @@ TEST(lexer, lexer_test08)
 {
 	char *input = "ls;cat>file.txt;";
 	char	*expected[] = {"ls", ";", "cat", ">", "file.txt", ";"};
-	t_token_kind expected_kind[] = {TK_STRING, TK_DELIM, TK_STRING, TK_REDIRECT, TK_STRING, TK_DELIM};
+	t_token_kind expected_kind[] = {TK_STRING, TK_DELIM, TK_STRING, TK_IO, TK_STRING, TK_DELIM};
 
 	t_list *token_list = lexer(input);
 	func(token_list, expected, expected_kind);
@@ -115,7 +115,7 @@ TEST(lexer, lexer_test09)
 {
 	char *input = "(ls;(cat>file.txt;))";
 	char	*expected[] = {"(", "ls", ";", "(", "cat", ">", "file.txt", ";", ")", ")"};
-	t_token_kind expected_kind[] = {TK_L_PAREN, TK_STRING, TK_DELIM, TK_L_PAREN, TK_STRING, TK_REDIRECT, TK_STRING, TK_DELIM, TK_R_PAREN, TK_R_PAREN};
+	t_token_kind expected_kind[] = {TK_L_PAREN, TK_STRING, TK_DELIM, TK_L_PAREN, TK_STRING, TK_IO, TK_STRING, TK_DELIM, TK_R_PAREN, TK_R_PAREN};
 
 	t_list *token_list = lexer(input);
 	func(token_list, expected, expected_kind);

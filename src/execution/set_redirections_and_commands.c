@@ -34,7 +34,7 @@ void	remove_io_token(t_process *process)
 	itr = process->token_list;
 	while (itr)
 	{
-		if (((t_token *)(itr->content))->kind == TK_REDIRECT)
+		if (((t_token *)(itr->content))->kind == TK_IO)
 		{
 			remove_one_token(&itr);
 			remove_one_token(&itr);
@@ -120,7 +120,7 @@ void	set_io_params(t_process *process)
 	itr = process->token_list;
 	while (itr)
 	{
-		if (((t_token *)(itr->content))->kind == TK_REDIRECT)
+		if (((t_token *)(itr->content))->kind == TK_IO)
 		{
 			kind = get_io_kind(((t_token *)(itr->content))->str);
 			itr = itr->next;

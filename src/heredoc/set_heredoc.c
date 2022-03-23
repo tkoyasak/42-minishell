@@ -79,7 +79,7 @@ int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 	itr = process->token_list;
 	while (itr)
 	{
-		if (((t_token *)(itr->content))->kind == TK_REDIRECT)
+		if (((t_token *)(itr->content))->kind == TK_IO)
 		{
 			kind = get_io_kind(((t_token *)(itr->content))->str);
 			itr = itr->next;

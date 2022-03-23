@@ -56,7 +56,7 @@ t_node	*create_process_node(t_list **itr, bool *is_valid)
 		((t_token *)((*itr)->next->content))->kind != TK_L_PAREN && \
 		((t_token *)((*itr)->next->content))->kind != TK_R_PAREN)
 	{
-		if (((t_token *)(*itr)->content)->kind == TK_REDIRECT && \
+		if (((t_token *)(*itr)->content)->kind == TK_IO && \
 				((t_token *)((*itr)->next->content))->kind != TK_STRING)
 		{
 			*is_valid = false;
@@ -67,7 +67,7 @@ t_node	*create_process_node(t_list **itr, bool *is_valid)
 	tail = *itr;
 	*itr = tail->next;
 	tail->next = NULL;
-	if (((t_token *)tail->content)->kind == TK_REDIRECT || \
+	if (((t_token *)tail->content)->kind == TK_IO || \
 		(*itr && ((t_token *)(*itr)->content)->kind == TK_L_PAREN))
 	{
 		parser_error(itr, ((t_token *)tail->content)->str, is_valid, __LINE__);

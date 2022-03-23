@@ -22,7 +22,7 @@ static t_list	*consume_new_token(t_list *itr,
 	return (itr->next);
 }
 
-/*  スペースで分割し、token(TK_DELIM, TK_REDIRECT, TK_STRING)に分割  */
+/*  スペースで分割し、token(TK_DELIM, TK_IO, TK_STRING)に分割  */
 static t_list	*tokenize(char *p)
 {
 	t_list			head;

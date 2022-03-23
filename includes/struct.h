@@ -15,11 +15,11 @@ typedef struct s_env
 }	t_env;
 
 /*  TK_DELIM is token process delimiter ; | && ||
-TK_REDIRECT <, >, <<, >>  */
+TK_IO <, >, <<, >>  */
 typedef enum e_token_kind
 {
 	TK_DELIM,
-	TK_REDIRECT,
+	TK_IO,
 	TK_STRING,
 	TK_L_PAREN,
 	TK_R_PAREN,
@@ -61,13 +61,13 @@ typedef enum e_io_kind
 
 typedef struct s_process
 {
-	t_list				*token_list;
+	t_list		*token_list;
 	t_io_kind	kind[2];
-	int					fd[2];
-	char				*filename[2];
-	int					here_pipefd[2];
-	int					here_fd;
-	char				**command;
+	int			fd[2];
+	char		*filename[2];
+	int			here_pipefd[2];
+	int			here_fd;
+	char		**command;
 }	t_process;
 
 typedef enum e_node_kind

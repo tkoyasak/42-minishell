@@ -74,7 +74,7 @@ bool	set_token_len_and_kind(char *p, int *len, t_token_kind *kind)
 	else if (ft_strchr(REDIRECT_CHAR, *p))
 	{
 		*len = token_reserved_len(p, REDIRECT_CHAR);
-		*kind = TK_REDIRECT;
+		*kind = TK_IO;
 	}
 	else if (ft_strchr(PAREN_CHAR, *p))
 	{

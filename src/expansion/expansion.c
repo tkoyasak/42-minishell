@@ -43,7 +43,7 @@ static void	consume_token_if_limiter(t_list **itr, t_list **prev, t_list **next,
 
 	*is_limiter = false;
 	token = (t_token *)(*itr)->content;
-	if (token->kind == TK_REDIRECT && ft_strcmp(token->str, "<<") == 0)
+	if (token->kind == TK_IO && ft_strcmp(token->str, "<<") == 0)
 		*is_limiter = true;
 	(*itr)->next = *next;
 	*prev = *itr;
