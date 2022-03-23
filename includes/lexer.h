@@ -17,5 +17,7 @@
 # define PARENTHESIS_CHAR "()"
 
 int		lexer(char *line, t_list **token_list);
+bool	set_token_len_and_kind(char *p, int *len, t_token_kind *kind);
+void	lexer_error(char *p, int idx);
 
 #endif
