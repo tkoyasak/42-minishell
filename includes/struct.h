@@ -17,10 +17,10 @@ typedef struct s_env
 typedef enum e_token_kind
 {
 	TK_PROCESS_DELIM, // ; | && ||
-	TK_REDIRECT, // < << > >>
+	TK_REDIRECT,
 	TK_STRING,
-	TK_L_PARENTHESIS, // (
-	TK_R_PARENTHESIS, // )
+	TK_L_PAREN,
+	TK_R_PAREN,
 }	t_token_kind;
 
 // <, >, <<, >>, ;, &&, ||, |
@@ -74,11 +74,11 @@ typedef struct s_process
 typedef enum e_node_kind
 {
 	ND_SUBSHELL,
-	ND_SEMICOLON, // ;
-	ND_DAND, // &&
-	ND_DPIPE, // ||
-	ND_PIPE, // |
-	ND_PROCESS, // 文字列
+	ND_SEMICOLON, 
+	ND_DAND,
+	ND_DPIPE,
+	ND_PIPE,
+	ND_PROCESS,
 	ND_EXPRESSION
 }	t_node_kind;
 
@@ -88,17 +88,16 @@ typedef struct s_expression
 	int						process_cnt;
 	int						**pipefd;
 	pid_t					*pid;
-	t_node_kind				end_of_expression; // 最後のprocessはND_SEMICOLON
 }	t_expression;
 
 // 抽象構文木のノードの型
 typedef struct s_node
 {
-	t_node_kind		kind; // ノードの型
-	t_list			*token_list; // ls -> -al の 先頭(ls)
-	t_expression	*expression; // ls -al | echo | 'hello'
-	struct s_node	*lhs; // 左辺
-	struct s_node	*rhs; // 右辺
+	t_node_kind		kind;
+	t_list			*token_list;
+	t_expression	*expression;
+	struct s_node	*lhs;
+	struct s_node	*rhs;
 }	t_node;
 
 #endif

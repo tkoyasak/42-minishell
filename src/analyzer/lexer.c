@@ -59,9 +59,9 @@ static int	validate_syntax(t_list *token_list)
 	parenthesis = 0;
 	while (itr)
 	{
-		if (((t_token *)(itr->content))->kind == TK_L_PARENTHESIS)
+		if (((t_token *)(itr->content))->kind == TK_L_PAREN)
 			parenthesis++;
-		else if (((t_token *)(itr->content))->kind == TK_R_PARENTHESIS)
+		else if (((t_token *)(itr->content))->kind == TK_R_PAREN)
 			parenthesis--;
 		if (parenthesis < 0)
 			return (1);

@@ -14,7 +14,7 @@
 # define PROCESS_DELIM_CHAR "|&;"
 # define REDIRECT_CHAR "<>"
 # define QUOTE_CHAR "\"\'"
-# define PARENTHESIS_CHAR "()"
+# define PAREN_CHAR "()"
 
 int		lexer(char *line, t_list **token_list);
 bool	set_token_len_and_kind(char *p, int *len, t_token_kind *kind);

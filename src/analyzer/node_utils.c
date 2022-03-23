@@ -53,8 +53,8 @@ t_node	*create_process_node(t_list **itr, bool *is_valid)
 	node->token_list = *itr;
 	while ((*itr)->next != NULL && \
 		((t_token *)((*itr)->next->content))->kind != TK_PROCESS_DELIM && \
-		((t_token *)((*itr)->next->content))->kind != TK_L_PARENTHESIS && \
-		((t_token *)((*itr)->next->content))->kind != TK_R_PARENTHESIS)
+		((t_token *)((*itr)->next->content))->kind != TK_L_PAREN && \
+		((t_token *)((*itr)->next->content))->kind != TK_R_PAREN)
 	{
 		if (((t_token *)(*itr)->content)->kind == TK_REDIRECT && \
 				((t_token *)((*itr)->next->content))->kind != TK_STRING)
@@ -68,7 +68,7 @@ t_node	*create_process_node(t_list **itr, bool *is_valid)
 	*itr = tail->next;
 	tail->next = NULL;
 	if (((t_token *)tail->content)->kind == TK_REDIRECT || \
-		(*itr && ((t_token *)(*itr)->content)->kind == TK_L_PARENTHESIS))
+		(*itr && ((t_token *)(*itr)->content)->kind == TK_L_PAREN))
 	{
 		parser_error(itr, ((t_token *)tail->content)->str, is_valid, __LINE__);
 		return (node);

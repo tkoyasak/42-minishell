@@ -8,7 +8,7 @@ static bool	is_valid_str(char *p)
 
 	is_valid = true;
 	idx = 0;
-	if (p[0] && ft_strchr(PARENTHESIS_CHAR, p[0]))
+	if (p[0] && ft_strchr(PAREN_CHAR, p[0]))
 		return (true);
 	while (p[idx] && ft_strchr(RESERVED_CHAR, p[idx]))
 		idx++;
@@ -43,7 +43,7 @@ static int	token_string_len(char *p)
 	idx = 0;
 	while (p[idx] && !ft_isspace(p[idx]) && \
 		!ft_strchr(RESERVED_CHAR, p[idx]) && \
-		!ft_strchr(PARENTHESIS_CHAR, p[idx]))
+		!ft_strchr(PAREN_CHAR, p[idx]))
 	{
 		if (p[idx] && ft_strchr(QUOTE_CHAR, p[idx]))
 		{
@@ -76,10 +76,10 @@ bool	set_token_len_and_kind(char *p, int *len, t_token_kind *kind)
 		*len = token_reserved_len(p, REDIRECT_CHAR);
 		*kind = TK_REDIRECT;
 	}
-	else if (ft_strchr(PARENTHESIS_CHAR, *p))
+	else if (ft_strchr(PAREN_CHAR, *p))
 	{
 		*len = 1;
-		*kind = TK_L_PARENTHESIS + (*p == ')');
+		*kind = TK_L_PAREN + (*p == ')');
 	}
 	else
 	{
