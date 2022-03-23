@@ -7,7 +7,8 @@ t_node	*parser_error(t_list **itr, char *str, bool *is_valid, int line)
 	{
 		*is_valid = false;
 		// printf("syntax:%d\n", line);
-		ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+		ft_putstr_fd("minishell: syntax error near unexpected token `", \
+			STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
 		ft_putstr_fd("'\n", STDERR_FILENO);
 	}
@@ -35,7 +36,7 @@ bool	consume_node_kind(t_list **itr, char *op)
 	{
 		delete_itr = *itr;
 		*itr = (*itr)->next;
-		ft_lstdelone(delete_itr, delete_token); // 元のトークンはいらなくなるので，deleteが必要．
+		ft_lstdelone(delete_itr, delete_token);
 		return (true);
 	}
 	return (false);
@@ -60,7 +61,6 @@ t_node	*create_process_node(t_list **itr, bool *is_valid)
 		{
 			*is_valid = false;
 			return (node);
-			// ここでNULLが返ると，tokenをフリーできなくなる．
 		}
 		*itr = (*itr)->next;
 	}

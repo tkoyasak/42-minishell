@@ -13,7 +13,6 @@ static t_node	*create_subshell_tree(t_list **itr, bool *is_valid)
 		node->lhs = create_astree(itr, is_valid);
 		if (consume_node_kind(itr, ")") == false)
 		{
-			// printf("95\n");
 			parser_error(itr, "(", is_valid, __LINE__);
 			return (node);
 		}
@@ -25,7 +24,8 @@ static t_node	*create_subshell_tree(t_list **itr, bool *is_valid)
 		((t_token *)((*itr)->content))->kind == TK_REDIRECT)
 		return (create_process_node(itr, is_valid));
 	else if (((t_token *)((*itr)->content))->kind == TK_PROCESS_DELIM)
-		return (parser_error(itr, ((t_token *)((*itr)->content))->str, is_valid, __LINE__));
+		return (parser_error(itr, ((t_token *)((*itr)->content))->str, \
+			is_valid, __LINE__));
 	else
 		return (NULL);
 }
@@ -65,7 +65,8 @@ static t_node	*create_astree(t_list **itr, bool *is_valid)
 	while (*is_valid)
 	{
 		if (consume_node_kind(itr, ";"))
-			node = node_new(ND_SEMICOLON, node, create_sub_astree(itr, is_valid));
+			node = node_new(ND_SEMICOLON, node, \
+				create_sub_astree(itr, is_valid));
 		else if (consume_node_kind(itr, "&&"))
 			node = node_new(ND_DAND, node, create_sub_astree(itr, is_valid));
 		else if (consume_node_kind(itr, "||"))
@@ -98,9 +99,6 @@ int	parser(t_node **tree, t_list *token_list)
 
 	is_valid = true;
 	*tree = create_astree(&token_list, &is_valid);
-	// printf("168: %d\n", is_valid);
-	// dfs(tree);
-	// printf("is_valid: %d\n", is_valid);
 	return (!is_valid);
 }
 
