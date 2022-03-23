@@ -36,12 +36,12 @@ int	a_to_uchar(const char *str)
 	return ((unsigned char)(ret * sign));
 }
 
-int	builtin_exit(t_process *process, t_shell_var *shell_var)
+int	builtin_exit(t_proc *proc, t_shell_var *shell_var)
 {
 	char	**command;
 
 	(void)shell_var;
-	command = process->command;
+	command = proc->command;
 	if (command[1] == NULL)
 		exit(0);
 	g_exit_status = a_to_uchar(command[1]);

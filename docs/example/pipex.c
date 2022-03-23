@@ -1,6 +1,6 @@
 /* 動かない */
 
-/*  execute child process  */
+/*  execute child proc  */
 void	exec_child(t_pdata *pdata, const int cmd_index)
 {
 	int		filefd;
@@ -24,17 +24,17 @@ void	exec_child(t_pdata *pdata, const int cmd_index)
 }
 
 
-/*   execute processes  */
-int	exec_processes(t_info *info, t_pdata *pdata)
+/*   execute procs  */
+int	exec_procs(t_info *info, t_pdata *pdata)
 {
 	int	wstatus;
 	int	cmd_index;
 
 	cmd_index = 0;
-	while (cmd_index < pdata->process_cnt)
+	while (cmd_index < pdata->proc_cnt)
 	{
 		set_file(info, pdata, cmd_index);
-		if (cmd_index < pdata->process_cnt - 1)
+		if (cmd_index < pdata->proc_cnt - 1)
 			create_pipe(pdata, cmd_index);
 		info->pid[cmd_index] = fork();
 		if (info->pid[cmd_index] == -1)
@@ -48,7 +48,7 @@ int	exec_processes(t_info *info, t_pdata *pdata)
 		}
 		cmd_index++;
 	}
-	wstatus = wait_all_process(info, pdata);
+	wstatus = wait_all_proc(info, pdata);
 	return (WEXITSTATUS(wstatus));
 }
 
@@ -56,11 +56,11 @@ static void	prepare_pipe(t_info *info, t_pdata *pdata)
 {
 	int	pipe_index;
 
-	pdata->pipefd = (int **)malloc(sizeof(int *) * (pdata->process_cnt));
+	pdata->pipefd = (int **)malloc(sizeof(int *) * (pdata->proc_cnt));
 	if (!pdata->pipefd)
 		exit(free_all(info, pdata, true));
 	pipe_index = -1;
-	while (++pipe_index < pdata->process_cnt)
+	while (++pipe_index < pdata->proc_cnt)
 		pdata->pipefd[pipe_index] = NULL;
 }
 
@@ -73,7 +73,7 @@ void	pipex(int argc, char **argv, char **envp)
 	init_pdata(&pdata, argc, argv, envp);
 	init_info(&info, &pdata, argc, pdata.has_heredoc);
 	prepare_pipe(&info, &pdata);
-	error_status = exec_processes(&info, &pdata);
+	error_status = exec_procs(&info, &pdata);
 	free_all(&info, &pdata, false);
 	exit(error_status);
 }

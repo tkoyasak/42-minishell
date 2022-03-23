@@ -12,7 +12,7 @@
 
 int	main(int argc, char *argv[])
 {
-	pid_t   pid; // process id
+	pid_t   pid; // proc id
 
 	pid = fork (); // 親プロセスと子プロセスに別れる
 	if (-1 == pid)

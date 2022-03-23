@@ -16,14 +16,14 @@ bool	is_valid_option(char *str)
 	return (true);
 }
 
-int	builtin_echo(t_process *process, t_shell_var *shell_var)
+int	builtin_echo(t_proc *proc, t_shell_var *shell_var)
 {
 	t_list			*itr;
 	bool			has_endl;
 
 	(void)shell_var;
 	has_endl = true;
-	itr = process->token_list->next;
+	itr = proc->token_list->next;
 	if (itr == NULL)
 	{
 		printf("\n");

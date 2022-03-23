@@ -50,7 +50,7 @@ static void	consume_token_if_limiter(t_list **itr, t_list **prev, t_list **next,
 	*itr = (*itr)->next;
 }
 
-static void	handle_process(t_list **token_list, t_shell_var *shell_var)
+static void	handle_proc(t_list **token_list, t_shell_var *shell_var)
 {
 	t_list	head;
 	t_list	*itr;
@@ -78,10 +78,10 @@ void	expansion(t_expr *expr, t_shell_var *shell_var)
 {
 	t_list	*itr;
 
-	itr = expr->process_list;
+	itr = expr->proc_list;
 	while (itr)
 	{
-		handle_process(&((t_process *)(itr->content))->token_list, shell_var);
+		handle_proc(&((t_proc *)(itr->content))->token_list, shell_var);
 		g_exit_status = 0; // bashの挙動に合わせた
 		itr = itr->next;
 	}

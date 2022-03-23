@@ -1,7 +1,7 @@
 #include "minishell.h"
 
-/*  execute child process  */
-void	exec_child(t_expr *expr, t_process *process, const int cmd_idx, t_shell_var *shell_var)
+/*  execute child proc  */
+void	exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_shell_var *shell_var)
 {
 	char		*cmd;
 	char		*fullpath_cmd;
@@ -9,11 +9,11 @@ void	exec_child(t_expr *expr, t_process *process, const int cmd_idx, t_shell_var
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	cmd = ((t_token *)(process->token_list->content))->str;
-	dup2_func(expr, process, cmd_idx);
-	close_func(expr, process, cmd_idx);
+	cmd = ((t_token *)(proc->token_list->content))->str;
+	dup2_func(expr, proc, cmd_idx);
+	close_func(expr, proc, cmd_idx);
 	if (is_builtin(cmd))
-		exit(exec_builtin(process, shell_var));
+		exit(exec_builtin(proc, shell_var));
 	fullpath_cmd = get_fullpath_cmd(cmd, shell_var);
 	if (fullpath_cmd)
 	{
@@ -26,6 +26,6 @@ void	exec_child(t_expr *expr, t_process *process, const int cmd_idx, t_shell_var
 			exit(NO_PERMISSION);
 		}
 	}
-	execve(fullpath_cmd, process->command, get_environ(shell_var));
+	execve(fullpath_cmd, proc->command, get_environ(shell_var));
 	exit(NO_CMD);
 }

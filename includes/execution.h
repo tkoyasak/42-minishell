@@ -22,21 +22,21 @@ int			evaluate_expr(t_expr *expr, t_shell_var *shell_var);
 char		*get_fullpath_cmd(char *cmd, t_shell_var *shell_var);
 int			execution(t_node *tree, t_shell_var *shell_var);
 int			set_heredoc(t_node *tree, t_shell_var *shell_var);
-int			exec_builtin(t_process *process, t_shell_var *shell_var);
+int			exec_builtin(t_proc *proc, t_shell_var *shell_var);
 bool		is_builtin(char *cmd);
-int			exec_processes(t_expr *expr, t_shell_var *shell_var);
-int			exec_single_process(t_expr *expr, t_shell_var *shell_var);
-void		exec_child(t_expr *expr, t_process *process, const int cmd_idx, t_shell_var *shell_var);
+int			exec_procs(t_expr *expr, t_shell_var *shell_var);
+int			exec_single_proc(t_expr *expr, t_shell_var *shell_var);
+void		exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_shell_var *shell_var);
 t_io_kind	get_io_kind(char *redirect_str);
-void		dup2_func(t_expr *expr, t_process *process, const int cmd_idx);
-void		close_func(t_expr *expr, t_process *process, const int cmd_idx);
+void		dup2_func(t_expr *expr, t_proc *proc, const int cmd_idx);
+void		close_func(t_expr *expr, t_proc *proc, const int cmd_idx);
 
 /*  io  */
 t_io_kind	get_io_kind(char *redirect_str);
-void		remove_io_token(t_process *process);
+void		remove_io_token(t_proc *proc);
 void		open_error_handler(char *filename);
-void		set_io_params(t_process *process);
-void		set_command(t_process *process);
+void		set_io_params(t_proc *proc);
+void		set_command(t_proc *proc);
 void		set_io_and_commands(t_expr *expr);
 
 /*  heredoc  */

@@ -24,14 +24,14 @@ void	remove_one_token(t_list **itr)
 	*itr = tmp;
 }
 
-void	remove_io_token(t_process *process)
+void	remove_io_token(t_proc *proc)
 {
 	t_list	*itr;  // token_list
 	t_list	*head;
 	t_list	*tmp;
 
 	head = NULL;
-	itr = process->token_list;
+	itr = proc->token_list;
 	while (itr)
 	{
 		if (((t_token *)(itr->content))->kind == TK_IO)
@@ -47,7 +47,7 @@ void	remove_io_token(t_process *process)
 			ft_lstadd_back(&head, tmp);
 		}
 	}
-	process->token_list = head;
+	proc->token_list = head;
 }
 
 void	open_error_handler(char *filename)
@@ -70,18 +70,18 @@ void	open_error_handler(char *filename)
 	}
 }
 
-int	set_io_input(t_process *process, t_list *itr, t_io_kind kind)
+int	set_io_input(t_proc *proc, t_list *itr, t_io_kind kind)
 {
-	process->kind[0] = kind;
-	process->filename[0] = ((t_token *)(itr->content))->str;
+	proc->kind[0] = kind;
+	proc->filename[0] = ((t_token *)(itr->content))->str;
 	if (kind == IO_INPUT)
 	{
-		if (process->fd[0])
-			safe_func(close(process->fd[0]));
-		process->fd[0] = open(process->filename[0], R_OK);
-		if (process->fd[0] == -1)
+		if (proc->fd[0])
+			safe_func(close(proc->fd[0]));
+		proc->fd[0] = open(proc->filename[0], R_OK);
+		if (proc->fd[0] == -1)
 		{
-			open_error_handler(process->filename[0]);
+			open_error_handler(proc->filename[0]);
 			g_exit_status = 1;
 			return (-1);
 		}
@@ -89,21 +89,21 @@ int	set_io_input(t_process *process, t_list *itr, t_io_kind kind)
 	return (0);
 }
 
-int	set_io_output(t_process *process, t_list *itr, t_io_kind kind)
+int	set_io_output(t_proc *proc, t_list *itr, t_io_kind kind)
 {
-	if (process->fd[1])
-		safe_func(close(process->fd[1]));
-	process->kind[1] = kind;
-	process->filename[1] = ((t_token *)(itr->content))->str;
+	if (proc->fd[1])
+		safe_func(close(proc->fd[1]));
+	proc->kind[1] = kind;
+	proc->filename[1] = ((t_token *)(itr->content))->str;
 	if (kind == IO_OUTPUT)
-		process->fd[1] = \
-			open(process->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
+		proc->fd[1] = \
+			open(proc->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
 	else
-		process->fd[1] = \
-			open(process->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
-	if (process->fd[1] == -1)
+		proc->fd[1] = \
+			open(proc->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
+	if (proc->fd[1] == -1)
 	{
-		open_error_handler(process->filename[1]);
+		open_error_handler(proc->filename[1]);
 		g_exit_status = 1;
 		return (-1);
 	}
@@ -112,12 +112,12 @@ int	set_io_output(t_process *process, t_list *itr, t_io_kind kind)
 
 // ls -al > file           ls -al  output_kind = IO_OUTPUT
 // itr は token_list
-void	set_io_params(t_process *process)
+void	set_io_params(t_proc *proc)
 {
 	t_list					*itr;
 	t_io_kind		kind;
 
-	itr = process->token_list;
+	itr = proc->token_list;
 	while (itr)
 	{
 		if (((t_token *)(itr->content))->kind == TK_IO)
@@ -126,12 +126,12 @@ void	set_io_params(t_process *process)
 			itr = itr->next;
 			if (kind == IO_INPUT || kind == IO_HEREDOC)
 			{
-				if (set_io_input(process, itr, kind) == -1)
+				if (set_io_input(proc, itr, kind) == -1)
 					return ;
 			}
 			else if (kind == IO_OUTPUT || kind == IO_APPEND)
 			{
-				if (set_io_output(process, itr, kind) == -1)
+				if (set_io_output(proc, itr, kind) == -1)
 					return ;
 			}
 		}
@@ -139,24 +139,24 @@ void	set_io_params(t_process *process)
 	}
 }
 
-void	set_command(t_process *process)
+void	set_command(t_proc *proc)
 {
 	t_list	*itr;
 	int		cmd_idx;
 
-	if (ft_lstsize(process->token_list) == 0)
+	if (ft_lstsize(proc->token_list) == 0)
 	{
-		process->command = ft_xcalloc(2, sizeof(char *));
-		process->command[0] = ft_xstrdup("");
+		proc->command = ft_xcalloc(2, sizeof(char *));
+		proc->command[0] = ft_xstrdup("");
 		return ;
 	}
-	process->command = \
-			ft_xcalloc(ft_lstsize(process->token_list) + 1, sizeof(char *));
-	itr = process->token_list;
+	proc->command = \
+			ft_xcalloc(ft_lstsize(proc->token_list) + 1, sizeof(char *));
+	itr = proc->token_list;
 	cmd_idx = 0;
 	while (itr)
 	{
-		process->command[cmd_idx] = ((t_token *)(itr->content))->str;
+		proc->command[cmd_idx] = ((t_token *)(itr->content))->str;
 		itr = itr->next;
 		cmd_idx++;
 	}
@@ -165,20 +165,20 @@ void	set_command(t_process *process)
 void	set_io_and_commands(t_expr *expr)
 {
 	int			cmd_idx;
-	t_list		*process_list;
-	t_process	*process;
+	t_list		*proc_list;
+	t_proc	*proc;
 
-	process_list = expr->process_list;
+	proc_list = expr->proc_list;
 	cmd_idx = 0;
-	while (cmd_idx < expr->process_cnt)
+	while (cmd_idx < expr->proc_cnt)
 	{
-		process = process_list->content;
-		set_io_params(process);
+		proc = proc_list->content;
+		set_io_params(proc);
 		if (g_exit_status)
 			return ;
-		remove_io_token(process);
-		set_command(process);
-		process_list = process_list->next;
+		remove_io_token(proc);
+		set_command(proc);
+		proc_list = proc_list->next;
 		cmd_idx++;
 	}
 }

@@ -22,11 +22,11 @@ int	builtin_cd_pwd_update(char *path_name, t_shell_var *shell_var)
 	return (0);
 }
 
-int	builtin_cd(t_process *process, t_shell_var *shell_var)
+int	builtin_cd(t_proc *proc, t_shell_var *shell_var)
 {
 	char	*path_name;
 
-	path_name = process->command[1];
+	path_name = proc->command[1];
 	if (path_name == NULL)
 	{
 		path_name = get_env_value("HOME", shell_var);

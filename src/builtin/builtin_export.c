@@ -39,17 +39,17 @@ static bool validate_args(char *arg)
 	return (valid);
 }
 
-int	builtin_export(t_process *process, t_shell_var *shell_var)
+int	builtin_export(t_proc *proc, t_shell_var *shell_var)
 {
 	char	*arg;
 	char	*key;
 	char	*val;
 
-	if (ft_lstsize((t_list *)(process->token_list)) == 1)
+	if (ft_lstsize((t_list *)(proc->token_list)) == 1)
 		builtin_export_print(shell_var->env_list);
 	else
 	{
-		arg = ((t_token *)(process->token_list->next->content))->str;
+		arg = ((t_token *)(proc->token_list->next->content))->str;
 		if (!validate_args(arg))
 			return (1);
 		key = ft_strndup(arg, ft_strchr(arg, '=') - arg);

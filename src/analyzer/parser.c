@@ -22,7 +22,7 @@ static t_node	*create_subshell_tree(t_list **itr, bool *is_valid)
 		return (NULL);
 	else if (((t_token *)((*itr)->content))->kind == TK_STRING || \
 		((t_token *)((*itr)->content))->kind == TK_IO)
-		return (create_process_node(itr, is_valid));
+		return (create_proc_node(itr, is_valid));
 	else if (((t_token *)((*itr)->content))->kind == TK_DELIM)
 		return (parser_error(itr, ((t_token *)((*itr)->content))->str, \
 			is_valid, __LINE__));
@@ -91,7 +91,7 @@ static t_node	*create_astree(t_list **itr, bool *is_valid)
 // 		dfs(tree->rhs);
 // }
 
-/*  token_listからND_SEMICOLON, ND_PIPE, ND_PROCESSの
+/*  token_listからND_SEMICOLON, ND_PIPE, ND_PROCの
 nodeで形成されるtreeのrootを返す  */
 int	parser(t_node **tree, t_list *token_list)
 {

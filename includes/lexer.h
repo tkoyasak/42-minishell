@@ -11,7 +11,7 @@
 # include "struct.h"
 
 # define RESERVED_CHAR "<>|&;"
-# define PROCESS_DELIM_CHAR "|&;"
+# define PROC_DELIM_CHAR "|&;"
 # define REDIRECT_CHAR "<>"
 # define QUOTE_CHAR "\"\'"
 # define PAREN_CHAR "()"

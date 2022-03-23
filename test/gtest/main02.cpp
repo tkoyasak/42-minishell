@@ -29,10 +29,10 @@ void	dfs(t_node *node, char *expected_token[], t_node_kind expected_node[])
 		dfs(node->lhs, expected_token, expected_node);
 	EXPECT_EQ(node->kind, expected_node[node_idx]);
 	node_idx++;
-	if (node->kind != ND_PROCESS)
+	if (node->kind != ND_PROC)
 		token_idx++;
 	t_list *itr = node->token_list;
-	while (node->kind == ND_PROCESS && itr)
+	while (node->kind == ND_PROC && itr)
 	{
 		t_token	*token = ((t_token *)(itr->content));
 		EXPECT_STREQ(token->str, expected_token[token_idx]);
@@ -68,7 +68,7 @@ TEST(expansion, expansion_test00)
 {
 	char		*input = "ls -al | cat aa$zzz$";
 	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(strjoin("aa", get_env_value("zzz", g_shell_var)),"$")};
-	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
+	t_node_kind expected_node[] = {ND_PROC, ND_PIPE, ND_PROC};
 	t_node		*tree = expansion(input, g_shell_var);
 
 	func(tree, expected_token, expected_node);
@@ -78,7 +78,7 @@ TEST(expansion, expansion_test01)
 {
 	char		*input = "ls -al | cat $PATH$PATH";
 	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(get_env_value("PATH", g_shell_var), get_env_value("PATH", g_shell_var))};
-	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
+	t_node_kind expected_node[] = {ND_PROC, ND_PIPE, ND_PROC};
 	t_node		*tree = expansion(input, g_shell_var);
 
 	func(tree, expected_token, expected_node);
@@ -88,7 +88,7 @@ TEST(expansion, expansion_test02)
 {
 	char		*input = "ls -al|cat $PATH$";
 	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(get_env_value("PATH", g_shell_var), "$")};
-	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
+	t_node_kind expected_node[] = {ND_PROC, ND_PIPE, ND_PROC};
 	t_node		*tree = expansion(input, g_shell_var);
 
 	func(tree, expected_token, expected_node);
@@ -98,7 +98,7 @@ TEST(expansion, expansion_test03)
 {
 	char		*input = "ls -al|cat $PATH$ | cat";
 	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(get_env_value("PATH", g_shell_var),"$"), "|", "cat"};
-	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS, ND_PIPE, ND_PROCESS};
+	t_node_kind expected_node[] = {ND_PROC, ND_PIPE, ND_PROC, ND_PIPE, ND_PROC};
 	t_node		*tree = expansion(input, g_shell_var);
 
 	func(tree, expected_token, expected_node);
@@ -108,7 +108,7 @@ TEST(expansion, expansion_test04)
 {
 	char		*input = "ls -al|cat $PATH#";
 	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(get_env_value("PATH", g_shell_var), "#")};
-	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS};
+	t_node_kind expected_node[] = {ND_PROC, ND_PIPE, ND_PROC};
 	t_node		*tree = expansion(input, g_shell_var);
 
 	func(tree, expected_token, expected_node);
@@ -118,7 +118,7 @@ TEST(expansion, expansion_test05)
 {
 	char		*input = "ls -al|cat $PATH$;";
 	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(get_env_value("PATH", g_shell_var),"$"), ";"};
-	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS, ND_SEMICOLON};
+	t_node_kind expected_node[] = {ND_PROC, ND_PIPE, ND_PROC, ND_SEMICOLON};
 	t_node		*tree = expansion(input, g_shell_var);
 
 	func(tree, expected_token, expected_node);
@@ -128,7 +128,7 @@ TEST(expansion, expansion_test06)
 {
 	char		*input = "ls -al|cat $SHELL$;";
 	char		*expected_token[] = {"ls", "-al", "|", "cat", strjoin(get_env_value("SHELL", g_shell_var),"$"), ";"};
-	t_node_kind expected_node[] = {ND_PROCESS, ND_PIPE, ND_PROCESS, ND_SEMICOLON};
+	t_node_kind expected_node[] = {ND_PROC, ND_PIPE, ND_PROC, ND_SEMICOLON};
 	t_node		*tree = expansion(input, g_shell_var);
 
 	func(tree, expected_token, expected_node);
@@ -138,7 +138,7 @@ TEST(expansion, expansion_test07)
 {
 	char		*input = "$PWD;cat $PWD$;";
 	char		*expected_token[] = {get_env_value("PWD", g_shell_var), ";", "cat", strjoin(get_env_value("PWD", g_shell_var),"$"), ";"};
-	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
+	t_node_kind expected_node[] = {ND_PROC, ND_SEMICOLON, ND_PROC, ND_SEMICOLON};
 	t_node		*tree = expansion(input, g_shell_var);
 
 	func(tree, expected_token, expected_node);
@@ -148,7 +148,7 @@ TEST(expansion, expansion_test08)
 {
 	char		*input = "\"$PWD\" ; \'cat\' \"aa\'aaa\" ;";
 	char		*expected_token[] = {get_env_value("PWD", g_shell_var), ";", "cat", "aa'aaa", ";"};
-	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
+	t_node_kind expected_node[] = {ND_PROC, ND_SEMICOLON, ND_PROC, ND_SEMICOLON};
 	t_node		*tree = expansion(input, g_shell_var);
 
 	func(tree, expected_token, expected_node);
@@ -158,7 +158,7 @@ TEST(expansion, expansion_test09)
 {
 	char		*input = "\'$PWD \';cat $PWD$;";
 	char		*expected_token[] = {"$PWD ", ";", "cat", strjoin(get_env_value("PWD", g_shell_var),"$"), ";"};
-	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS, ND_SEMICOLON};
+	t_node_kind expected_node[] = {ND_PROC, ND_SEMICOLON, ND_PROC, ND_SEMICOLON};
 	t_node		*tree = expansion(input, g_shell_var);
 
 	func(tree, expected_token, expected_node);
@@ -169,7 +169,7 @@ TEST(expansion, expansion_test09)
 // 	setenv("VAR", "hello world", 0);
 // 	char		*input = "$VAR ; \"$VAR\"";
 // 	char		*expected_token[] = {"hello", "world", ";", "hello world"};
-// 	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS};
+// 	t_node_kind expected_node[] = {ND_PROC, ND_SEMICOLON, ND_PROC};
 // 	t_node		*tree = expansion(input, g_shell_var);
 
 // 	func(tree, expected_token, expected_node);
@@ -181,7 +181,7 @@ TEST(expansion, expansion_test09)
 // 	setenv("VAR", "$SHELL is zsh", 0);
 // 	char		*input = "$VAR ; \"$VAR\"";
 // 	char		*expected_token[] = {get_env_value("SHELL", g_shell_var), "is", "zsh", ";", strjoin(get_env_value("SHELL", g_shell_var), " is zsh")};
-// 	t_node_kind expected_node[] = {ND_PROCESS, ND_SEMICOLON, ND_PROCESS};
+// 	t_node_kind expected_node[] = {ND_PROC, ND_SEMICOLON, ND_PROC};
 // 	t_node		*tree = expansion(input, g_shell_var);
 
 // 	func(tree, expected_token, expected_node);
@@ -194,7 +194,7 @@ TEST(expansion, expansion_test09)
 // 	setenv("VAR2", "\"$VAR $VAR\"", 0);
 // 	char		*input = "$VAR2";
 // 	char		*expected_token[] = {"hello hello"};
-// 	t_node_kind expected_node[] = {ND_PROCESS};
+// 	t_node_kind expected_node[] = {ND_PROC};
 // 	t_node		*tree = expansion(input, g_shell_var);
 
 // 	func(tree, expected_token, expected_node);

@@ -10,11 +10,11 @@ typedef struct s_shell_var
 
 typedef struct s_env
 {
-	char			*key;
-	char			*val;
+	char	*key;
+	char	*val;
 }	t_env;
 
-/*  TK_DELIM is token process delimiter ; | && ||
+/*  TK_DELIM is token proc delimiter ; | && ||
 TK_IO <, >, <<, >>  */
 typedef enum e_token_kind
 {
@@ -43,11 +43,11 @@ typedef enum e_expansion_kind
 
 typedef struct s_expansion
 {
-	int						len;
-	char					*str;
-	bool					in_squote;
-	bool					in_dquote;
-	t_expansion_kind		kind;
+	int					len;
+	char				*str;
+	bool				in_squote;
+	bool				in_dquote;
+	t_expansion_kind	kind;
 }	t_expansion;
 
 typedef enum e_io_kind
@@ -59,7 +59,7 @@ typedef enum e_io_kind
 	IO_APPEND
 }	t_io_kind;
 
-typedef struct s_process
+typedef struct s_proc
 {
 	t_list		*token_list;
 	t_io_kind	kind[2];
@@ -68,7 +68,7 @@ typedef struct s_process
 	int			here_pipefd[2];
 	int			here_fd;
 	char		**command;
-}	t_process;
+}	t_proc;
 
 typedef enum e_node_kind
 {
@@ -77,14 +77,14 @@ typedef enum e_node_kind
 	ND_DAND,
 	ND_DPIPE,
 	ND_PIPE,
-	ND_PROCESS,
+	ND_PROC,
 	ND_EXPR
 }	t_node_kind;
 
 typedef struct s_expr
 {
-	t_list		*process_list;
-	int			process_cnt;
+	t_list		*proc_list;
+	int			proc_cnt;
 	int			**pipefd;
 	pid_t		*pid;
 }	t_expr;

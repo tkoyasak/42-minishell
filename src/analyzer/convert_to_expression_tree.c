@@ -1,25 +1,25 @@
 #include "minishell.h"
 
-t_list	*convert_to_process_list(t_node *tree)
+t_list	*convert_to_proc_list(t_node *tree)
 {
-	t_list		*process_list;
-	t_process	*process;
+	t_list		*proc_list;
+	t_proc	*proc;
 
-	process_list = NULL;
+	proc_list = NULL;
 	if (tree->kind == ND_PIPE)
 	{
 		if (tree->lhs)
-			ft_lstadd_back(&process_list, convert_to_process_list(tree->lhs));
+			ft_lstadd_back(&proc_list, convert_to_proc_list(tree->lhs));
 		if (tree->rhs)
-			ft_lstadd_back(&process_list, convert_to_process_list(tree->rhs));
+			ft_lstadd_back(&proc_list, convert_to_proc_list(tree->rhs));
 	}
 	else
 	{
-		process = ft_calloc(1, sizeof(t_process));
-		process->token_list = tree->token_list;
-		process_list = ft_lstnew(process);
+		proc = ft_calloc(1, sizeof(t_proc));
+		proc->token_list = tree->token_list;
+		proc_list = ft_lstnew(proc);
 	}
-	return (process_list);
+	return (proc_list);
 }
 
 t_node	*convert_to_expr_tree(t_node *tree)
@@ -36,8 +36,8 @@ t_node	*convert_to_expr_tree(t_node *tree)
 	else
 	{
 		expr = ft_calloc(1, sizeof(t_expr));
-		expr->process_list = convert_to_process_list(tree);
-		expr->process_cnt = ft_lstsize(expr->process_list);
+		expr->proc_list = convert_to_proc_list(tree);
+		expr->proc_cnt = ft_lstsize(expr->proc_list);
 		tree->expr = expr;
 		tree->kind = ND_EXPR;
 		tree->token_list = NULL;

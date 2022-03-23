@@ -43,13 +43,13 @@ bool	consume_node_kind(t_list **itr, char *op)
 }
 
 // 次の|か;か一番最後までを塊として読む
-t_node	*create_process_node(t_list **itr, bool *is_valid)
+t_node	*create_proc_node(t_list **itr, bool *is_valid)
 {
 	t_node	*node;
 	t_list	*tail;
 
 	node = ft_xcalloc(1, sizeof(t_node));
-	node->kind = ND_PROCESS;
+	node->kind = ND_PROC;
 	node->token_list = *itr;
 	while ((*itr)->next != NULL && \
 		((t_token *)((*itr)->next->content))->kind != TK_DELIM && \

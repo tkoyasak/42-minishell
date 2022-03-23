@@ -64,7 +64,7 @@ int lsh_launch(char **args)
 
   pid = fork();
   if (pid == 0) {
-    // Child process
+    // Child proc
     if (execvp(args[0], args) == -1) {
       perror("lsh");
     }
@@ -73,7 +73,7 @@ int lsh_launch(char **args)
     // Error forking
     perror("lsh");
   } else {
-    // Parent process
+    // Parent proc
     do {
       wpid = waitpid(pid, &status, WUNTRACED);
     } while (!WIFEXITED(status) && !WIFSIGNALED(status)); //子プロセスが異常終了した時にloop

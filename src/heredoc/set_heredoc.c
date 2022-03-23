@@ -1,13 +1,13 @@
 #include "minishell.h"
 
-int	heredoc_child(t_process *process, char *limiter, t_shell_var *shell_var)
+int	heredoc_child(t_proc *proc, char *limiter, t_shell_var *shell_var)
 {
 	size_t	len;
 	char	*temp;
 	bool	in_quote;
 
 	safe_func((ssize_t)signal(SIGINT, SIG_DFL));
-	safe_func(close(process->here_pipefd[0]));
+	safe_func(close(proc->here_pipefd[0]));
 	limiter = remove_quote_heredoc(limiter, &in_quote);
 	len = ft_strlen(limiter);
 	limiter[len] = '\0';
@@ -16,7 +16,7 @@ int	heredoc_child(t_process *process, char *limiter, t_shell_var *shell_var)
 	{
 		if (in_quote == false)
 			temp = expansion_heredoc(temp, shell_var);
-		ft_putendl_fd(temp, process->here_pipefd[1]);
+		ft_putendl_fd(temp, proc->here_pipefd[1]);
 		free(temp);
 		temp = readline(HEREDOC_PROMPT);
 	}
@@ -25,17 +25,17 @@ int	heredoc_child(t_process *process, char *limiter, t_shell_var *shell_var)
 	exit(0);
 }
 
-int	heredoc_parent(t_process *process, pid_t pid)
+int	heredoc_parent(t_proc *proc, pid_t pid)
 {
 	int	wstatus;
 	int	child_status;
 
-	process->here_fd = process->here_pipefd[0];
-	safe_func(close(process->here_pipefd[1]));
+	proc->here_fd = proc->here_pipefd[0];
+	safe_func(close(proc->here_pipefd[1]));
 	waitpid(pid, &wstatus, WUNTRACED);
 	if (WIFSIGNALED(wstatus) && (WTERMSIG(wstatus) == SIGINT))
 	{
-		safe_func(close(process->here_pipefd[0]));
+		safe_func(close(proc->here_pipefd[0]));
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		g_exit_status = 1;
 		return (1);
@@ -53,30 +53,30 @@ int	heredoc_parent(t_process *process, pid_t pid)
 	}
 }
 
-int	set_heredoc_in_token(t_process *process, t_shell_var *shell_var)
+int	set_heredoc_in_token(t_proc *proc, t_shell_var *shell_var)
 {
 	pid_t				pid;
 
 	safe_func((ssize_t)signal(SIGINT, SIG_IGN));
-	safe_func(pipe(process->here_pipefd));
+	safe_func(pipe(proc->here_pipefd));
 	pid = safe_func(fork());
 	if (pid == 0)
-		heredoc_child(process, process->filename[0], shell_var);
+		heredoc_child(proc, proc->filename[0], shell_var);
 	else
 	{
-		if (heredoc_parent(process, pid))
+		if (heredoc_parent(proc, pid))
 			return (1);
 	}
 	return (0);
 }
 
 // itr  token_list;
-int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
+int	set_heredoc_in_proc(t_proc *proc, t_shell_var *shell_var)
 {
 	t_list				*itr;
 	t_io_kind	kind;
 
-	itr = process->token_list;
+	itr = proc->token_list;
 	while (itr)
 	{
 		if (((t_token *)(itr->content))->kind == TK_IO)
@@ -85,9 +85,9 @@ int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 			itr = itr->next;
 			if (kind == IO_HEREDOC)
 			{
-				process->kind[0] = kind;
-				process->filename[0] = ((t_token *)(itr->content))->str;
-				if (set_heredoc_in_token(process, shell_var) == 1)
+				proc->kind[0] = kind;
+				proc->filename[0] = ((t_token *)(itr->content))->str;
+				if (set_heredoc_in_token(proc, shell_var) == 1)
 					return (1);
 			}
 		}
@@ -112,10 +112,10 @@ int	set_heredoc(t_node *tree, t_shell_var *shell_var)
 	}
 	else
 	{
-		itr = tree->expr->process_list;
+		itr = tree->expr->proc_list;
 		while (itr)
 		{
-			if (set_heredoc_in_process((t_process *)itr->content, shell_var) \
+			if (set_heredoc_in_proc((t_proc *)itr->content, shell_var) \
 					== 1)
 				return (1);
 			itr = itr->next;

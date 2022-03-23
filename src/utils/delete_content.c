@@ -31,29 +31,29 @@ void	delete_expansion(void *arg)
 	expansion = NULL;
 }
 
-void	delete_process(void *arg)
+void	delete_proc(void *arg)
 {
-	t_process	*process;
+	t_proc	*proc;
 	int			i;
 
-	process = (t_process *)arg;
-	ft_lstclear(&process->token_list, delete_token);
-	if (process->fd[0] > 2)
-		safe_func(close(process->fd[0]));
-	if (process->fd[1] > 2)
-		safe_func(close(process->fd[1]));
-	if (process->here_pipefd[0] > 2)
-		safe_func(close(process->here_pipefd[0]));
-	if (process->here_pipefd[1] > 2)
-		safe_func(close(process->here_pipefd[1]));
-	free(process->filename[0]);
-	free(process->filename[1]);
+	proc = (t_proc *)arg;
+	ft_lstclear(&proc->token_list, delete_token);
+	if (proc->fd[0] > 2)
+		safe_func(close(proc->fd[0]));
+	if (proc->fd[1] > 2)
+		safe_func(close(proc->fd[1]));
+	if (proc->here_pipefd[0] > 2)
+		safe_func(close(proc->here_pipefd[0]));
+	if (proc->here_pipefd[1] > 2)
+		safe_func(close(proc->here_pipefd[1]));
+	free(proc->filename[0]);
+	free(proc->filename[1]);
 	i = -1;
-	while (process->command[++i])
-		free(process->command[i]);
-	free(process->command);
-	free(process);
-	process = NULL;
+	while (proc->command[++i])
+		free(proc->command[i]);
+	free(proc->command);
+	free(proc);
+	proc = NULL;
 }
 
 void	delete_expr(void *arg)
@@ -62,9 +62,9 @@ void	delete_expr(void *arg)
 	int				i;
 
 	expr = (t_expr *)arg;
-	ft_lstclear(&expr->process_list, delete_process);
+	ft_lstclear(&expr->proc_list, delete_proc);
 	i = -1;
-	while (++i < expr->process_cnt - 1)
+	while (++i < expr->proc_cnt - 1)
 		free(expr->pipefd[i]);
 	free(expr->pipefd);
 	free(expr);
