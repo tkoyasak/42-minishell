@@ -41,7 +41,7 @@ void		set_io_and_commands(t_expr *expr);
 
 /*  heredoc  */
 size_t		get_word_len_heredoc(char *str, bool in_squote, bool in_dquote);
-t_list		*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expansion_kind kind);
+t_list		*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expd_kind kind);
 t_list		*split_str_heredoc(char *str, bool par_in_dquote);
 t_list		*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_shell_var *shell_var);
 size_t		get_expanded_len_heredoc(t_list *exp_list);

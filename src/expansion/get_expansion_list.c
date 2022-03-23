@@ -29,11 +29,11 @@ static size_t	get_word_len(char *str, bool in_squote, bool in_dquote)
 	return (str - head);
 }
 
-static t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expansion_kind kind)
+static t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expd_kind kind)
 {
-	t_expansion	*exp;
+	t_expd	*exp;
 
-	exp = ft_xcalloc(1, sizeof(t_expansion));
+	exp = ft_xcalloc(1, sizeof(t_expd));
 	exp->str = ft_xsubstr(*str, 0, get_word_len(*str, in_squote, in_dquote));
 	exp->len = ft_strlen(exp->str);
 	*str += exp->len;
@@ -91,7 +91,7 @@ t_list	*get_expansion_list(char *str, bool par_in_dquote, t_shell_var *shell_var
 	t_list		*itr;
 	t_list		*prev;
 	t_list		*next;
-	t_expansion	*exp;
+	t_expd	*exp;
 
 	head.next = get_split_token_list(str, par_in_dquote);
 	itr = head.next;
@@ -99,7 +99,7 @@ t_list	*get_expansion_list(char *str, bool par_in_dquote, t_shell_var *shell_var
 	while (itr)
 	{
 		next = itr->next;
-		exp = (t_expansion *)(itr->content);
+		exp = (t_expd *)(itr->content);
 		if (exp->kind == ENV)
 		{
 			exp->str = get_env_value_str(exp->str + 1, shell_var);

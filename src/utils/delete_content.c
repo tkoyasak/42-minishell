@@ -23,9 +23,9 @@ void	delete_token(void *arg)
 
 void	delete_expansion(void *arg)
 {
-	t_expansion	*expansion;
+	t_expd	*expansion;
 
-	expansion = (t_expansion *)arg;
+	expansion = (t_expd *)arg;
 	free(expansion->str);
 	free(expansion);
 	expansion = NULL;

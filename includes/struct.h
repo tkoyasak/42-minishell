@@ -31,7 +31,7 @@ typedef struct s_token
 	char			*str;
 }	t_token;
 
-typedef enum e_expansion_kind
+typedef enum e_expd_kind
 {
 	SQUOTE,
 	DQUOTE,
@@ -39,16 +39,16 @@ typedef enum e_expansion_kind
 	STRING,
 	NAKED_SPACE,
 	FILENAME_EXPANSION
-}	t_expansion_kind;
+}	t_expd_kind;
 
-typedef struct s_expansion
+typedef struct s_expd
 {
 	int					len;
 	char				*str;
 	bool				in_squote;
 	bool				in_dquote;
-	t_expansion_kind	kind;
-}	t_expansion;
+	t_expd_kind	kind;
+}	t_expd;
 
 typedef enum e_io_kind
 {
@@ -73,7 +73,7 @@ typedef struct s_proc
 typedef enum e_node_kind
 {
 	ND_SUBSHELL,
-	ND_SEMICOLON, 
+	ND_SEMICOLON,
 	ND_DAND,
 	ND_DPIPE,
 	ND_PIPE,

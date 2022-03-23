@@ -5,6 +5,7 @@ minishell_tester
 minishell_tester2
 obj
 build
+docs/ref
 
 # Prerequisites
 *.d

@@ -46,7 +46,7 @@ size_t	get_expanded_len_heredoc(t_list *exp_list)
 	len = 0;
 	while (exp_list)
 	{
-		len += ((t_expansion *)(exp_list->content))->len;
+		len += ((t_expd *)(exp_list->content))->len;
 		exp_list = exp_list->next;
 	}
 	return (len);
