@@ -2,6 +2,7 @@
 .vscode
 minishell
 minishell_tester
+minishell_tester2
 obj
 build
 

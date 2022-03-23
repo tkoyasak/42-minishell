@@ -14,16 +14,16 @@ typedef struct s_env
 	char			*val;
 }	t_env;
 
+/*  TK_DELIM is token process delimiter ; | && ||
+TK_REDIRECT <, >, <<, >>  */
 typedef enum e_token_kind
 {
-	TK_PROCESS_DELIM, // ; | && ||
+	TK_DELIM,
 	TK_REDIRECT,
 	TK_STRING,
 	TK_L_PAREN,
 	TK_R_PAREN,
 }	t_token_kind;
-
-// <, >, <<, >>, ;, &&, ||, |
 
 typedef struct s_token
 {

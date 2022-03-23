@@ -52,7 +52,7 @@ t_node	*create_process_node(t_list **itr, bool *is_valid)
 	node->kind = ND_PROCESS;
 	node->token_list = *itr;
 	while ((*itr)->next != NULL && \
-		((t_token *)((*itr)->next->content))->kind != TK_PROCESS_DELIM && \
+		((t_token *)((*itr)->next->content))->kind != TK_DELIM && \
 		((t_token *)((*itr)->next->content))->kind != TK_L_PAREN && \
 		((t_token *)((*itr)->next->content))->kind != TK_R_PAREN)
 	{

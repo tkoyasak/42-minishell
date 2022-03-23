@@ -69,7 +69,7 @@ bool	set_token_len_and_kind(char *p, int *len, t_token_kind *kind)
 	if (ft_strchr(PROCESS_DELIM_CHAR, *p))
 	{
 		*len = token_reserved_len(p, PROCESS_DELIM_CHAR);
-		*kind = TK_PROCESS_DELIM;
+		*kind = TK_DELIM;
 	}
 	else if (ft_strchr(REDIRECT_CHAR, *p))
 	{

@@ -23,7 +23,7 @@ static t_node	*create_subshell_tree(t_list **itr, bool *is_valid)
 	else if (((t_token *)((*itr)->content))->kind == TK_STRING || \
 		((t_token *)((*itr)->content))->kind == TK_REDIRECT)
 		return (create_process_node(itr, is_valid));
-	else if (((t_token *)((*itr)->content))->kind == TK_PROCESS_DELIM)
+	else if (((t_token *)((*itr)->content))->kind == TK_DELIM)
 		return (parser_error(itr, ((t_token *)((*itr)->content))->str, \
 			is_valid, __LINE__));
 	else
