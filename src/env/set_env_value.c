@@ -20,7 +20,7 @@ void	set_env_value(char *key, char *val, t_shell_var *shell_var)
 	}
 	if (itr == NULL)
 	{
-		env = ft_calloc(1, sizeof(t_env));
+		env = ft_xcalloc(1, sizeof(t_env));
 		env->key = ft_strdup(key);
 		env->val = ft_strdup(val);
 		ft_lstadd_back(&(shell_var->env_list), ft_lstnew(env));

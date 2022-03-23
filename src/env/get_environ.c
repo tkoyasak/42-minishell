@@ -8,7 +8,7 @@ char	**get_environ(t_shell_var *shell_var)
 	char	*key;
 
 	i = 0;
-	environ = ft_calloc(ft_lstsize(shell_var->env_list), sizeof(char *));
+	environ = ft_xcalloc(ft_lstsize(shell_var->env_list), sizeof(char *));
 	itr = shell_var->env_list->next;
 	while (itr)
 	{

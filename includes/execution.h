@@ -5,7 +5,6 @@
 # include "libft.h"
 # include "struct.h"
 # include "shell_var.h"
-# include "expansion.h"
 
 # define PIPEIN 0
 # define PIPEOUT 1

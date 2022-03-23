@@ -12,7 +12,7 @@ t_list	*get_opened_directory(char *prefix, char **slash_splitted_str)
 
 	if (*slash_splitted_str == NULL)
 	{
-		expansion = ft_calloc(1, sizeof(t_expd));
+		expansion = ft_xcalloc(1, sizeof(t_expd));
 		expansion->str = prefix;
 		expansion->len = ft_strlen(prefix);
 		expansion->kind = PD_FILENAME;

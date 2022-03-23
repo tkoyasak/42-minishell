@@ -10,10 +10,10 @@ bool	match_given_pattern(char *str, char *pattern)
 
 	str_len = ft_strlen(str);
 	ptn_len = ft_strlen(pattern);
-	dp = ft_calloc(str_len + 1, sizeof(bool *));
+	dp = ft_xcalloc(str_len + 1, sizeof(bool *));
 	i = -1;
 	while (++i <= str_len)
-		dp[i] = ft_calloc(ptn_len + 1, sizeof(bool));
+		dp[i] = ft_xcalloc(ptn_len + 1, sizeof(bool));
 	dp[0][0] = true;
 	if (str[0] != '.')
 	{

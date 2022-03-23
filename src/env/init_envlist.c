@@ -4,7 +4,7 @@ t_list	*consume_new_env(t_list *itr, char *str)
 {
 	t_env	*env;
 
-	env = ft_calloc(1, sizeof(t_env));
+	env = ft_xcalloc(1, sizeof(t_env));
 	env->key = ft_strndup(str, ft_strchr(str, '=') - str);
 	env->val = ft_strdup(ft_strchr(str, '=') + 1);
 	if (ft_strcmp(env->key, "OLDPWD") == 0)

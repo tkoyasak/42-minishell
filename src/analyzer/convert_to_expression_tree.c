@@ -15,7 +15,7 @@ t_list	*convert_to_proc_list(t_node *tree)
 	}
 	else
 	{
-		proc = ft_calloc(1, sizeof(t_proc));
+		proc = ft_xcalloc(1, sizeof(t_proc));
 		proc->token_list = tree->token_list;
 		proc_list = ft_lstnew(proc);
 	}
@@ -35,7 +35,7 @@ t_node	*convert_to_expr_tree(t_node *tree)
 	}
 	else
 	{
-		expr = ft_calloc(1, sizeof(t_expr));
+		expr = ft_xcalloc(1, sizeof(t_expr));
 		expr->proc_list = convert_to_proc_list(tree);
 		expr->proc_cnt = ft_lstsize(expr->proc_list);
 		tree->expr = expr;
