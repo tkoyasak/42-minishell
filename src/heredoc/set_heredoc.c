@@ -112,7 +112,7 @@ int	set_heredoc(t_node *tree, t_shell_var *shell_var)
 	}
 	else
 	{
-		itr = tree->expression->process_list;
+		itr = tree->expr->process_list;
 		while (itr)
 		{
 			if (set_heredoc_in_process((t_process *)itr->content, shell_var) \

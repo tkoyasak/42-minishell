@@ -1,39 +1,39 @@
 #include "minishell.h"
 
-/*  initialize expression. prepare pipefd and pid  */
+/*  initialize expr. prepare pipefd and pid  */
 // pipe_fdはprocess_cnt-1個用意
-void	init_expression(t_expression *expression)
+void	init_expr(t_expr *expr)
 {
 	int	pipe_cnt;
 
-	pipe_cnt = expression->process_cnt - 1;
-	expression->pipefd = (int **)ft_xcalloc(pipe_cnt, sizeof(int *));
-	expression->pid = \
-			(pid_t *)ft_xcalloc(expression->process_cnt, sizeof(pid_t));
+	pipe_cnt = expr->process_cnt - 1;
+	expr->pipefd = (int **)ft_xcalloc(pipe_cnt, sizeof(int *));
+	expr->pid = \
+			(pid_t *)ft_xcalloc(expr->process_cnt, sizeof(pid_t));
 }
 
-/*  expression is between semicolon, double ampersand, and double pipe  */
-int	evaluate_expression(t_expression *expression, t_shell_var *shell_var)
+/*  expr is between semicolon, double ampersand, and double pipe  */
+int	evaluate_expr(t_expr *expr, t_shell_var *shell_var)
 {
 	int		stdin_copy;
 	int		stdout_copy;
 
-	init_expression(expression);
-	expansion(expression, shell_var);
-	if (((t_process *)(expression->process_list->content))->token_list == NULL)
+	init_expr(expr);
+	expansion(expr, shell_var);
+	if (((t_process *)(expr->process_list->content))->token_list == NULL)
 		;
-	else if (expression->process_cnt == 1)
+	else if (expr->process_cnt == 1)
 	{
 		stdin_copy = safe_func(dup(STDIN_FILENO));
 		stdout_copy = safe_func(dup(STDOUT_FILENO));
-		g_exit_status = exec_single_process(expression, shell_var);
+		g_exit_status = exec_single_process(expr, shell_var);
 		safe_func(dup2(stdin_copy, STDIN_FILENO));
 		safe_func(dup2(stdout_copy, STDOUT_FILENO));
 		safe_func(close(stdin_copy));
 		safe_func(close(stdout_copy));
 	}
 	else
-		g_exit_status = exec_processes(expression, shell_var);
+		g_exit_status = exec_processes(expr, shell_var);
 	return (g_exit_status);
 }
 
@@ -56,7 +56,7 @@ void	exec_subshell(t_node *tree, t_shell_var *shell_var)
 	}
 }
 
-/*  evaluate expression of tree, or ececute lhs of tree ans rhs of tree  */
+/*  evaluate expr of tree, or ececute lhs of tree ans rhs of tree  */
 int	execution(t_node *tree, t_shell_var *shell_var)
 {
 	if (tree->kind == ND_SUBSHELL)
@@ -73,7 +73,7 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 			g_exit_status = execution(tree->rhs, shell_var);
 	}
 	else
-		g_exit_status = evaluate_expression(tree->expression, shell_var);
+		g_exit_status = evaluate_expr(tree->expr, shell_var);
 	return (g_exit_status);
 }
 
@@ -82,15 +82,15 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 // 	// t_node *tree = expansion("cat < infile | cat < infile2 | 'hello'; $SHELL && echo hey! > outfile");
 // 	// t_node *tree = expansion("ls -a | cat");
 // 	// t_node *tree = expansion("cat < infile | cat > outfile");
-// 	// t_list *expression_list = convert_to_expression_list(tree);
+// 	// t_list *expr_list = convert_to_expr_list(tree);
 // 	execution(tree);
 
 // 	printf("==============\n");
-// 	while (expression_list)
+// 	while (expr_list)
 // 	{
-// 		t_list *process_list = ((t_expression *)(expression_list->content))->process_list;
+// 		t_list *process_list = ((t_expr *)(expr_list->content))->process_list;
 // 		static int cnt = 0; cnt++;
-// 		printf("%d %d\n", cnt, ((t_expression *)(expression_list->content))->end_of_expression);
+// 		printf("%d %d\n", cnt, ((t_expr *)(expr_list->content))->end_of_expr);
 // 		while (process_list)
 // 		{
 // 			t_list *itr = ((t_process *)(process_list->content))->token_list;
@@ -102,6 +102,6 @@ int	execution(t_node *tree, t_shell_var *shell_var)
 // 			process_list = process_list->next;
 // 			printf("\n");
 // 		}
-// 		expression_list = expression_list->next;
+// 		expr_list = expr_list->next;
 // 	}
 // }

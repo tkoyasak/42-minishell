@@ -162,15 +162,15 @@ void	set_command(t_process *process)
 	}
 }
 
-void	set_redirections_and_commands(t_expression *expression)
+void	set_redirections_and_commands(t_expr *expr)
 {
 	int			cmd_idx;
 	t_list		*process_list;
 	t_process	*process;
 
-	process_list = expression->process_list;
+	process_list = expr->process_list;
 	cmd_idx = 0;
-	while (cmd_idx < expression->process_cnt)
+	while (cmd_idx < expr->process_cnt)
 	{
 		process = process_list->content;
 		set_redirection_params(process);

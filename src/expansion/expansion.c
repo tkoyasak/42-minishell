@@ -74,11 +74,11 @@ static void	handle_process(t_list **token_list, t_shell_var *shell_var)
 	*token_list = head.next;
 }
 
-void	expansion(t_expression *expression, t_shell_var *shell_var)
+void	expansion(t_expr *expr, t_shell_var *shell_var)
 {
 	t_list	*itr;
 
-	itr = expression->process_list;
+	itr = expr->process_list;
 	while (itr)
 	{
 		handle_process(&((t_process *)(itr->content))->token_list, shell_var);

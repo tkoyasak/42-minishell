@@ -22,23 +22,23 @@ t_list	*convert_to_process_list(t_node *tree)
 	return (process_list);
 }
 
-t_node	*convert_to_expression_tree(t_node *tree)
+t_node	*convert_to_expr_tree(t_node *tree)
 {
-	t_expression	*expression;
+	t_expr	*expr;
 
 	if (ND_SUBSHELL <= tree->kind && tree->kind <= ND_DPIPE)
 	{
 		if (tree->lhs)
-			convert_to_expression_tree(tree->lhs);
+			convert_to_expr_tree(tree->lhs);
 		if (tree->rhs)
-			convert_to_expression_tree(tree->rhs);
+			convert_to_expr_tree(tree->rhs);
 	}
 	else
 	{
-		expression = ft_calloc(1, sizeof(t_expression));
-		expression->process_list = convert_to_process_list(tree);
-		expression->process_cnt = ft_lstsize(expression->process_list);
-		tree->expression = expression;
+		expr = ft_calloc(1, sizeof(t_expr));
+		expr->process_list = convert_to_process_list(tree);
+		expr->process_cnt = ft_lstsize(expr->process_list);
+		tree->expr = expr;
 		tree->kind = ND_EXPRESSION;
 		tree->token_list = NULL;
 	}

@@ -24,8 +24,8 @@ TEST(execution, execution_test00)
 {
 	char		*input		= "echo aa | cat > outfile";
 	char		*input_bash	= "echo aa | cat > outfile_bash";
-	t_node		*expression_list = expansion(input);
+	t_node		*expr_list = expansion(input);
 
-	execution(expression_list);
+	execution(expr_list);
 	func();
 }

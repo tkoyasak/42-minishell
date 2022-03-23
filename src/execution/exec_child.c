@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 /*  execute child process  */
-void	exec_child(t_expression *expression, t_process *process, const int cmd_idx, t_shell_var *shell_var)
+void	exec_child(t_expr *expr, t_process *process, const int cmd_idx, t_shell_var *shell_var)
 {
 	char		*cmd;
 	char		*fullpath_cmd;
@@ -10,8 +10,8 @@ void	exec_child(t_expression *expression, t_process *process, const int cmd_idx,
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	cmd = ((t_token *)(process->token_list->content))->str;
-	dup2_func(expression, process, cmd_idx);
-	close_func(expression, process, cmd_idx);
+	dup2_func(expr, process, cmd_idx);
+	close_func(expr, process, cmd_idx);
 	if (is_builtin(cmd))
 		exit(exec_builtin(process, shell_var));
 	fullpath_cmd = get_fullpath_cmd(cmd, shell_var);

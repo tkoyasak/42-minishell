@@ -8,8 +8,8 @@ int	main(int argc, char **argv)
 {
 	if (argc != 2)
 		return (1);
-	t_node		*expression_list = expansion(argv[1]);
+	t_node		*expr_list = expansion(argv[1]);
 
-	execution(expression_list);
+	execution(expr_list);
 	return (0);
 }

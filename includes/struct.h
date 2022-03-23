@@ -31,7 +31,6 @@ typedef struct s_token
 	char			*str;
 }	t_token;
 
-
 typedef enum e_expansion_kind
 {
 	SQUOTE,
@@ -82,20 +81,20 @@ typedef enum e_node_kind
 	ND_EXPRESSION
 }	t_node_kind;
 
-typedef struct s_expression
+typedef struct s_expr
 {
 	t_list					*process_list;
 	int						process_cnt;
 	int						**pipefd;
 	pid_t					*pid;
-}	t_expression;
+}	t_expr;
 
 // 抽象構文木のノードの型
 typedef struct s_node
 {
 	t_node_kind		kind;
 	t_list			*token_list;
-	t_expression	*expression;
+	t_expr	*expr;
 	struct s_node	*lhs;
 	struct s_node	*rhs;
 }	t_node;

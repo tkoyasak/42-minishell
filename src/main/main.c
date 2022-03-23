@@ -23,7 +23,7 @@ int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
 		g_exit_status = 258;
 		return (1);
 	}
-	*tree = convert_to_expression_tree(*tree);
+	*tree = convert_to_expr_tree(*tree);
 	if (set_heredoc(*tree, shell_var) == 1)
 	{
 		g_exit_status = 1;

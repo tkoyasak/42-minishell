@@ -7,7 +7,7 @@ void		delete_env(void *arg);
 void		delete_token(void *arg);
 void		delete_expansion(void *arg);
 void		delete_process(void *arg);
-void		delete_expression(void *arg);
+void		delete_expr(void *arg);
 void		delete_node(void *arg);
 void		delete_astree(t_node *node);
 

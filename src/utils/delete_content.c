@@ -56,19 +56,19 @@ void	delete_process(void *arg)
 	process = NULL;
 }
 
-void	delete_expression(void *arg)
+void	delete_expr(void *arg)
 {
-	t_expression	*expression;
+	t_expr	*expr;
 	int				i;
 
-	expression = (t_expression *)arg;
-	ft_lstclear(&expression->process_list, delete_process);
+	expr = (t_expr *)arg;
+	ft_lstclear(&expr->process_list, delete_process);
 	i = -1;
-	while (++i < expression->process_cnt - 1)
-		free(expression->pipefd[i]);
-	free(expression->pipefd);
-	free(expression);
-	expression = NULL;
+	while (++i < expr->process_cnt - 1)
+		free(expr->pipefd[i]);
+	free(expr->pipefd);
+	free(expr);
+	expr = NULL;
 }
 
 void	delete_node(void *arg)
@@ -77,7 +77,7 @@ void	delete_node(void *arg)
 
 	node = (t_node *)arg;
 	ft_lstclear(&node->token_list, delete_token);
-	delete_expression(node->expression);
+	delete_expr(node->expr);
 	free(node);
 	node = NULL;
 }
