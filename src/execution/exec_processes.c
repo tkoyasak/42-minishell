@@ -21,14 +21,14 @@ static int	wait_all_procs(t_expr *expr)
 }
 
 /* execute one proc between pipes  */
-static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, t_shell_var *shell_var)
+static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
 {
 	if (cmd_idx < expr->proc_cnt - 1)
 		create_pipe(expr, cmd_idx);
 	signal(SIGINT, SIG_IGN);
 	expr->pid[cmd_idx] = safe_func(fork());
 	if (expr->pid[cmd_idx] == 0)
-		exec_child(expr, proc, cmd_idx, shell_var);
+		exec_child(expr, proc, cmd_idx, sh_var);
 	else if (cmd_idx)
 	{
 		safe_func(close(expr->pipefd[cmd_idx - 1][PIPEIN]));
@@ -41,7 +41,7 @@ static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, t_shell_var *
 }
 
 /*  execute procs between semicolons, double ampersand, and double pipe  */
-int	exec_procs(t_expr *expr, t_shell_var *shell_var)
+int	exec_procs(t_expr *expr, t_sh_var *sh_var)
 {
 	int			wstatus;
 	int			cmd_idx;
@@ -56,7 +56,7 @@ int	exec_procs(t_expr *expr, t_shell_var *shell_var)
 	while (cmd_idx < expr->proc_cnt)
 	{
 		proc = proc_list->content;
-		exec_one_proc(expr, proc, cmd_idx, shell_var);
+		exec_one_proc(expr, proc, cmd_idx, sh_var);
 		proc_list = proc_list->next;
 		cmd_idx++;
 	}

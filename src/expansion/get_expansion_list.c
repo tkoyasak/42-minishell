@@ -85,7 +85,7 @@ static t_list	*get_split_token_list(char *str, bool par_in_dquote)
 	return (split_token_str(str, par_in_dquote));
 }
 
-t_list	*get_expansion_list(char *str, bool par_in_dquote, t_shell_var *shell_var)
+t_list	*get_expansion_list(char *str, bool par_in_dquote, t_sh_var *sh_var)
 {
 	t_list		head;
 	t_list		*itr;
@@ -102,8 +102,8 @@ t_list	*get_expansion_list(char *str, bool par_in_dquote, t_shell_var *shell_var
 		exp = (t_expd *)(itr->content);
 		if (exp->kind == PD_ENV)
 		{
-			exp->str = get_env_value_str(exp->str + 1, shell_var);
-			prev->next = get_expansion_list(exp->str, exp->in_dquote, shell_var);
+			exp->str = get_env_value_str(exp->str + 1, sh_var);
+			prev->next = get_expansion_list(exp->str, exp->in_dquote, sh_var);
 			prev = ft_lstlast(head.next);
 			prev->next = next;
 		}

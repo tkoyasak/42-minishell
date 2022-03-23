@@ -13,32 +13,32 @@ void	init_expr(t_expr *expr)
 }
 
 /*  expr is between semicolon, double ampersand, and double pipe  */
-int	evaluate_expr(t_expr *expr, t_shell_var *shell_var)
+int	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 {
 	int		stdin_copy;
 	int		stdout_copy;
 
 	init_expr(expr);
-	expansion(expr, shell_var);
+	expansion(expr, sh_var);
 	if (((t_proc *)(expr->proc_list->content))->token_list == NULL)
 		;
 	else if (expr->proc_cnt == 1)
 	{
 		stdin_copy = safe_func(dup(STDIN_FILENO));
 		stdout_copy = safe_func(dup(STDOUT_FILENO));
-		g_exit_status = exec_single_proc(expr, shell_var);
+		g_exit_status = exec_single_proc(expr, sh_var);
 		safe_func(dup2(stdin_copy, STDIN_FILENO));
 		safe_func(dup2(stdout_copy, STDOUT_FILENO));
 		safe_func(close(stdin_copy));
 		safe_func(close(stdout_copy));
 	}
 	else
-		g_exit_status = exec_procs(expr, shell_var);
+		g_exit_status = exec_procs(expr, sh_var);
 	return (g_exit_status);
 }
 
 /*  execute subshell. does not affect outside  */
-void	exec_subshell(t_node *tree, t_shell_var *shell_var)
+void	exec_subshell(t_node *tree, t_sh_var *sh_var)
 {
 	int				wstatus;
 	pid_t			pid;
@@ -46,7 +46,7 @@ void	exec_subshell(t_node *tree, t_shell_var *shell_var)
 	pid = safe_func(fork());
 	if (pid == 0)
 	{
-		g_exit_status = execution(tree->lhs, shell_var);
+		g_exit_status = execution(tree->lhs, sh_var);
 		exit(g_exit_status);
 	}
 	else
@@ -57,23 +57,23 @@ void	exec_subshell(t_node *tree, t_shell_var *shell_var)
 }
 
 /*  evaluate expr of tree, or ececute lhs of tree ans rhs of tree  */
-int	execution(t_node *tree, t_shell_var *shell_var)
+int	execution(t_node *tree, t_sh_var *sh_var)
 {
 	if (tree->kind == ND_SUBSHELL)
-		exec_subshell(tree, shell_var);
+		exec_subshell(tree, sh_var);
 	else if (ND_SEMICOLON <= tree->kind && tree->kind <= ND_DPIPE)
 	{
 		if (tree->lhs)
-			g_exit_status = execution(tree->lhs, shell_var);
+			g_exit_status = execution(tree->lhs, sh_var);
 		if (tree->kind == ND_DAND && g_exit_status != 0)
 			return (g_exit_status);
 		if (tree->kind == ND_DPIPE && g_exit_status == 0)
 			return (g_exit_status);
 		if (tree->rhs)
-			g_exit_status = execution(tree->rhs, shell_var);
+			g_exit_status = execution(tree->rhs, sh_var);
 	}
 	else
-		g_exit_status = evaluate_expr(tree->expr, shell_var);
+		g_exit_status = evaluate_expr(tree->expr, sh_var);
 	return (g_exit_status);
 }
 

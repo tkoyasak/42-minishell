@@ -17,15 +17,15 @@
 
 /*  execution  */
 t_node		*convert_to_expr_tree(t_node *tree);
-int			evaluate_expr(t_expr *expr, t_shell_var *shell_var);
-char		*get_fullpath_cmd(char *cmd, t_shell_var *shell_var);
-int			execution(t_node *tree, t_shell_var *shell_var);
-int			set_heredoc(t_node *tree, t_shell_var *shell_var);
-int			exec_builtin(t_proc *proc, t_shell_var *shell_var);
+int			evaluate_expr(t_expr *expr, t_sh_var *sh_var);
+char		*get_fullpath_cmd(char *cmd, t_sh_var *sh_var);
+int			execution(t_node *tree, t_sh_var *sh_var);
+int			set_heredoc(t_node *tree, t_sh_var *sh_var);
+int			exec_builtin(t_proc *proc, t_sh_var *sh_var);
 bool		is_builtin(char *cmd);
-int			exec_procs(t_expr *expr, t_shell_var *shell_var);
-int			exec_single_proc(t_expr *expr, t_shell_var *shell_var);
-void		exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_shell_var *shell_var);
+int			exec_procs(t_expr *expr, t_sh_var *sh_var);
+int			exec_single_proc(t_expr *expr, t_sh_var *sh_var);
+void		exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_sh_var *sh_var);
 t_io_kind	get_io_kind(char *redirect_str);
 void		dup2_func(t_expr *expr, t_proc *proc, const int cmd_idx);
 void		close_func(t_expr *expr, t_proc *proc, const int cmd_idx);
@@ -42,9 +42,9 @@ void		set_io_and_commands(t_expr *expr);
 size_t		get_word_len_heredoc(char *str, bool in_squote, bool in_dquote);
 t_list		*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expd_kind kind);
 t_list		*split_str_heredoc(char *str, bool par_in_dquote);
-t_list		*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_shell_var *shell_var);
+t_list		*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_sh_var *sh_var);
 size_t		get_expanded_len_heredoc(t_list *exp_list);
-char		*expansion_heredoc(char *str, t_shell_var *shell_var);
+char		*expansion_heredoc(char *str, t_sh_var *sh_var);
 char		*remove_quote_heredoc(char *limiter, bool *in_quote);
 
 

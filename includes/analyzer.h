@@ -30,8 +30,8 @@ bool		consume_node_kind(t_list **itr, char *op);
 t_node		*create_proc_node(t_list **itr, bool *is_valid);
 
 /* expander */
-void		expansion(t_expr *expr, t_shell_var *shell_var);
-t_list		*get_expansion_list(char *str, bool par_in_dquote, t_shell_var *shell_var);
+void		expansion(t_expr *expr, t_sh_var *sh_var);
+t_list		*get_expansion_list(char *str, bool par_in_dquote, t_sh_var *sh_var);
 t_list		*remove_quotes(t_list *src_list);
 t_list		*convert_to_token_list(t_list *expansion_list);
 t_list		*get_filename_expansion(t_list *expansion_list);

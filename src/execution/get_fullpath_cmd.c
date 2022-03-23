@@ -38,7 +38,7 @@ static char	*get_fullcmd_core(char *cmd, char **all_paths)
 }
 
 /*  return NULL if command not found  */
-char	*get_fullpath_cmd(char *cmd, t_shell_var *shell_var)
+char	*get_fullpath_cmd(char *cmd, t_sh_var *sh_var)
 {
 	char	**all_paths;
 	char	*path_env;
@@ -49,7 +49,7 @@ char	*get_fullpath_cmd(char *cmd, t_shell_var *shell_var)
 		return (cmd);
 	if (!access(cmd, X_OK))
 		return (cmd);
-	path_env = get_env_value_str("PATH", shell_var);
+	path_env = get_env_value_str("PATH", sh_var);
 	if (!path_env)
 	{
 		cmd_not_found(cmd);

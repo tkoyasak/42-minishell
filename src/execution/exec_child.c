@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 /*  execute child proc  */
-void	exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_shell_var *shell_var)
+void	exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_sh_var *sh_var)
 {
 	char		*cmd;
 	char		*fullpath_cmd;
@@ -13,8 +13,8 @@ void	exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_shell_var *shel
 	dup2_func(expr, proc, cmd_idx);
 	close_func(expr, proc, cmd_idx);
 	if (is_builtin(cmd))
-		exit(exec_builtin(proc, shell_var));
-	fullpath_cmd = get_fullpath_cmd(cmd, shell_var);
+		exit(exec_builtin(proc, sh_var));
+	fullpath_cmd = get_fullpath_cmd(cmd, sh_var);
 	if (fullpath_cmd)
 	{
 		safe_func(stat(fullpath_cmd, &buf));
@@ -26,6 +26,6 @@ void	exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_shell_var *shel
 			exit(NO_PERMISSION);
 		}
 	}
-	execve(fullpath_cmd, proc->command, get_environ(shell_var));
+	execve(fullpath_cmd, proc->command, get_environ(sh_var));
 	exit(NO_CMD);
 }

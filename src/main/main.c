@@ -2,14 +2,14 @@
 
 volatile sig_atomic_t	g_exit_status;
 
-void	init_shell_var(t_shell_var *shell_var)
+void	init_sh_var(t_sh_var *sh_var)
 {
-	shell_var->env_list = init_envlist();
-	shell_var->pwd = getcwd(NULL, 0);
-	shell_var->oldpwd = NULL;
+	sh_var->env_list = init_envlist();
+	sh_var->pwd = getcwd(NULL, 0);
+	sh_var->oldpwd = NULL;
 }
 
-int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
+int	analyzer(char *line, t_node **tree, t_sh_var *sh_var)
 {
 	t_list	*token_list;
 
@@ -24,7 +24,7 @@ int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
 		return (1);
 	}
 	*tree = convert_to_expr_tree(*tree);
-	if (set_heredoc(*tree, shell_var) == 1)
+	if (set_heredoc(*tree, sh_var) == 1)
 	{
 		g_exit_status = 1;
 		return (1);
@@ -32,7 +32,7 @@ int	analyzer(char *line, t_node **tree, t_shell_var *shell_var)
 	return (0);
 }
 
-void	minish_loop(t_shell_var *shell_var)
+void	minish_loop(t_sh_var *sh_var)
 {
 	char		*line;
 	t_node		*tree;
@@ -48,8 +48,8 @@ void	minish_loop(t_shell_var *shell_var)
 		if (ft_strlen(line))
 		{
 			add_history(line);
-			if (analyzer(line, &tree, shell_var) == 0)
-				g_exit_status = execution(tree, shell_var);
+			if (analyzer(line, &tree, sh_var) == 0)
+				g_exit_status = execution(tree, sh_var);
 			// clear tree
 		}
 		// printf("g_exit_status:%d\n", g_exit_status);
@@ -57,32 +57,32 @@ void	minish_loop(t_shell_var *shell_var)
 	}
 }
 
-void	test_one_line(char *line, t_shell_var *shell_var)
+void	test_one_line(char *line, t_sh_var *sh_var)
 {
 	t_node		*tree;
 
 	if (ft_strlen(line) == 0)
 		exit(0);
-	if (analyzer(line, &tree, shell_var) == 0)
-		g_exit_status = execution(tree, shell_var);
+	if (analyzer(line, &tree, sh_var) == 0)
+		g_exit_status = execution(tree, sh_var);
 	// delete tree
-	// analyzer(argv[2], &tree, shell_var);
+	// analyzer(argv[2], &tree, sh_var);
 	// delete_astree(tree);
 	// exit(g_exit_status);
 }
 
 int	main(int argc, char **argv)
 {
-	t_shell_var	shell_var;
+	t_sh_var	sh_var;
 
 	if (signal(SIGINT, sigint_handler) == SIG_ERR || \
 		signal(SIGQUIT, SIG_IGN) == SIG_ERR)
 		return (1);
-	init_shell_var(&shell_var);
+	init_sh_var(&sh_var);
 	if (argc == 3 && !ft_strcmp("-c", argv[1]))
-		test_one_line(argv[2], &shell_var);
+		test_one_line(argv[2], &sh_var);
 	else
-		minish_loop(&shell_var);
-	// delete shell_var
+		minish_loop(&sh_var);
+	// delete sh_var
 	return (g_exit_status);
 }

@@ -3,14 +3,14 @@
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
 // token->strをt_exp_strlist_typeで分割・分類する
 // 環境変数の展開
-static t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
+static t_list	*get_expanded_token(t_list *token_list, t_sh_var *sh_var)
 {
 	t_token	*token;
 	t_list	*expansion_list;
 	t_list	*expanded_token_list;
 
 	token = token_list->content;
-	expansion_list = get_expansion_list(token->str, false, shell_var);
+	expansion_list = get_expansion_list(token->str, false, sh_var);
 	expansion_list = get_filename_expansion(expansion_list);
 	expansion_list = remove_quotes(expansion_list);
 	expanded_token_list = convert_to_token_list(expansion_list);
@@ -19,9 +19,9 @@ static t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
 	return (expanded_token_list);
 }
 
-static void	consume_token_to_expansion(t_list **itr, t_list **prev, t_list **next, t_shell_var *shell_var)
+static void	consume_token_to_expansion(t_list **itr, t_list **prev, t_list **next, t_sh_var *sh_var)
 {
-	*itr = get_expanded_token(*itr, shell_var);
+	*itr = get_expanded_token(*itr, sh_var);
 	if (itr == NULL)
 	{
 		*itr = *next;
@@ -50,7 +50,7 @@ static void	consume_token_if_limiter(t_list **itr, t_list **prev, t_list **next,
 	*itr = (*itr)->next;
 }
 
-static void	handle_proc(t_list **token_list, t_shell_var *shell_var)
+static void	handle_proc(t_list **token_list, t_sh_var *sh_var)
 {
 	t_list	head;
 	t_list	*itr;
@@ -67,21 +67,21 @@ static void	handle_proc(t_list **token_list, t_shell_var *shell_var)
 		next = itr->next;
 		itr->next = NULL;
 		if (!is_limiter && ((t_token *)(itr->content))->kind == TK_STRING)
-			consume_token_to_expansion(&itr, &prev, &next, shell_var);
+			consume_token_to_expansion(&itr, &prev, &next, sh_var);
 		else
 			consume_token_if_limiter(&itr, &prev, &next, &is_limiter);
 	}
 	*token_list = head.next;
 }
 
-void	expansion(t_expr *expr, t_shell_var *shell_var)
+void	expansion(t_expr *expr, t_sh_var *sh_var)
 {
 	t_list	*itr;
 
 	itr = expr->proc_list;
 	while (itr)
 	{
-		handle_proc(&((t_proc *)(itr->content))->token_list, shell_var);
+		handle_proc(&((t_proc *)(itr->content))->token_list, sh_var);
 		g_exit_status = 0; // bashの挙動に合わせた
 		itr = itr->next;
 	}

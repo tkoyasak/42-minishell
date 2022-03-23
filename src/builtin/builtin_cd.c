@@ -1,35 +1,35 @@
 #include "minishell.h"
 
-int	builtin_cd_pwd_update(char *path_name, t_shell_var *shell_var)
+int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
 {
 	char	*relative_path;
 
-	shell_var->oldpwd = shell_var->pwd;
+	sh_var->oldpwd = sh_var->pwd;
 	if (getcwd(NULL, 0) == NULL)
 	{
 		ft_putendl_fd("cd: error retrieving current directory: \
 			getcwd: cannot access parent directories: \
 			No such file or directory", STDERR_FILENO);
 		relative_path = ft_strjoin("/", path_name);
-		shell_var->pwd = ft_strjoin(shell_var->pwd, relative_path);
+		sh_var->pwd = ft_strjoin(sh_var->pwd, relative_path);
 		free(relative_path);
 	}
 	else
-		shell_var->pwd = getcwd(NULL, 0);
+		sh_var->pwd = getcwd(NULL, 0);
 	free(path_name);
-	set_env_value("OLDPWD", shell_var->oldpwd, shell_var);
-	set_env_value("PWD", shell_var->pwd, shell_var);
+	set_env_value("OLDPWD", sh_var->oldpwd, sh_var);
+	set_env_value("PWD", sh_var->pwd, sh_var);
 	return (0);
 }
 
-int	builtin_cd(t_proc *proc, t_shell_var *shell_var)
+int	builtin_cd(t_proc *proc, t_sh_var *sh_var)
 {
 	char	*path_name;
 
 	path_name = proc->command[1];
 	if (path_name == NULL)
 	{
-		path_name = get_env_value("HOME", shell_var);
+		path_name = get_env_value("HOME", sh_var);
 		if (path_name == NULL)
 		{
 			ft_putendl_fd("minishell: cd: HOME not set", STDERR_FILENO);
@@ -48,5 +48,5 @@ int	builtin_cd(t_proc *proc, t_shell_var *shell_var)
 		free(path_name);
 		return (1);
 	}
-	return (builtin_cd_pwd_update(path_name, shell_var));
+	return (builtin_cd_pwd_update(path_name, sh_var));
 }

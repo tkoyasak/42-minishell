@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 /*  execute single external command  */
-int	exec_single_external(t_expr *expr, t_proc *proc, t_shell_var *shell_var)
+int	exec_single_external(t_expr *expr, t_proc *proc, t_sh_var *sh_var)
 {
 	int			wstatus;
 	t_list		*proc_list;
@@ -11,7 +11,7 @@ int	exec_single_external(t_expr *expr, t_proc *proc, t_shell_var *shell_var)
 	signal(SIGINT, SIG_IGN);
 	expr->pid[0] = safe_func(fork());
 	if (expr->pid[0] == 0)
-		exec_child(expr, proc, 0, shell_var);
+		exec_child(expr, proc, 0, sh_var);
 	safe_func(waitpid(expr->pid[0], &wstatus, WUNTRACED));
 	if (WIFSIGNALED(wstatus))
 	{
@@ -28,7 +28,7 @@ int	exec_single_external(t_expr *expr, t_proc *proc, t_shell_var *shell_var)
 }
 
 /*  execute single proc  */
-int	exec_single_proc(t_expr *expr, t_shell_var *shell_var)
+int	exec_single_proc(t_expr *expr, t_sh_var *sh_var)
 {
 	t_list		*proc_list;
 	t_proc	*proc;
@@ -42,8 +42,8 @@ int	exec_single_proc(t_expr *expr, t_shell_var *shell_var)
 	{
 		dup2_func(expr, proc, 0);
 		close_func(expr, proc, 0);
-		return (exec_builtin(proc, shell_var));
+		return (exec_builtin(proc, sh_var));
 	}
 	else
-		return (exec_single_external(expr, proc, shell_var));
+		return (exec_single_external(expr, proc, sh_var));
 }

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	heredoc_child(t_proc *proc, char *limiter, t_shell_var *shell_var)
+int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 {
 	size_t	len;
 	char	*temp;
@@ -15,7 +15,7 @@ int	heredoc_child(t_proc *proc, char *limiter, t_shell_var *shell_var)
 	while (temp && ft_strncmp(temp, limiter, len + 1))
 	{
 		if (in_quote == false)
-			temp = expansion_heredoc(temp, shell_var);
+			temp = expansion_heredoc(temp, sh_var);
 		ft_putendl_fd(temp, proc->here_pipefd[1]);
 		free(temp);
 		temp = readline(HEREDOC_PROMPT);
@@ -53,7 +53,7 @@ int	heredoc_parent(t_proc *proc, pid_t pid)
 	}
 }
 
-int	set_heredoc_in_token(t_proc *proc, t_shell_var *shell_var)
+int	set_heredoc_in_token(t_proc *proc, t_sh_var *sh_var)
 {
 	pid_t				pid;
 
@@ -61,7 +61,7 @@ int	set_heredoc_in_token(t_proc *proc, t_shell_var *shell_var)
 	safe_func(pipe(proc->here_pipefd));
 	pid = safe_func(fork());
 	if (pid == 0)
-		heredoc_child(proc, proc->filename[0], shell_var);
+		heredoc_child(proc, proc->filename[0], sh_var);
 	else
 	{
 		if (heredoc_parent(proc, pid))
@@ -71,7 +71,7 @@ int	set_heredoc_in_token(t_proc *proc, t_shell_var *shell_var)
 }
 
 // itr  token_list;
-int	set_heredoc_in_proc(t_proc *proc, t_shell_var *shell_var)
+int	set_heredoc_in_proc(t_proc *proc, t_sh_var *sh_var)
 {
 	t_list				*itr;
 	t_io_kind	kind;
@@ -87,7 +87,7 @@ int	set_heredoc_in_proc(t_proc *proc, t_shell_var *shell_var)
 			{
 				proc->kind[0] = kind;
 				proc->filename[0] = ((t_token *)(itr->content))->str;
-				if (set_heredoc_in_token(proc, shell_var) == 1)
+				if (set_heredoc_in_token(proc, sh_var) == 1)
 					return (1);
 			}
 		}
@@ -97,17 +97,17 @@ int	set_heredoc_in_proc(t_proc *proc, t_shell_var *shell_var)
 	return (0);
 }
 
-int	set_heredoc(t_node *tree, t_shell_var *shell_var)
+int	set_heredoc(t_node *tree, t_sh_var *sh_var)
 {
 	t_list	*itr;
 
 	if (ND_SUBSHELL <= tree->kind && tree->kind <= ND_DPIPE)
 	{
 		if (tree->lhs)
-			if (set_heredoc(tree->lhs, shell_var) == 1)
+			if (set_heredoc(tree->lhs, sh_var) == 1)
 				return (1);
 		if (tree->rhs)
-			if (set_heredoc(tree->rhs, shell_var) == 1)
+			if (set_heredoc(tree->rhs, sh_var) == 1)
 				return (1);
 	}
 	else
@@ -115,7 +115,7 @@ int	set_heredoc(t_node *tree, t_shell_var *shell_var)
 		itr = tree->expr->proc_list;
 		while (itr)
 		{
-			if (set_heredoc_in_proc((t_proc *)itr->content, shell_var) \
+			if (set_heredoc_in_proc((t_proc *)itr->content, sh_var) \
 					== 1)
 				return (1);
 			itr = itr->next;

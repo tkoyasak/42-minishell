@@ -1,12 +1,12 @@
 #ifndef STRUCT_H
 # define STRUCT_H
 
-typedef struct s_shell_var
+typedef struct s_sh_var
 {
 	t_list		*env_list;
 	char		*pwd;
 	char		*oldpwd;
-}	t_shell_var;
+}	t_sh_var;
 
 typedef struct s_env
 {

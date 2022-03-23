@@ -20,17 +20,17 @@ t_list	*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expd_
 }
 
 // prevがNULLの時とそれ以外の場合で、listの繋ぎかえ
-void	connect_expansion_list_heredoc(t_expd *exp, t_list *head, t_list *prev, t_shell_var *shell_var)
+void	connect_expansion_list_heredoc(t_expd *exp, t_list *head, t_list *prev, t_sh_var *sh_var)
 {
 	if (prev == NULL)
-		head = get_expansion_list_heredoc(exp->str, exp->in_dquote, shell_var);
+		head = get_expansion_list_heredoc(exp->str, exp->in_dquote, sh_var);
 	else
 		prev->next = \
-				get_expansion_list_heredoc(exp->str, exp->in_dquote, shell_var);
+				get_expansion_list_heredoc(exp->str, exp->in_dquote, sh_var);
 	prev = ft_lstlast(head);
 }
 
-t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_shell_var *shell_var)
+t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_sh_var *sh_var)
 {
 	t_list		*head;
 	t_list		*itr;
@@ -47,8 +47,8 @@ t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_shell_var *s
 		exp = (t_expd *)(itr->content);
 		if (exp->kind == PD_ENV)
 		{
-			exp->str = get_env_value_str(exp->str + 1, shell_var);
-			connect_expansion_list_heredoc(exp, head, prev, shell_var);
+			exp->str = get_env_value_str(exp->str + 1, sh_var);
+			connect_expansion_list_heredoc(exp, head, prev, sh_var);
 			prev->next = next;
 		}
 		else
@@ -59,14 +59,14 @@ t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_shell_var *s
 }
 
 /*  expand env word in here document like aa$PATH  */
-char	*expansion_heredoc(char *str, t_shell_var *shell_var)
+char	*expansion_heredoc(char *str, t_sh_var *sh_var)
 {
 	char	*dst;
 	char	*cur;
 	size_t	len;
 	t_list	*exp_list;
 
-	exp_list = get_expansion_list_heredoc(str, false, shell_var);
+	exp_list = get_expansion_list_heredoc(str, false, sh_var);
 	len = get_expanded_len_heredoc(exp_list);
 	dst = (char *)ft_xmalloc(sizeof(char) * (len + 1));
 	dst[0] = '\0';
