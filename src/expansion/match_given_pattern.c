@@ -15,11 +15,14 @@ bool	match_given_pattern(char *str, char *pattern)
 	while (++i <= str_len)
 		dp[i] = ft_calloc(ptn_len + 1, sizeof(bool));
 	dp[0][0] = true;
-	j = 0;
-	while (++j <= ptn_len)
+	if (str[0] != '.')
 	{
-		if (pattern[j - 1] == '*' && pattern[j] != '.')
-			dp[0][j] = dp[0][j - 1];
+		j = 0;
+		while (++j <= ptn_len)
+			{
+				if (pattern[j - 1] == '*')
+					dp[0][j] = dp[0][j - 1];
+			}
 	}
 	i = 0;
 	while (++i <= str_len)
