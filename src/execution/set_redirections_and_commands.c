@@ -1,18 +1,18 @@
 #include "minishell.h"
 
-t_redirection_kind	get_redirection_kind(char *redirect_str)
+t_io_kind	get_io_kind(char *redirect_str)
 {
 	const char			*redirect_strs[] = {"", "<", "<<", ">", ">>"};
-	t_redirection_kind	kind;
+	t_io_kind	kind;
 
-	kind = INPUT;
+	kind = IO_INPUT;
 	while (kind < 5)
 	{
 		if (ft_strcmp(redirect_str, redirect_strs[kind]) == 0)
 			return (kind);
 		kind++;
 	}
-	return (NONE);
+	return (IO_NONE);
 }
 
 void	remove_one_token(t_list **itr)
@@ -24,7 +24,7 @@ void	remove_one_token(t_list **itr)
 	*itr = tmp;
 }
 
-void	remove_redirection_token(t_process *process)
+void	remove_io_token(t_process *process)
 {
 	t_list	*itr;  // token_list
 	t_list	*head;
@@ -70,11 +70,11 @@ void	open_error_handler(char *filename)
 	}
 }
 
-int	set_redirection_input(t_process *process, t_list *itr, t_redirection_kind kind)
+int	set_io_input(t_process *process, t_list *itr, t_io_kind kind)
 {
 	process->kind[0] = kind;
 	process->filename[0] = ((t_token *)(itr->content))->str;
-	if (kind == INPUT)
+	if (kind == IO_INPUT)
 	{
 		if (process->fd[0])
 			safe_func(close(process->fd[0]));
@@ -89,13 +89,13 @@ int	set_redirection_input(t_process *process, t_list *itr, t_redirection_kind ki
 	return (0);
 }
 
-int	set_redirection_output(t_process *process, t_list *itr, t_redirection_kind kind)
+int	set_io_output(t_process *process, t_list *itr, t_io_kind kind)
 {
 	if (process->fd[1])
 		safe_func(close(process->fd[1]));
 	process->kind[1] = kind;
 	process->filename[1] = ((t_token *)(itr->content))->str;
-	if (kind == OUTPUT)
+	if (kind == IO_OUTPUT)
 		process->fd[1] = \
 			open(process->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
 	else
@@ -110,28 +110,28 @@ int	set_redirection_output(t_process *process, t_list *itr, t_redirection_kind k
 	return (0);
 }
 
-// ls -al > file           ls -al  output_kind = OUTPUT
+// ls -al > file           ls -al  output_kind = IO_OUTPUT
 // itr は token_list
-void	set_redirection_params(t_process *process)
+void	set_io_params(t_process *process)
 {
 	t_list					*itr;
-	t_redirection_kind		kind;
+	t_io_kind		kind;
 
 	itr = process->token_list;
 	while (itr)
 	{
 		if (((t_token *)(itr->content))->kind == TK_REDIRECT)
 		{
-			kind = get_redirection_kind(((t_token *)(itr->content))->str);
+			kind = get_io_kind(((t_token *)(itr->content))->str);
 			itr = itr->next;
-			if (kind == INPUT || kind == HEREDOC)
+			if (kind == IO_INPUT || kind == IO_HEREDOC)
 			{
-				if (set_redirection_input(process, itr, kind) == -1)
+				if (set_io_input(process, itr, kind) == -1)
 					return ;
 			}
-			else if (kind == OUTPUT || kind == APPEND)
+			else if (kind == IO_OUTPUT || kind == IO_APPEND)
 			{
-				if (set_redirection_output(process, itr, kind) == -1)
+				if (set_io_output(process, itr, kind) == -1)
 					return ;
 			}
 		}
@@ -162,7 +162,7 @@ void	set_command(t_process *process)
 	}
 }
 
-void	set_redirections_and_commands(t_expr *expr)
+void	set_io_and_commands(t_expr *expr)
 {
 	int			cmd_idx;
 	t_list		*process_list;
@@ -173,10 +173,10 @@ void	set_redirections_and_commands(t_expr *expr)
 	while (cmd_idx < expr->process_cnt)
 	{
 		process = process_list->content;
-		set_redirection_params(process);
+		set_io_params(process);
 		if (g_exit_status)
 			return ;
-		remove_redirection_token(process);
+		remove_io_token(process);
 		set_command(process);
 		process_list = process_list->next;
 		cmd_idx++;

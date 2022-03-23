@@ -50,7 +50,7 @@ int	exec_processes(t_expr *expr, t_shell_var *shell_var)
 
 	cmd_idx = 0;
 	process_list = expr->process_list;
-	set_redirections_and_commands(expr);
+	set_io_and_commands(expr);
 	if (g_exit_status)
 		return (g_exit_status);
 	while (cmd_idx < expr->process_cnt)

@@ -50,19 +50,19 @@ typedef struct s_expansion
 	t_expansion_kind		kind;
 }	t_expansion;
 
-typedef enum e_redirection_kind
+typedef enum e_io_kind
 {
-	NONE,
-	INPUT,
-	HEREDOC,
-	OUTPUT,
-	APPEND
-}	t_redirection_kind;
+	IO_NONE,
+	IO_INPUT,
+	IO_HEREDOC,
+	IO_OUTPUT,
+	IO_APPEND
+}	t_io_kind;
 
 typedef struct s_process
 {
 	t_list				*token_list;
-	t_redirection_kind	kind[2];
+	t_io_kind	kind[2];
 	int					fd[2];
 	char				*filename[2];
 	int					here_pipefd[2];
@@ -83,10 +83,10 @@ typedef enum e_node_kind
 
 typedef struct s_expr
 {
-	t_list					*process_list;
-	int						process_cnt;
-	int						**pipefd;
-	pid_t					*pid;
+	t_list		*process_list;
+	int			process_cnt;
+	int			**pipefd;
+	pid_t		*pid;
 }	t_expr;
 
 // 抽象構文木のノードの型

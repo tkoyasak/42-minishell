@@ -74,16 +74,16 @@ int	set_heredoc_in_token(t_process *process, t_shell_var *shell_var)
 int	set_heredoc_in_process(t_process *process, t_shell_var *shell_var)
 {
 	t_list				*itr;
-	t_redirection_kind	kind;
+	t_io_kind	kind;
 
 	itr = process->token_list;
 	while (itr)
 	{
 		if (((t_token *)(itr->content))->kind == TK_REDIRECT)
 		{
-			kind = get_redirection_kind(((t_token *)(itr->content))->str);
+			kind = get_io_kind(((t_token *)(itr->content))->str);
 			itr = itr->next;
-			if (kind == HEREDOC)
+			if (kind == IO_HEREDOC)
 			{
 				process->kind[0] = kind;
 				process->filename[0] = ((t_token *)(itr->content))->str;

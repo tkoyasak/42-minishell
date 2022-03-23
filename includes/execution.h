@@ -27,17 +27,17 @@ bool		is_builtin(char *cmd);
 int			exec_processes(t_expr *expr, t_shell_var *shell_var);
 int			exec_single_process(t_expr *expr, t_shell_var *shell_var);
 void		exec_child(t_expr *expr, t_process *process, const int cmd_idx, t_shell_var *shell_var);
-t_redirection_kind	get_redirection_kind(char *redirect_str);
+t_io_kind	get_io_kind(char *redirect_str);
 void		dup2_func(t_expr *expr, t_process *process, const int cmd_idx);
 void		close_func(t_expr *expr, t_process *process, const int cmd_idx);
 
-/*  redirection  */
-t_redirection_kind	get_redirection_kind(char *redirect_str);
-void		remove_redirection_token(t_process *process);
+/*  io  */
+t_io_kind	get_io_kind(char *redirect_str);
+void		remove_io_token(t_process *process);
 void		open_error_handler(char *filename);
-void		set_redirection_params(t_process *process);
+void		set_io_params(t_process *process);
 void		set_command(t_process *process);
-void		set_redirections_and_commands(t_expr *expr);
+void		set_io_and_commands(t_expr *expr);
 
 /*  heredoc  */
 size_t		get_word_len_heredoc(char *str, bool in_squote, bool in_dquote);
