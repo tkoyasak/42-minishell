@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-size_t	get_word_len(char *str, bool in_squote, bool in_dquote)
+static size_t	get_word_len(char *str, bool in_squote, bool in_dquote)
 {
 	char	*head;
 
@@ -29,7 +29,7 @@ size_t	get_word_len(char *str, bool in_squote, bool in_dquote)
 	return (str - head);
 }
 
-t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expansion_kind kind)
+static t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expansion_kind kind)
 {
 	t_expansion	*exp;
 
@@ -48,7 +48,7 @@ t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expansion_kin
 	return (ft_xlstnew(exp));
 }
 
-t_list	*split_token_str(char *str, bool par_in_dquote)
+static t_list	*split_token_str(char *str, bool par_in_dquote)
 {
 	t_list	*head;
 	bool	in_dquote;
@@ -76,7 +76,7 @@ t_list	*split_token_str(char *str, bool par_in_dquote)
 	return (head);
 }
 
-t_list	*get_split_token_list(char *str, bool par_in_dquote)
+static t_list	*get_split_token_list(char *str, bool par_in_dquote)
 {
 	if (!str)
 		return (NULL);

@@ -3,7 +3,7 @@
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
 // token->strをt_exp_strlist_typeで分割・分類する
 // 環境変数の展開
-t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
+static t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
 {
 	t_token	*token;
 	t_list	*expansion_list;
@@ -19,7 +19,7 @@ t_list	*get_expanded_token(t_list *token_list, t_shell_var *shell_var)
 	return (expanded_token_list);
 }
 
-void	consume_token_to_expansion(t_list **itr, t_list **prev, t_list **next, t_shell_var *shell_var)
+static void	consume_token_to_expansion(t_list **itr, t_list **prev, t_list **next, t_shell_var *shell_var)
 {
 	*itr = get_expanded_token(*itr, shell_var);
 	if (itr == NULL)
@@ -37,7 +37,7 @@ void	consume_token_to_expansion(t_list **itr, t_list **prev, t_list **next, t_sh
 	}
 }
 
-void	consume_token_if_delimiter(t_list **itr, t_list **prev, t_list **next, bool *is_delimiter)
+static void	consume_token_if_delimiter(t_list **itr, t_list **prev, t_list **next, bool *is_delimiter)
 {
 	t_token	*token;
 
@@ -50,7 +50,7 @@ void	consume_token_if_delimiter(t_list **itr, t_list **prev, t_list **next, bool
 	*itr = (*itr)->next;
 }
 
-void	handle_process(t_list **token_list, t_shell_var *shell_var)
+static void	handle_process(t_list **token_list, t_shell_var *shell_var)
 {
 	t_list	head;
 	t_list	*itr;

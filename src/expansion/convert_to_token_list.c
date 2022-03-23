@@ -23,7 +23,7 @@ t_list	*remove_quotes(t_list *src_list)
 	return (head);
 }
 
-size_t	token_str_len(t_list *src_list)
+static size_t	token_str_len(t_list *src_list)
 {
 	size_t		len;
 	t_list		*itr;
@@ -43,7 +43,7 @@ size_t	token_str_len(t_list *src_list)
 	return (len);
 }
 
-char	*consume_token_str_join(t_list **src_list, char *buf)
+static char	*consume_token_str_join(t_list **src_list, char *buf)
 {
 	t_list		*itr;
 	size_t		len;
@@ -70,7 +70,7 @@ char	*consume_token_str_join(t_list **src_list, char *buf)
 	return (buf);
 }
 
-t_list	*consume_new_joined_token(t_list **itr)
+static t_list	*consume_new_joined_token(t_list **itr)
 {
 	size_t		len;
 	char		*str;
