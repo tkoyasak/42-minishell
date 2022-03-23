@@ -37,14 +37,14 @@ static void	consume_token_to_expansion(t_list **itr, t_list **prev, t_list **nex
 	}
 }
 
-static void	consume_token_if_delimiter(t_list **itr, t_list **prev, t_list **next, bool *is_delimiter)
+static void	consume_token_if_limiter(t_list **itr, t_list **prev, t_list **next, bool *is_limiter)
 {
 	t_token	*token;
 
-	*is_delimiter = false;
+	*is_limiter = false;
 	token = (t_token *)(*itr)->content;
 	if (token->kind == TK_REDIRECT && ft_strcmp(token->str, "<<") == 0)
-		*is_delimiter = true;
+		*is_limiter = true;
 	(*itr)->next = *next;
 	*prev = *itr;
 	*itr = (*itr)->next;
@@ -56,20 +56,20 @@ static void	handle_process(t_list **token_list, t_shell_var *shell_var)
 	t_list	*itr;
 	t_list	*next;
 	t_list	*prev;
-	bool	is_delimiter;
+	bool	is_limiter;
 
 	head.next = *token_list;
 	itr = *token_list;
 	prev = &head;
-	is_delimiter = false;
+	is_limiter = false;
 	while (itr)
 	{
 		next = itr->next;
 		itr->next = NULL;
-		if (!is_delimiter && ((t_token *)(itr->content))->kind == TK_STRING)
+		if (!is_limiter && ((t_token *)(itr->content))->kind == TK_STRING)
 			consume_token_to_expansion(&itr, &prev, &next, shell_var);
 		else
-			consume_token_if_delimiter(&itr, &prev, &next, &is_delimiter);
+			consume_token_if_limiter(&itr, &prev, &next, &is_limiter);
 	}
 	*token_list = head.next;
 }
