@@ -10,9 +10,7 @@
 
 # include "libft.h"
 
-# include "lexer.h"
-# include "parser.h"
-# include "expansion.h"
+# include "analyzer.h"
 # include "execution.h"
 # include "shell_var.h"
 # include "builtin.h"
