@@ -1,11 +1,11 @@
 #include "minishell.h"
 
-t_node	*parser_error(t_list **itr, char *str, bool *parser_result, int line)
+t_node	*parser_error(t_list **itr, char *str, bool *is_valid, int line)
 {
 	(void)line;
-	if (*parser_result)
+	if (*is_valid)
 	{
-		*parser_result = false;
+		*is_valid = false;
 		// printf("syntax:%d\n", line);
 		ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
@@ -42,7 +42,7 @@ bool	consume_node_kind(t_list **itr, char *op)
 }
 
 // 次の|か;か一番最後までを塊として読む
-t_node	*create_process_node(t_list **itr, bool *parser_result)
+t_node	*create_process_node(t_list **itr, bool *is_valid)
 {
 	t_node	*node;
 	t_list	*tail;
@@ -58,7 +58,7 @@ t_node	*create_process_node(t_list **itr, bool *parser_result)
 		if (((t_token *)(*itr)->content)->kind == TK_REDIRECT && \
 				((t_token *)((*itr)->next->content))->kind != TK_STRING)
 		{
-			*parser_result = false;
+			*is_valid = false;
 			return (node);
 			// ここでNULLが返ると，tokenをフリーできなくなる．
 		}
@@ -70,7 +70,7 @@ t_node	*create_process_node(t_list **itr, bool *parser_result)
 	if (((t_token *)tail->content)->kind == TK_REDIRECT || \
 		(*itr && ((t_token *)(*itr)->content)->kind == TK_L_PARENTHESIS))
 	{
-		parser_error(itr, ((t_token *)tail->content)->str, parser_result, __LINE__);
+		parser_error(itr, ((t_token *)tail->content)->str, is_valid, __LINE__);
 		return (node);
 	}
 	return (node);

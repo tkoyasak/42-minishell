@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-static t_node	*create_astree(t_list **itr, bool *parser_result);
+static t_node	*create_astree(t_list **itr, bool *is_valid);
 
-static t_node	*create_subshell_tree(t_list **itr, bool *parser_result)
+static t_node	*create_subshell_tree(t_list **itr, bool *is_valid)
 {
 	t_node	*node;
 
@@ -10,11 +10,11 @@ static t_node	*create_subshell_tree(t_list **itr, bool *parser_result)
 	{
 		node = ft_xcalloc(1, sizeof(t_node));
 		node->kind = ND_SUBSHELL;
-		node->lhs = create_astree(itr, parser_result);
+		node->lhs = create_astree(itr, is_valid);
 		if (consume_node_kind(itr, ")") == false)
 		{
 			// printf("95\n");
-			parser_error(itr, "(", parser_result, __LINE__);
+			parser_error(itr, "(", is_valid, __LINE__);
 			return (node);
 		}
 		return (node);
@@ -23,29 +23,29 @@ static t_node	*create_subshell_tree(t_list **itr, bool *parser_result)
 		return (NULL);
 	else if (((t_token *)((*itr)->content))->kind == TK_STRING || \
 		((t_token *)((*itr)->content))->kind == TK_REDIRECT)
-		return (create_process_node(itr, parser_result));
+		return (create_process_node(itr, is_valid));
 	else if (((t_token *)((*itr)->content))->kind == TK_PROCESS_DELIM)
-		return (parser_error(itr, ((t_token *)((*itr)->content))->str, parser_result, __LINE__));
+		return (parser_error(itr, ((t_token *)((*itr)->content))->str, is_valid, __LINE__));
 	else
 		return (NULL);
 }
 
 // semicolon間の部分木
-static t_node	*create_sub_astree(t_list **itr, bool *parser_result)
+static t_node	*create_sub_astree(t_list **itr, bool *is_valid)
 {
 	t_node	*node;
 	t_node	*r_node;
 
 	if (*itr == NULL)
 		return (NULL);
-	node = create_subshell_tree(itr, parser_result);
-	while (*parser_result)
+	node = create_subshell_tree(itr, is_valid);
+	while (*is_valid)
 	{
 		if (consume_node_kind(itr, "|"))
 		{
-			r_node = create_subshell_tree(itr, parser_result);
+			r_node = create_subshell_tree(itr, is_valid);
 			if (r_node == NULL)
-				return (parser_error(itr, "|", parser_result, __LINE__));
+				return (parser_error(itr, "|", is_valid, __LINE__));
 			node = node_new(ND_PIPE, node, r_node);
 		}
 		else
@@ -55,21 +55,21 @@ static t_node	*create_sub_astree(t_list **itr, bool *parser_result)
 }
 
 // 全体のrootのnodeへのポインタを返す
-static t_node	*create_astree(t_list **itr, bool *parser_result)
+static t_node	*create_astree(t_list **itr, bool *is_valid)
 {
 	t_node		*node;
 
 	if (*itr == NULL)
 		return (NULL);
-	node = create_sub_astree(itr, parser_result);
-	while (*parser_result)
+	node = create_sub_astree(itr, is_valid);
+	while (*is_valid)
 	{
 		if (consume_node_kind(itr, ";"))
-			node = node_new(ND_SEMICOLON, node, create_sub_astree(itr, parser_result));
+			node = node_new(ND_SEMICOLON, node, create_sub_astree(itr, is_valid));
 		else if (consume_node_kind(itr, "&&"))
-			node = node_new(ND_DAND, node, create_sub_astree(itr, parser_result));
+			node = node_new(ND_DAND, node, create_sub_astree(itr, is_valid));
 		else if (consume_node_kind(itr, "||"))
-			node = node_new(ND_DPIPE, node, create_sub_astree(itr, parser_result));
+			node = node_new(ND_DPIPE, node, create_sub_astree(itr, is_valid));
 		else
 			return (node);
 	}
@@ -94,14 +94,14 @@ static t_node	*create_astree(t_list **itr, bool *parser_result)
 nodeで形成されるtreeのrootを返す  */
 int	parser(t_node **tree, t_list *token_list)
 {
-	bool	parser_result;
+	bool	is_valid;
 
-	parser_result = true; // is_valid
-	*tree = create_astree(&token_list, &parser_result);
-	// printf("168: %d\n", parser_result);
+	is_valid = true;
+	*tree = create_astree(&token_list, &is_valid);
+	// printf("168: %d\n", is_valid);
 	// dfs(tree);
-	// printf("parser_result: %d\n", parser_result);
-	return (!parser_result);
+	// printf("is_valid: %d\n", is_valid);
+	return (!is_valid);
 }
 
 // int	main()
