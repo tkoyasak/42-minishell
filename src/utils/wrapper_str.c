@@ -10,6 +10,16 @@ char	*ft_xstrdup(const char *s1)
 	return (ret);
 }
 
+char	*ft_xstrndup(const char *s1, size_t len)
+{
+	char	*ret;
+
+	ret = ft_strndup(s1, len);
+	if (!ret)
+		error_handler("malloc");
+	return (ret);
+}
+
 char	*ft_xsubstr(char const *s, unsigned int start, size_t len)
 {
 	char	*ret;
