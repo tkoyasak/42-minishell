@@ -26,7 +26,10 @@ int	builtin_cd(t_proc *proc, t_sh_var *sh_var)
 {
 	char	*path_name;
 
-	path_name = proc->command[1];
+	if (proc->command[1])
+		path_name = ft_xstrdup(proc->command[1]);
+	else
+		path_name = NULL;
 	if (path_name == NULL)
 	{
 		path_name = get_env_value("HOME", sh_var);

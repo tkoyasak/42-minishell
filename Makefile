@@ -62,6 +62,7 @@ shtest: $(OBJS)
 asterisk: $(LIBFTDIR)/$(LIBFT) $(OBJS)
 	gcc $(INCLUDE) test/main.c obj/expansion/match_given_pattern.o lib/libft.a -o test/asterisk
 	./test/asterisk
+
 -include $(DEPS)
 
 .PHONY: all clean fclean re

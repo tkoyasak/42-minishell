@@ -48,6 +48,19 @@ static t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expd_k
 	return (ft_xlstnew(exp));
 }
 
+static t_list	*create_zero_str(bool in_squote, bool in_dquote, t_expd_kind kind)
+{
+	t_expd	*exp;
+
+	exp = ft_xcalloc(1, sizeof(t_expd));
+	exp->str = ft_xstrdup("");
+	exp->len = 0;
+	exp->in_squote = in_squote;
+	exp->in_dquote = in_dquote;
+	exp->kind = kind;
+	return (ft_xlstnew(exp));
+}
+
 static t_list	*split_token_str(char *str, bool par_in_dquote)
 {
 	t_list	*head;
@@ -62,7 +75,12 @@ static t_list	*split_token_str(char *str, bool par_in_dquote)
 		if (!in_dquote && *str == '\'')
 		{
 			ft_lstadd_back(&head, extract_word(&str, true, flag, PD_SQUOTE));
-			ft_lstadd_back(&head, extract_word(&str, true, flag, PD_STRING));
+			if (str[0] == '\'')
+			{
+				ft_lstadd_back(&head, create_zero_str(true, flag, PD_STRING));
+			}
+			else
+				ft_lstadd_back(&head, extract_word(&str, true, flag, PD_STRING));
 			ft_lstadd_back(&head, extract_word(&str, true, flag, PD_SQUOTE));
 		}
 		else if (*str == '\"')

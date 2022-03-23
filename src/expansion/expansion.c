@@ -86,32 +86,3 @@ void	expansion(t_expr *expr, t_sh_var *sh_var)
 		itr = itr->next;
 	}
 }
-
-// static void	dfs(t_node *tree)
-// {
-// 	if (tree->lhs)
-// 		dfs(tree->lhs);
-// 	printf("282:kind:%d\n", tree->kind);
-// 	t_list *itr = (t_list *)(tree->token_list);
-// 	while (itr)
-// 	{
-// 		printf("263: %s\n", ((t_token *)(itr->content))->str);
-// 		itr = itr->next;
-// 	}
-// 	if (tree->rhs)
-// 		dfs(tree->rhs);
-// }
-
-// int	main(void)
-// {
-// 	// char *s = "ls -al";
-
-// 	// int	len = get_expanded_len(s);
-// 	// printf("%s : %d\n", s, len);
-// 	t_node	*tree;
-
-// 	printf("\"ls -al\"aaaa fff | cat\n");
-// 	tree = expansion("\"ls -al\"aaaa fff | cat");
-// 	dfs(tree);
-// 	return (0);
-// }

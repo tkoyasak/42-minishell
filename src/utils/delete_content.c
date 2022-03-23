@@ -45,14 +45,6 @@ void	delete_proc(void *arg)
 		return ;
 	proc = (t_proc *)arg;
 	ft_lstclear(&proc->token_list, delete_token);
-	if (proc->fd[0] > 2)
-		safe_func(close(proc->fd[0]));
-	if (proc->fd[1] > 2)
-		safe_func(close(proc->fd[1]));
-	if (proc->here_pipefd[0] > 2)
-		safe_func(close(proc->here_pipefd[0]));
-	if (proc->here_pipefd[1] > 2)
-		safe_func(close(proc->here_pipefd[1]));
 	free(proc->filename[0]);
 	free(proc->filename[1]);
 	free(proc->command);
@@ -63,15 +55,18 @@ void	delete_proc(void *arg)
 void	delete_expr(void *arg)
 {
 	t_expr	*expr;
-	int				i;
+	int		i;
 
 	if (!arg)
 		return ;
 	expr = (t_expr *)arg;
 	ft_lstclear(&expr->proc_list, delete_proc);
-	i = -1;
-	while (++i < expr->proc_cnt - 1)
-		free(expr->pipefd[i]);
+	if (expr->pipefd)
+	{
+		i = -1;
+		while (++i < expr->proc_cnt - 1)
+			free(expr->pipefd[i]);
+	}
 	free(expr->pipefd);
 	free(expr->pid);
 	free(expr);
@@ -95,6 +90,11 @@ void	delete_astree(t_node *node)
 {
 	if (!node)
 		return ;
+	if (node->kind == ND_SUBSHELL)
+	{
+		delete_node(node);
+		return ;
+	}
 	if (node->lhs)
 		delete_astree(node->lhs);
 	if (node->rhs)

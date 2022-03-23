@@ -47,18 +47,21 @@ void	exec_subshell(t_node *tree, t_sh_var *sh_var)
 	if (pid == 0)
 	{
 		g_exit_status = execution(tree->lhs, sh_var);
+		delete_astree(tree->lhs);
 		exit(g_exit_status);
 	}
 	else
 	{
 		safe_func(waitpid(pid, &wstatus, WUNTRACED));
 		g_exit_status = wstatus;
+		delete_astree(tree->lhs);
 	}
 }
 
 /*  evaluate expr of tree, or ececute lhs of tree ans rhs of tree  */
 int	execution(t_node *tree, t_sh_var *sh_var)
 {
+	// printf("execution: %d\n", tree->kind);
 	if (tree->kind == ND_SUBSHELL)
 		exec_subshell(tree, sh_var);
 	else if (ND_SEMICOLON <= tree->kind && tree->kind <= ND_DPIPE)

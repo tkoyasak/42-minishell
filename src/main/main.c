@@ -13,6 +13,7 @@ int	analyzer(char *line, t_node **tree, t_sh_var *sh_var)
 {
 	t_list	*token_list;
 
+	*tree = NULL;
 	if (lexer(line, &token_list) == 1)
 	{
 		g_exit_status = 258;
@@ -50,7 +51,7 @@ void	minish_loop(t_sh_var *sh_var)
 			add_history(line);
 			if (analyzer(line, &tree, sh_var) == 0)
 				g_exit_status = execution(tree, sh_var);
-			// delete_astree(tree);
+			delete_astree(tree);
 		}
 		// printf("g_exit_status:%d\n", g_exit_status);
 		free(line);
@@ -65,7 +66,7 @@ void	test_one_line(char *line, t_sh_var *sh_var)
 		exit(0);
 	if (analyzer(line, &tree, sh_var) == 0)
 		g_exit_status = execution(tree, sh_var);
-	// delete_astree(tree);
+	delete_astree(tree);
 	ft_lstclear(&sh_var->env_list, delete_env);
 	free(sh_var->pwd);
 	free(sh_var->oldpwd);
