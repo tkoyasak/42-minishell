@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-static t_node	*create_astree(t_list **itr, int *parser_result);
+static t_node	*create_astree(t_list **itr, bool *parser_result);
 
-static t_node	*create_subshell_tree(t_list **itr, int *parser_result)
+static t_node	*create_subshell_tree(t_list **itr, bool *parser_result)
 {
 	t_node	*node;
 
@@ -31,7 +31,7 @@ static t_node	*create_subshell_tree(t_list **itr, int *parser_result)
 }
 
 // semicolon間の部分木
-static t_node	*create_sub_astree(t_list **itr, int *parser_result)
+static t_node	*create_sub_astree(t_list **itr, bool *parser_result)
 {
 	t_node	*node;
 	t_node	*r_node;
@@ -39,7 +39,7 @@ static t_node	*create_sub_astree(t_list **itr, int *parser_result)
 	if (*itr == NULL)
 		return (NULL);
 	node = create_subshell_tree(itr, parser_result);
-	while (*parser_result == 0)
+	while (*parser_result)
 	{
 		if (consume_node_kind(itr, "|"))
 		{
@@ -55,14 +55,14 @@ static t_node	*create_sub_astree(t_list **itr, int *parser_result)
 }
 
 // 全体のrootのnodeへのポインタを返す
-static t_node	*create_astree(t_list **itr, int *parser_result)
+static t_node	*create_astree(t_list **itr, bool *parser_result)
 {
 	t_node		*node;
 
 	if (*itr == NULL)
 		return (NULL);
 	node = create_sub_astree(itr, parser_result);
-	while (*parser_result == 0)
+	while (*parser_result)
 	{
 		if (consume_node_kind(itr, ";"))
 			node = node_new(ND_SEMICOLON, node, create_sub_astree(itr, parser_result));
@@ -94,14 +94,14 @@ static t_node	*create_astree(t_list **itr, int *parser_result)
 nodeで形成されるtreeのrootを返す  */
 int	parser(t_node **tree, t_list *token_list)
 {
-	int	parser_result;
+	bool	parser_result;
 
-	parser_result = 0; // is_valid
+	parser_result = true; // is_valid
 	*tree = create_astree(&token_list, &parser_result);
 	// printf("168: %d\n", parser_result);
 	// dfs(tree);
 	// printf("parser_result: %d\n", parser_result);
-	return (parser_result);
+	return (!parser_result);
 }
 
 // int	main()
