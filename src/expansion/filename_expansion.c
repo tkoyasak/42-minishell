@@ -16,7 +16,7 @@ t_list	*get_opened_directory(char *prefix, char **slash_splitted_str)
 		expansion->str = prefix;
 		expansion->len = ft_strlen(prefix);
 		expansion->kind = PD_FILENAME;
-		return (ft_lstnew(expansion));
+		return (ft_xlstnew(expansion));
 	}
 	head = NULL;
 	path_name = prefix;

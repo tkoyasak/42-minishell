@@ -5,7 +5,7 @@ char	*get_env_value(char *key, t_shell_var *shell_var)
 	t_list	*itr;
 
 	if (ft_strcmp(key, "?") == 0)
-		return (ft_itoa(g_exit_status));
+		return (ft_xitoa(g_exit_status));
 	itr = shell_var->env_list->next;
 	while (itr)
 	{

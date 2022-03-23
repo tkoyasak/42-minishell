@@ -12,7 +12,7 @@ t_list	*consume_new_env(t_list *itr, char *str)
 		free(env->val);
 		env->val = NULL;
 	}
-	itr->next = ft_lstnew(env);
+	itr->next = ft_xlstnew(env);
 	return (itr->next);
 }
 
@@ -24,7 +24,7 @@ t_list	*init_envlist(void)
 	char		**env;
 
 	env = environ;
-	env_list = ft_lstnew(NULL);
+	env_list = ft_xlstnew(NULL);
 	itr = env_list;
 	while (*env)
 	{
