@@ -73,7 +73,7 @@ void	open_error_handler(char *filename)
 int	set_io_input(t_proc *proc, t_list *itr, t_io_kind kind)
 {
 	proc->kind[0] = kind;
-	proc->filename[0] = ((t_token *)(itr->content))->str;
+	proc->filename[0] = ft_xstrdup(((t_token *)(itr->content))->str);
 	if (kind == IO_INPUT)
 	{
 		if (proc->fd[0])
@@ -94,7 +94,7 @@ int	set_io_output(t_proc *proc, t_list *itr, t_io_kind kind)
 	if (proc->fd[1])
 		safe_func(close(proc->fd[1]));
 	proc->kind[1] = kind;
-	proc->filename[1] = ((t_token *)(itr->content))->str;
+	proc->filename[1] = ft_xstrdup(((t_token *)(itr->content))->str);
 	if (kind == IO_OUTPUT)
 		proc->fd[1] = \
 			open(proc->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);

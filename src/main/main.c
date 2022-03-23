@@ -50,7 +50,7 @@ void	minish_loop(t_sh_var *sh_var)
 			add_history(line);
 			if (analyzer(line, &tree, sh_var) == 0)
 				g_exit_status = execution(tree, sh_var);
-			// clear tree
+			// delete_astree(tree);
 		}
 		// printf("g_exit_status:%d\n", g_exit_status);
 		free(line);
@@ -65,10 +65,10 @@ void	test_one_line(char *line, t_sh_var *sh_var)
 		exit(0);
 	if (analyzer(line, &tree, sh_var) == 0)
 		g_exit_status = execution(tree, sh_var);
-	// delete tree
-	// analyzer(argv[2], &tree, sh_var);
 	// delete_astree(tree);
-	// exit(g_exit_status);
+	ft_lstclear(&sh_var->env_list, delete_env);
+	free(sh_var->pwd);
+	free(sh_var->oldpwd);
 }
 
 int	main(int argc, char **argv)
@@ -83,6 +83,5 @@ int	main(int argc, char **argv)
 		test_one_line(argv[2], &sh_var);
 	else
 		minish_loop(&sh_var);
-	// delete sh_var
 	return (g_exit_status);
 }

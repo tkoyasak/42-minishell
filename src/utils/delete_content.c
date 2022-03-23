@@ -4,6 +4,8 @@ void	delete_env(void *arg)
 {
 	t_env	*env;
 
+	if (!arg)
+		return ;
 	env = (t_env *)arg;
 	free(env->key);
 	free(env->val);
@@ -15,6 +17,8 @@ void	delete_token(void *arg)
 {
 	t_token	*token;
 
+	if (!arg)
+		return ;
 	token = (t_token *)arg;
 	free(token->str);
 	free(token);
@@ -25,6 +29,8 @@ void	delete_expansion(void *arg)
 {
 	t_expd	*expansion;
 
+	if (!arg)
+		return ;
 	expansion = (t_expd *)arg;
 	free(expansion->str);
 	free(expansion);
@@ -34,8 +40,9 @@ void	delete_expansion(void *arg)
 void	delete_proc(void *arg)
 {
 	t_proc	*proc;
-	int			i;
 
+	if (!arg)
+		return ;
 	proc = (t_proc *)arg;
 	ft_lstclear(&proc->token_list, delete_token);
 	if (proc->fd[0] > 2)
@@ -48,9 +55,6 @@ void	delete_proc(void *arg)
 		safe_func(close(proc->here_pipefd[1]));
 	free(proc->filename[0]);
 	free(proc->filename[1]);
-	i = -1;
-	while (proc->command[++i])
-		free(proc->command[i]);
 	free(proc->command);
 	free(proc);
 	proc = NULL;
@@ -61,12 +65,15 @@ void	delete_expr(void *arg)
 	t_expr	*expr;
 	int				i;
 
+	if (!arg)
+		return ;
 	expr = (t_expr *)arg;
 	ft_lstclear(&expr->proc_list, delete_proc);
 	i = -1;
 	while (++i < expr->proc_cnt - 1)
 		free(expr->pipefd[i]);
 	free(expr->pipefd);
+	free(expr->pid);
 	free(expr);
 	expr = NULL;
 }
@@ -75,6 +82,8 @@ void	delete_node(void *arg)
 {
 	t_node	*node;
 
+	if (!arg)
+		return ;
 	node = (t_node *)arg;
 	ft_lstclear(&node->token_list, delete_token);
 	delete_expr(node->expr);
@@ -84,6 +93,8 @@ void	delete_node(void *arg)
 
 void	delete_astree(t_node *node)
 {
+	if (!node)
+		return ;
 	if (node->lhs)
 		delete_astree(node->lhs);
 	if (node->rhs)

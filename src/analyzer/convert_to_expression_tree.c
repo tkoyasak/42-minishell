@@ -17,6 +17,7 @@ t_list	*convert_to_proc_list(t_node *tree)
 	{
 		proc = ft_xcalloc(1, sizeof(t_proc));
 		proc->token_list = tree->token_list;
+		tree->token_list = NULL;
 		proc_list = ft_xlstnew(proc);
 	}
 	return (proc_list);
