@@ -43,7 +43,7 @@ void	minish_loop(t_shell_var *shell_var)
 		if (line == NULL)
 		{
 			printf("exit\n");
-			line = ft_strdup("exit");
+			line = ft_xstrdup("exit");
 		}
 		if (ft_strlen(line))
 		{

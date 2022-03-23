@@ -12,7 +12,7 @@ char	*get_env_value(char *key, t_shell_var *shell_var)
 		if (ft_strcmp(((t_env *)itr->content)->key, key) == 0)
 		{
 			if (((t_env *)(itr->content))->val)
-				return (ft_strdup(((t_env *)(itr->content))->val));
+				return (ft_xstrdup(((t_env *)(itr->content))->val));
 			else
 				return (NULL);
 		}
@@ -29,5 +29,5 @@ char	*get_env_value_str(char *key, t_shell_var *shell_var)
 	if (val)
 		return (val);
 	else
-		return (ft_strdup(""));
+		return (ft_xstrdup(""));
 }

@@ -52,8 +52,8 @@ int	builtin_export(t_proc *proc, t_shell_var *shell_var)
 		arg = ((t_token *)(proc->token_list->next->content))->str;
 		if (!validate_args(arg))
 			return (1);
-		key = ft_strndup(arg, ft_strchr(arg, '=') - arg);
-		val = ft_strdup(ft_strchr(arg, '=') + 1);
+		key = ft_xstrndup(arg, ft_strchr(arg, '=') - arg);
+		val = ft_xstrdup(ft_strchr(arg, '=') + 1);
 		set_env_value(key, val, shell_var);
 		free(key);
 		free(val);

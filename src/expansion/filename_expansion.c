@@ -60,7 +60,7 @@ t_list	*get_expanded_filename_token(t_list *expansion_list)
 	str = expansion->str;
 	if (ft_strchr(str, '*') == NULL)
 		return (expansion_list);
-	slash_splitted_str = ft_split(str, '/');
+	slash_splitted_str = ft_xsplit(str, '/');
 	if (*str == '/')
 		head = get_opened_directory("/", slash_splitted_str);
 	else
