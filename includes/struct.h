@@ -78,7 +78,7 @@ typedef enum e_node_kind
 	ND_DPIPE,
 	ND_PIPE,
 	ND_PROCESS,
-	ND_EXPRESSION
+	ND_EXPR
 }	t_node_kind;
 
 typedef struct s_expr

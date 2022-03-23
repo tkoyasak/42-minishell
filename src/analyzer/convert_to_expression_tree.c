@@ -39,7 +39,7 @@ t_node	*convert_to_expr_tree(t_node *tree)
 		expr->process_list = convert_to_process_list(tree);
 		expr->process_cnt = ft_lstsize(expr->process_list);
 		tree->expr = expr;
-		tree->kind = ND_EXPRESSION;
+		tree->kind = ND_EXPR;
 		tree->token_list = NULL;
 	}
 	return (tree);
