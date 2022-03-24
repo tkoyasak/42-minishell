@@ -73,7 +73,7 @@ static t_list	*create_zero_str(bool in_squote, bool in_dquote, t_expd_kind kind)
 	return (ft_xlstnew(expd));
 }
 
-static t_list	*split_token_str(char *str, bool par_in_dquote)
+static t_list	*split_by_expd_kid(char *str, bool par_in_dquote)
 {
 	t_list	*head;
 	bool	in_dquote;
@@ -106,24 +106,24 @@ static t_list	*split_token_str(char *str, bool par_in_dquote)
 	return (head);
 }
 
-static t_list	*get_split_token_list(char *str, bool par_in_dquote)
+static t_list	*split_token(char *str, bool par_in_dquote)
 {
 	if (!str)
 		return (NULL);
 	if (*str == '\0')
 		return (extract_word(&str, false, par_in_dquote, PD_STRING));
-	return (split_token_str(str, par_in_dquote));
+	return (split_by_expd_kid(str, par_in_dquote));
 }
 
 t_list	*expand_token(char *str, bool par_in_dquote, t_sh_var *sh_var)
 {
-	t_list		head;
-	t_list		*itr;
-	t_list		*prev;
-	t_list		*next;
-	t_expd		*expd;
+	t_list	head;
+	t_list	*itr;
+	t_list	*prev;
+	t_list	*next;
+	t_expd	*expd;
 
-	head.next = get_split_token_list(str, par_in_dquote);
+	head.next = split_token(str, par_in_dquote);
 	itr = head.next;
 	prev = &head;
 	while (itr)
