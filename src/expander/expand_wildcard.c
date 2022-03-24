@@ -6,79 +6,30 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 16:25:37 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 17:18:41 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*get_opened_directory(char *prefix, char **slash_splitted_str)
+t_list	*get_matched_token_list(t_list *expd_list)
 {
-	t_expd		*expansion;
-	char			*path_name;
-	char			*joined_path_name;
-	DIR				*dp;
-	struct dirent	*dirp;
-	t_list			*tmp;
-	t_list			*head;
-
-	if (*slash_splitted_str == NULL)
-	{
-		expansion = ft_xcalloc(1, sizeof(t_expd));
-		expansion->str = prefix;
-		expansion->len = ft_strlen(prefix);
-		expansion->kind = PD_FILENAME;
-		return (ft_xlstnew(expansion));
-	}
-	head = NULL;
-	path_name = prefix;
-	while (*slash_splitted_str)
-	{
-		if (ft_strchr(*slash_splitted_str, '*'))
-			break ;
-		path_name = ft_strjoin(path_name, *slash_splitted_str);
-		path_name = ft_strjoin(path_name, "/");
-		slash_splitted_str++;
-	}
-	char	*cwd_path = getcwd(NULL, 0);
-	if (*path_name == '\0')
-		dp = opendir(cwd_path);
-	else
-		dp = opendir(path_name);
-	if (dp == NULL)
-		return (NULL);
-	while ((dirp = readdir(dp)) != NULL)
-	{
-		if (match_given_pattern(dirp->d_name, *(slash_splitted_str)) == false)
-			continue ;
-		joined_path_name = ft_strjoin(path_name, dirp->d_name);
-		if (*(slash_splitted_str + 1) != NULL)
-			joined_path_name = ft_strjoin(joined_path_name, "/");
-		tmp = get_opened_directory(joined_path_name, slash_splitted_str + 1);
-		ft_lstadd_back(&head, tmp);
-	}
-	closedir(dp);
-	return (head);
-}
-
-t_list	*get_expanded_filename_token(t_list *expansion_list)
-{
-	t_expd	*expansion;
-	t_list	*head; // expansion_list_itr
+	t_expd	*expd;
+	t_list	*head;
 	char	*str;
-	char	**slash_splitted_str;
+	char	**slash_splitted_strs;
 
-	expansion = expansion_list->content;
-	str = expansion->str;
+	expd = expd_list->content;
+	str = expd->str;
 	if (ft_strchr(str, '*') == NULL)
-		return (expansion_list);
-	slash_splitted_str = ft_xsplit(str, '/');
+		return (expd_list);
+	slash_splitted_strs = ft_xsplit(str, '/');
 	if (*str == '/')
-		head = get_opened_directory("/", slash_splitted_str);
+		head = matched_files("/", slash_splitted_strs);
 	else
-		head = get_opened_directory("", slash_splitted_str);
+		head = matched_files("", slash_splitted_strs);
 	if (head == NULL)
-		return (expansion_list);
+		return (expd_list);
 	return (head);
 }
 
@@ -100,7 +51,7 @@ t_list	*expand_wildcard(t_list *expansion_list)
 		if (((t_expd *)(itr->content))->kind == PD_STRING && \
 			((t_expd *)(itr->content))->in_dquote == false && \
 			((t_expd *)(itr->content))->in_squote == false)
-			itr = get_expanded_filename_token(itr);
+			itr = get_matched_token_list(itr);
 		prev->next = itr;
 		while (itr->next != NULL && itr->next != next)
 			itr = itr->next;

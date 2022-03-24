@@ -12,7 +12,7 @@ int	main(void)
 		int	j = -1;
 		while (++j < 5)
 		{
-			if (match_given_pattern(str[i], pattern[j]))
+			if (match_pattern(str[i], pattern[j]))
 				printf(GREEN"ok:%s %s\n"RESET, str[i], pattern[j]);
 			else
 				printf(RED"\tng:%s %s\n"RESET, str[i], pattern[j]);
