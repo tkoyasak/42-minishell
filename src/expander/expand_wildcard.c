@@ -6,30 +6,37 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 17:18:41 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 01:07:50 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*get_matched_token_list(t_list *expd_list)
+t_list	*get_matched_token_list(t_list *itr)
 {
-	t_expd	*expd;
 	t_list	*head;
 	char	*str;
+	char	*prefix;
 	char	**slash_splitted_strs;
+	int		i;
 
-	expd = expd_list->content;
-	str = expd->str;
+	str = ((t_expd *)(itr->content))->str;
 	if (ft_strchr(str, '*') == NULL)
-		return (expd_list);
+		return (itr);
 	slash_splitted_strs = ft_xsplit(str, '/');
 	if (*str == '/')
-		head = matched_files("/", slash_splitted_strs);
+		prefix = ft_strdup("/");
 	else
-		head = matched_files("", slash_splitted_strs);
+		prefix = ft_strdup("");
+	head = matched_files(prefix, slash_splitted_strs);
+	i = -1;
+	while (slash_splitted_strs[++i])
+		free(slash_splitted_strs[i]);
+	free(slash_splitted_strs);
+	free(prefix);
 	if (head == NULL)
-		return (expd_list);
+		return (itr);
+	ft_lstdelone(itr, delete_expd);
 	return (head);
 }
 

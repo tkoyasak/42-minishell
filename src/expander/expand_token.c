@@ -36,7 +36,7 @@ static t_list	*split_str_nonheredoc(char **str, bool *in_dquote, bool flag)
 	return (head);
 }
 
-static t_list	*split_by_expd_kind(char *str, bool par_in_dquote, bool heredoc)
+t_list	*split_by_expd_kind(char *str, bool par_in_dquote, bool heredoc)
 {
 	t_list	*head;
 	bool	in_dquote;
@@ -59,35 +59,45 @@ static t_list	*split_by_expd_kind(char *str, bool par_in_dquote, bool heredoc)
 	return (head);
 }
 
-t_list	*expand_token(char *str, bool par_in_dquote, bool heredoc, \
-													t_sh_var *sh_var)
+/*  expand PD environment variable. quotes remain in heredoc  */
+static void	expand_pd_env(t_list **head, t_list *itr, t_sh_var *sh_var, \
+															bool heredoc)
 {
-	t_list	head;
-	t_list	*itr;
-	t_list	*prev;
-	t_list	*next;
+	t_list	*delete_itr;
 	t_expd	*expd;
 	char	*env_str;
 
-	head.next = split_by_expd_kind(str, par_in_dquote, heredoc);
-	itr = head.next;
-	prev = &head;
+	expd = itr->content;
+	env_str = expd->str;
+	expd->str = get_env_value_str(expd->str + 1, sh_var);
+	free(env_str);
+	delete_itr = itr;
+	itr = split_by_expd_kind(expd->str, expd->in_dquote, heredoc);
+	ft_lstdelone(delete_itr, delete_expd);
+	ft_lstadd_back(head, itr);
+}
+
+/*  expand environment variable
+TK_STRING -> expd list       'aa'"b$HOME" ->  ' aa ' " b /Users/user " */
+t_list	*expand_env(t_list *expd_list, t_sh_var *sh_var, bool heredoc)
+{
+	t_list	*head;
+	t_list	*itr;
+	t_list	*next;
+	t_expd	*expd;
+
+	head = NULL;
+	itr = expd_list;
 	while (itr)
 	{
 		next = itr->next;
+		itr->next = NULL;
 		expd = (t_expd *)(itr->content);
 		if (expd->kind == PD_ENV)
-		{
-			env_str = expd->str;
-			expd->str = get_env_value_str(env_str + 1, sh_var);
-			free(env_str);
-			prev->next = expand_token(expd->str, expd->in_dquote, heredoc, sh_var);
-			prev = ft_lstlast(head.next);
-			prev->next = next;
-		}
+			expand_pd_env(&head, itr, sh_var, heredoc);
 		else
-			prev = itr;
+			ft_lstadd_back(&head, itr);
 		itr = next;
 	}
-	return (head.next);
+	return (head);
 }

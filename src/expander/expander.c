@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:10 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 20:40:34 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 23:23:53 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ static t_list	*get_expanded_token_list(char *str, t_sh_var *sh_var)
 	t_list	*expd_list;
 	t_list	*expanded_token_list;
 
-	expd_list = expand_token(str, false, false, sh_var);
+	expd_list = split_by_expd_kind(str, false, false);
+	expd_list = expand_env(expd_list, sh_var, false);
 	expd_list = expand_wildcard(expd_list);
 	expd_list = remove_quotes(expd_list);
 	expanded_token_list = convert_to_token_list(expd_list);
