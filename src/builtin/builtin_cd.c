@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_cd.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 13:58:20 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
@@ -10,9 +22,8 @@ int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
 		ft_putendl_fd("cd: error retrieving current directory: \
 			getcwd: cannot access parent directories: \
 			No such file or directory", STDERR_FILENO);
-		relative_path = ft_strjoin("/", path_name);
-		sh_var->pwd = ft_strjoin(sh_var->pwd, relative_path);
-		free(relative_path);
+		relative_path = ft_xstrjoin("/", path_name);
+		sh_var->pwd = ft_xstrjoin_free(sh_var->pwd, relative_path, true);
 	}
 	else
 		sh_var->pwd = getcwd(NULL, 0);
@@ -26,10 +37,9 @@ int	builtin_cd(t_proc *proc, t_sh_var *sh_var)
 {
 	char	*path_name;
 
+	path_name = NULL;
 	if (proc->command[1])
 		path_name = ft_xstrdup(proc->command[1]);
-	else
-		path_name = NULL;
 	if (path_name == NULL)
 	{
 		path_name = get_env_value("HOME", sh_var);
@@ -39,9 +49,7 @@ int	builtin_cd(t_proc *proc, t_sh_var *sh_var)
 			return (1);
 		}
 		if (*path_name == '\0')
-		{
 			return (0);
-		}
 	}
 	if (chdir(path_name) == -1)
 	{

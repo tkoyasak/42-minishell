@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_exit.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 13:59:56 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 14:02:14 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	is_over(unsigned long n, int m, int sign)
@@ -8,7 +20,8 @@ static int	is_over(unsigned long n, int m, int sign)
 		return (n > ((unsigned long)LONG_MAX + 1 - m) / 10);
 }
 
-int	a_to_uchar(const char *str)
+/*  convert to unsigned char  */
+static int	a_to_uchar(const char *str)
 {
 	unsigned long	ret;
 	int				sign;

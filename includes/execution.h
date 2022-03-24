@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 14:04:40 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 14:04:56 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
@@ -25,24 +37,24 @@ int			exec_builtin(t_proc *proc, t_sh_var *sh_var);
 bool		is_builtin(char *cmd);
 int			exec_procs(t_expr *expr, t_sh_var *sh_var);
 int			exec_single_proc(t_expr *expr, t_sh_var *sh_var);
-void		exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_sh_var *sh_var);
+void		exec_child(t_expr *expr, t_proc *proc, \
+						int cmd_idx, t_sh_var *sh_var);
 void		dup2_func(t_expr *expr, t_proc *proc, const int cmd_idx);
 void		close_func(t_expr *expr, t_proc *proc, const int cmd_idx);
 
 /*  io  */
-// t_io_kind	get_io_kind(char *redirect_str);
-// void		remove_io_token(t_proc *proc);
 t_io_kind	get_io_kind(char *redirect_str);
 void		open_error_handler(char *filename);
 void		set_io_params(t_proc *proc);
-// void		set_command(t_proc *proc);
 void		set_io_and_commands(t_expr *expr);
 
 /*  heredoc  */
 size_t		get_word_len_heredoc(char *str, bool in_squote, bool in_dquote);
-t_list		*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expd_kind kind);
+t_list		*extract_word_heredoc(char **str, bool in_squote, \
+								bool in_dquote, t_expd_kind kind);
 t_list		*split_str_heredoc(char *str, bool par_in_dquote);
-t_list		*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_sh_var *sh_var);
+t_list		*get_expansion_list_heredoc(char *str, bool par_in_dquote, \
+								t_sh_var *sh_var);
 size_t		get_expanded_len_heredoc(t_list *exp_list);
 char		*expansion_heredoc(char *str, t_sh_var *sh_var);
 char		*remove_quote_heredoc(char *limiter, bool *in_quote);
