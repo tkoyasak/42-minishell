@@ -59,10 +59,13 @@ shtest: $(OBJS)
 	@chmod +x test/shtest/execution.sh
 	@cd test/shtest && ./execution.sh
 
+test:
+	./$(NAME) < ./test/test.sh
+
 asterisk: $(LIBFTDIR)/$(LIBFT) $(OBJS)
 	gcc $(INCLUDE) test/main.c obj/expansion/match_given_pattern.o lib/libft.a -o test/asterisk
 	./test/asterisk
 
 -include $(DEPS)
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re test
