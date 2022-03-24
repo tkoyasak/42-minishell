@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:06 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 12:51:29 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 16:33:35 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_list	*remove_quotes(t_list *src_list)
 		itr->next = NULL;
 		expd = (t_expd *)(itr->content);
 		if (expd->kind == PD_SQUOTE || expd->kind == PD_DQUOTE)
-			ft_lstdelone(itr, delete_expansion);
+			ft_lstdelone(itr, delete_expd);
 		else
 			ft_lstadd_back(&head, itr);
 		itr = next;

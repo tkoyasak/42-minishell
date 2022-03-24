@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:07:20 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 14:14:13 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 16:29:19 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool		consume_node_kind(t_list **itr, char *op);
 t_node		*create_proc_node(t_list **itr, bool *is_valid);
 
 /* expander */
-void		expansion(t_expr *expr, t_sh_var *sh_var);
+void		expander(t_expr *expr, t_sh_var *sh_var);
 t_list		*expand_token(char *str, bool par_in_dquote, t_sh_var *sh_var);
 t_list		*extract_word(char **str, bool in_squote, bool in_dquote, \
 														t_expd_kind kind);

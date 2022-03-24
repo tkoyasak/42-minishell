@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:10 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 16:10:02 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 16:33:35 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static t_list	*get_expanded_token_list(char *str, t_sh_var *sh_var)
 	expd_list = expand_wildcard(expd_list);
 	expd_list = remove_quotes(expd_list);
 	expanded_token_list = convert_to_token_list(expd_list);
-	ft_lstclear(&expd_list, delete_expansion);
+	ft_lstclear(&expd_list, delete_expd);
 	return (expanded_token_list);
 }
 
@@ -89,7 +89,7 @@ static void	handle_proc(t_list **token_list, t_sh_var *sh_var)
 	*token_list = head.next;
 }
 
-void	expansion(t_expr *expr, t_sh_var *sh_var)
+void	expander(t_expr *expr, t_sh_var *sh_var)
 {
 	t_list	*itr;
 

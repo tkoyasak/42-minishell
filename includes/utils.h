@@ -22,7 +22,7 @@ void		error_handler(char *str);
 /*  delete  */
 void		delete_env(void *arg);
 void		delete_token(void *arg);
-void		delete_expansion(void *arg);
+void		delete_expd(void *arg);
 void		delete_proc(void *arg);
 void		delete_expr(void *arg);
 void		delete_node(void *arg);

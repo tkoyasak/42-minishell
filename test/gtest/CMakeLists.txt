@@ -11,7 +11,7 @@ file(GLOB LIBFT ../../lib/libft/src/*/*.c ../../lib/libft/includes/*.h)
 
 add_library(lexer STATIC ../../src/lexer/lexer.c)
 add_library(parser STATIC ../../src/parser/parser.c)
-add_library(expansion STATIC ../../src/expansion/expansion.c)
+add_library(expander STATIC ../../src/expander/expander.c)
 # add_library(execution STATIC ${EXECUTION})
 # add_library(env STATIC ${ENV})
 add_library(ft STATIC ${LIBFT})
@@ -29,7 +29,7 @@ target_link_libraries(main
     GTest::Main
     lexer
     parser
-    expansion
+    expander
     # execution
 	# env
     ft
