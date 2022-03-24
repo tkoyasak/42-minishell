@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_expansion_list.c                               :+:      :+:    :+:   */
+/*   expand_token.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -115,7 +115,7 @@ static t_list	*get_split_token_list(char *str, bool par_in_dquote)
 	return (split_token_str(str, par_in_dquote));
 }
 
-t_list	*get_expansion_list(char *str, bool par_in_dquote, t_sh_var *sh_var)
+t_list	*expand_token(char *str, bool par_in_dquote, t_sh_var *sh_var)
 {
 	t_list		head;
 	t_list		*itr;
@@ -133,7 +133,7 @@ t_list	*get_expansion_list(char *str, bool par_in_dquote, t_sh_var *sh_var)
 		if (expd->kind == PD_ENV)
 		{
 			expd->str = get_env_value_str(expd->str + 1, sh_var);
-			prev->next = get_expansion_list(expd->str, expd->in_dquote, sh_var);
+			prev->next = expand_token(expd->str, expd->in_dquote, sh_var);
 			prev = ft_lstlast(head.next);
 			prev->next = next;
 		}
