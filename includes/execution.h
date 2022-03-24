@@ -47,5 +47,4 @@ size_t		get_expanded_len_heredoc(t_list *exp_list);
 char		*expansion_heredoc(char *str, t_sh_var *sh_var);
 char		*remove_quote_heredoc(char *limiter, bool *in_quote);
 
-
 #endif
