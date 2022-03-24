@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   filename_expansion.c                               :+:      :+:    :+:   */
+/*   expand_wildcard.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 14:14:13 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 16:25:37 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,9 @@ t_list	*get_opened_directory(char *prefix, char **slash_splitted_str)
 t_list	*get_expanded_filename_token(t_list *expansion_list)
 {
 	t_expd	*expansion;
-	t_list		*head; // expansion_list_itr
-	char		*str;
-	char		**slash_splitted_str;
+	t_list	*head; // expansion_list_itr
+	char	*str;
+	char	**slash_splitted_str;
 
 	expansion = expansion_list->content;
 	str = expansion->str;
@@ -82,12 +82,12 @@ t_list	*get_expanded_filename_token(t_list *expansion_list)
 	return (head);
 }
 
-/*   t_expansion_kindがSTRINGでかつin_squoteとin_dquoteがfalseで、
+/*   t_expd_kindがSTRINGでかつin_squoteとin_dquoteがfalseで、
 *を含むものを展開   */
 t_list	*expand_wildcard(t_list *expansion_list)
 {
 	t_list	head;
-	t_list	*itr; //expansion_list_itr
+	t_list	*itr;
 	t_list	*next;
 	t_list	*prev;
 
@@ -99,7 +99,7 @@ t_list	*expand_wildcard(t_list *expansion_list)
 		next = itr->next;
 		if (((t_expd *)(itr->content))->kind == PD_STRING && \
 			((t_expd *)(itr->content))->in_dquote == false && \
-			((t_expd *)(itr->content))->in_squote == false )
+			((t_expd *)(itr->content))->in_squote == false)
 			itr = get_expanded_filename_token(itr);
 		prev->next = itr;
 		while (itr->next != NULL && itr->next != next)
