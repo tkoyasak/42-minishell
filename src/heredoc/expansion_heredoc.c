@@ -1,8 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expansion_heredoc.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 11:54:11 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 11:55:39 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-t_list	*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expd_kind kind)
+t_list	*extract_word_heredoc(char **str, bool in_squote, \
+		bool in_dquote, t_expd_kind kind)
 {
-	t_list		*new;
+	t_list	*new;
 	t_expd	*exp;
 
 	exp = ft_xcalloc(1, sizeof(t_expd));
@@ -19,8 +32,8 @@ t_list	*extract_word_heredoc(char **str, bool in_squote, bool in_dquote, t_expd_
 	return (new);
 }
 
-// prevがNULLの時とそれ以外の場合で、listの繋ぎかえ
-void	connect_expansion_list_heredoc(t_expd *exp, t_list *head, t_list *prev, t_sh_var *sh_var)
+void	connect_expansion_list_heredoc(t_expd *exp, t_list *head, \
+		t_list *prev, t_sh_var *sh_var)
 {
 	if (prev == NULL)
 		head = get_expansion_list_heredoc(exp->str, exp->in_dquote, sh_var);
@@ -30,7 +43,8 @@ void	connect_expansion_list_heredoc(t_expd *exp, t_list *head, t_list *prev, t_s
 	prev = ft_lstlast(head);
 }
 
-t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote, t_sh_var *sh_var)
+t_list	*get_expansion_list_heredoc(char *str, bool par_in_dquote, \
+		t_sh_var *sh_var)
 {
 	t_list		*head;
 	t_list		*itr;

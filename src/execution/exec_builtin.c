@@ -1,5 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_builtin.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 11:11:26 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 11:53:47 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
+/*  retrun true if command is builtin  */
 bool	is_builtin(char *cmd)
 {
 	const char	*builtin_str[] = \
@@ -16,7 +29,7 @@ bool	is_builtin(char *cmd)
 	return (false);
 }
 
-/*  return exit status  */
+/*  execute builtin. return exit status  */
 int	exec_builtin(t_proc *proc, t_sh_var *sh_var)
 {
 	const char	*builtin_str[] = \
