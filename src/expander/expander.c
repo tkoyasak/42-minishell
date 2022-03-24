@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:10 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 18:58:02 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 20:40:34 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	consume_token_to_expand(t_list **itr, \
 	delete_itr = *itr;
 	*itr = get_expanded_token_list(((t_token *)(*itr)->content)->str, sh_var);
 	ft_lstdelone(delete_itr, delete_token);
-	if (itr == NULL)
+	if (*itr == NULL)
 	{
 		*itr = *next;
 		(*prev)->next = *itr;

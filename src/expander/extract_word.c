@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:58:22 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 19:25:00 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 20:42:41 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,8 @@ t_list	*extract_word(char **str, bool in_squote, bool in_dquote, \
 	if (!in_squote && expd->str && expd->str[0] == '$' && \
 	(ft_isalnum(expd->str[1]) || expd->str[1] == '_' || expd->str[1] == '?'))
 		expd->kind = PD_ENV;
-	if (!in_squote && !in_dquote && expd->str && expd->str[0] == ' ')
+	if (!in_squote && !in_dquote && expd->str && \
+				(expd->str[0] == '\0' || expd->str[0] == ' '))
 		expd->kind = PD_NAKED_SP;
 	return (ft_xlstnew(expd));
 }
