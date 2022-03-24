@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
-bool	match_pattern(char *str, char *pattern)
+static bool	**init_for_dp(char *str, char *pattern)
 {
 	bool	**dp;
-	size_t	i;
-	size_t	j;
-	size_t	str_len;
-	size_t	ptn_len;
+	int		i;
+	int		j;
+	int		str_len;
+	int		ptn_len;
 
 	str_len = ft_strlen(str);
 	ptn_len = ft_strlen(pattern);
@@ -31,11 +31,25 @@ bool	match_pattern(char *str, char *pattern)
 	{
 		j = 0;
 		while (++j <= ptn_len)
-			{
-				if (pattern[j - 1] == '*')
-					dp[0][j] = dp[0][j - 1];
-			}
+		{
+			if (pattern[j - 1] == '*')
+				dp[0][j] = dp[0][j - 1];
+		}
 	}
+	return (dp);
+}
+
+bool	match_pattern(char *str, char *pattern)
+{
+	bool	**dp;
+	int		i;
+	int		j;
+	int		str_len;
+	int		ptn_len;
+
+	dp = init_for_dp(str, pattern);
+	str_len = ft_strlen(str);
+	ptn_len = ft_strlen(pattern);
 	i = 0;
 	while (++i <= str_len)
 	{

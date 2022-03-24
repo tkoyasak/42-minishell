@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_heredoc.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:54:11 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 11:55:39 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/24 19:18:26 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,8 @@ char	*expansion_heredoc(char *str, t_sh_var *sh_var)
 	size_t	len;
 	t_list	*exp_list;
 
-	exp_list = get_expansion_list_heredoc(str, false, sh_var);
+	// exp_list = get_expansion_list_heredoc(str, false, sh_var);
+	exp_list = expand_token(str, false, true, sh_var);
 	len = get_expanded_len_heredoc(exp_list);
 	dst = (char *)ft_xmalloc(sizeof(char) * (len + 1));
 	dst[0] = '\0';

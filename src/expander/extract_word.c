@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:58:22 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 14:06:54 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 19:25:00 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static size_t	expd_str_len(char *str, bool in_squote, bool in_dquote)
 	if (*str == '$')
 	{
 		str++;
-		if (*str == '?')
+		if (*str == '?' || ft_isdigit(*str))
 			return (2);
 		while (*str && (ft_isalnum(*str) || *str == '_'))
 			str++;
@@ -41,14 +41,38 @@ static size_t	expd_str_len(char *str, bool in_squote, bool in_dquote)
 	return (str - head);
 }
 
+static size_t	heredoc_str_len(char *str)
+{
+	char	*head;
+
+	head = str;
+	if (*str == '$')
+	{
+		str++;
+		if (*str == '?' || ft_isdigit(*str))
+			return (2);
+		while (*str && (ft_isalnum(*str) || *str == '_'))
+			str++;
+	}
+	else
+	{
+		while (*str && *str != '$')
+			str++;
+	}
+	return (str - head);
+}
+
 t_list	*extract_word(char **str, bool in_squote, bool in_dquote, \
 													t_expd_kind kind)
 {
 	t_expd	*expd;
 
 	expd = ft_xcalloc(1, sizeof(t_expd));
-	expd->str = ft_xsubstr(*str, 0, expd_str_len(*str, in_squote, in_dquote));
-	expd->len = ft_strlen(expd->str);
+	if (kind == PD_HEREDOC)
+		expd->len = heredoc_str_len(*str);
+	else
+		expd->len = expd_str_len(*str, in_squote, in_dquote);
+	expd->str = ft_strndup(*str, expd->len);
 	*str += expd->len;
 	expd->in_squote = in_squote;
 	expd->in_dquote = in_dquote;
@@ -58,5 +82,18 @@ t_list	*extract_word(char **str, bool in_squote, bool in_dquote, \
 		expd->kind = PD_ENV;
 	if (!in_squote && !in_dquote && expd->str && expd->str[0] == ' ')
 		expd->kind = PD_NAKED_SP;
+	return (ft_xlstnew(expd));
+}
+
+t_list	*create_zero_str(bool in_squote, bool in_dquote, t_expd_kind kind)
+{
+	t_expd	*expd;
+
+	expd = ft_xcalloc(1, sizeof(t_expd));
+	expd->str = ft_xstrdup("");
+	expd->len = 0;
+	expd->in_squote = in_squote;
+	expd->in_dquote = in_dquote;
+	expd->kind = kind;
 	return (ft_xlstnew(expd));
 }

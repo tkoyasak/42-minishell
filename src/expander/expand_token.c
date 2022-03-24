@@ -12,20 +12,6 @@
 
 #include "minishell.h"
 
-static t_list	*create_zero_str(bool in_squote, bool in_dquote, \
-													t_expd_kind kind)
-{
-	t_expd	*expd;
-
-	expd = ft_xcalloc(1, sizeof(t_expd));
-	expd->str = ft_xstrdup("");
-	expd->len = 0;
-	expd->in_squote = in_squote;
-	expd->in_dquote = in_dquote;
-	expd->kind = kind;
-	return (ft_xlstnew(expd));
-}
-
 static t_list	*split_squote_str(char **str, bool in_dquote)
 {
 	t_list	*head;
@@ -40,7 +26,7 @@ static t_list	*split_squote_str(char **str, bool in_dquote)
 	return (head);
 }
 
-static t_list	*split_by_expd_kind(char *str, bool par_in_dquote)
+static t_list	*split_by_expd_kind(char *str, bool par_in_dquote, bool heredoc)
 {
 	t_list	*head;
 	bool	in_dquote;
@@ -55,7 +41,9 @@ static t_list	*split_by_expd_kind(char *str, bool par_in_dquote)
 	while (*str)
 	{
 		flag = par_in_dquote | in_dquote;
-		if (!in_dquote && *str == '\'')
+		if (heredoc)
+			ft_lstadd_back(&head, extract_word(&str, false, flag, PD_HEREDOC));
+		else if (!in_dquote && *str == '\'')
 			ft_lstadd_back(&head, split_squote_str(&str, flag));
 		else if (*str == '\"')
 		{
@@ -68,7 +56,8 @@ static t_list	*split_by_expd_kind(char *str, bool par_in_dquote)
 	return (head);
 }
 
-t_list	*expand_token(char *str, bool par_in_dquote, t_sh_var *sh_var)
+t_list	*expand_token(char *str, bool par_in_dquote, bool heredoc, \
+													t_sh_var *sh_var)
 {
 	t_list	head;
 	t_list	*itr;
@@ -76,7 +65,7 @@ t_list	*expand_token(char *str, bool par_in_dquote, t_sh_var *sh_var)
 	t_list	*next;
 	t_expd	*expd;
 
-	head.next = split_by_expd_kind(str, par_in_dquote);
+	head.next = split_by_expd_kind(str, par_in_dquote, heredoc);
 	itr = head.next;
 	prev = &head;
 	while (itr)
@@ -86,7 +75,7 @@ t_list	*expand_token(char *str, bool par_in_dquote, t_sh_var *sh_var)
 		if (expd->kind == PD_ENV)
 		{
 			expd->str = get_env_value_str(expd->str + 1, sh_var);
-			prev->next = expand_token(expd->str, expd->in_dquote, sh_var);
+			prev->next = expand_token(expd->str, expd->in_dquote, heredoc, sh_var);
 			prev = ft_lstlast(head.next);
 			prev->next = next;
 		}
