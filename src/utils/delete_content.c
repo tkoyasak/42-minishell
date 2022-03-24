@@ -25,16 +25,16 @@ void	delete_token(void *arg)
 	token = NULL;
 }
 
-void	delete_expansion(void *arg)
+void	delete_expd(void *arg)
 {
-	t_expd	*expansion;
+	t_expd	*expd;
 
 	if (!arg)
 		return ;
-	expansion = (t_expd *)arg;
-	free(expansion->str);
-	free(expansion);
-	expansion = NULL;
+	expd = (t_expd *)arg;
+	free(expd->str);
+	free(expd);
+	expd = NULL;
 }
 
 void	delete_proc(void *arg)

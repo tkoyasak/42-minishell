@@ -3,7 +3,7 @@
 extern "C" {
 	#include "lexer.h"
 	#include "parser.h"
-	#include "expansion.h"
+	#include "expander.h"
 	#include "execution.h"
 	#include "libft.h"
 	#include <stdlib.h>
@@ -24,7 +24,7 @@ TEST(execution, execution_test00)
 {
 	char		*input		= "echo aa | cat > outfile";
 	char		*input_bash	= "echo aa | cat > outfile_bash";
-	t_node		*expr_list = expansion(input);
+	t_node		*expr_list = expander(input);
 
 	execution(expr_list);
 	func();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:10:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 11:39:42 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/24 16:29:19 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 	int		stdout_copy;
 
 	init_expr(expr);
-	expansion(expr, sh_var);
+	expander(expr, sh_var);
 	if (((t_proc *)(expr->proc_list->content))->token_list == NULL)
 		;
 	else if (expr->proc_cnt == 1)

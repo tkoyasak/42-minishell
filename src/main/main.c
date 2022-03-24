@@ -53,6 +53,7 @@ void	minish_loop(t_sh_var *sh_var)
 				g_exit_status = execution(tree, sh_var);
 			delete_astree(tree);
 		}
+		// detect_leak(__LINE__, __FILE__);
 		// printf("g_exit_status:%d\n", g_exit_status);
 		free(line);
 	}

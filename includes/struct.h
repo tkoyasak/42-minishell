@@ -53,7 +53,8 @@ typedef enum e_expd_kind
 	PD_ENV,
 	PD_STRING,
 	PD_NAKED_SP,
-	PD_FILENAME
+	PD_FILENAME,
+	PD_HEREDOC
 }	t_expd_kind;
 
 /*  expander  */
