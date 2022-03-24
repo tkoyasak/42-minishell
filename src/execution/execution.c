@@ -1,18 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 11:10:29 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 11:39:42 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-/*  initialize expr. prepare pipefd and pid  */
-// pipe_fdはproc_cnt-1個用意
+/*  initialize expression. prepare pipefd and pid  */
 void	init_expr(t_expr *expr)
 {
 	int	pipe_cnt;
 
 	pipe_cnt = expr->proc_cnt - 1;
 	expr->pipefd = (int **)ft_xcalloc(pipe_cnt, sizeof(int *));
-	expr->pid = \
-			(pid_t *)ft_xcalloc(expr->proc_cnt, sizeof(pid_t));
+	expr->pid = (pid_t *)ft_xcalloc(expr->proc_cnt, sizeof(pid_t));
 }
 
-/*  expr is between semicolon, double ampersand, and double pipe  */
+/*  expression is between semicolon, double ampersand, and double pipe  */
 int	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 {
 	int		stdin_copy;
@@ -37,7 +47,7 @@ int	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 	return (g_exit_status);
 }
 
-/*  execute subshell. does not affect outside  */
+/*  execute subshell. does not affect outside job  */
 void	exec_subshell(t_node *tree, t_sh_var *sh_var)
 {
 	int				wstatus;
@@ -58,10 +68,9 @@ void	exec_subshell(t_node *tree, t_sh_var *sh_var)
 	}
 }
 
-/*  evaluate expr of tree, or ececute lhs of tree ans rhs of tree  */
+/*  evaluate expression of tree, or execute lhs and rhs of tree  */
 int	execution(t_node *tree, t_sh_var *sh_var)
 {
-	// printf("execution: %d\n", tree->kind);
 	if (tree->kind == ND_SUBSHELL)
 		exec_subshell(tree, sh_var);
 	else if (ND_SEMICOLON <= tree->kind && tree->kind <= ND_DPIPE)
@@ -79,32 +88,3 @@ int	execution(t_node *tree, t_sh_var *sh_var)
 		g_exit_status = evaluate_expr(tree->expr, sh_var);
 	return (g_exit_status);
 }
-
-// int	main(void)
-// {
-// 	// t_node *tree = expansion("cat < infile | cat < infile2 | 'hello'; $SHELL && echo hey! > outfile");
-// 	// t_node *tree = expansion("ls -a | cat");
-// 	// t_node *tree = expansion("cat < infile | cat > outfile");
-// 	// t_list *expr_list = convert_to_expr_list(tree);
-// 	execution(tree);
-
-// 	printf("==============\n");
-// 	while (expr_list)
-// 	{
-// 		t_list *proc_list = ((t_expr *)(expr_list->content))->proc_list;
-// 		static int cnt = 0; cnt++;
-// 		printf("%d %d\n", cnt, ((t_expr *)(expr_list->content))->end_of_expr);
-// 		while (proc_list)
-// 		{
-// 			t_list *itr = ((t_proc *)(proc_list->content))->token_list;
-// 			while (itr)
-// 			{
-// 				printf("%s ", ((t_token *)(itr->content))->str);
-// 				itr = itr->next;
-// 			}
-// 			proc_list = proc_list->next;
-// 			printf("\n");
-// 		}
-// 		expr_list = expr_list->next;
-// 	}
-// }

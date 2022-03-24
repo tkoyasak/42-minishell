@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   set_heredoc_utils.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 11:56:50 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 11:56:55 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 size_t	get_word_len_heredoc(char *str, bool in_squote, bool in_dquote)
@@ -51,7 +63,6 @@ size_t	get_expanded_len_heredoc(t_list *exp_list)
 	}
 	return (len);
 }
-
 
 char	*remove_quote_heredoc(char *limiter, bool *in_quote)
 {

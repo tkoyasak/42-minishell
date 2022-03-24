@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_fullpath_cmd.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 11:16:50 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 11:36:05 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	free_str(char **str)
@@ -25,10 +37,7 @@ static char	*get_fullcmd_core(char *cmd, char **all_paths)
 	while (all_paths[++path_index])
 	{
 		temp = ft_xstrjoin(all_paths[path_index], "/");
-		fullcmd = ft_xstrjoin(temp, cmd);
-		free_str(&temp);
-		if (!(fullcmd))
-			exit(EXIT_FAILURE);
+		fullcmd = ft_xstrjoin_free(temp, cmd, false);
 		if (!(access(fullcmd, X_OK)))
 			return (fullcmd);
 		free_str(&fullcmd);
@@ -56,7 +65,5 @@ char	*get_fullpath_cmd(char *cmd, t_sh_var *sh_var)
 		return (NULL);
 	}
 	all_paths = ft_xsplit(&(path_env[PATH_PREFIX]), ':');
-	if (!all_paths)
-		exit(EXIT_FAILURE);
 	return (get_fullcmd_core(cmd, all_paths));
 }

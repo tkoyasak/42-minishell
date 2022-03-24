@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_processes.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 11:13:45 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 11:25:02 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	create_pipe(t_expr *expr, const int cmd_idx)
@@ -20,8 +32,9 @@ static int	wait_all_procs(t_expr *expr)
 	return (wstatus);
 }
 
-/* execute one proc between pipes  */
-static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
+/* execute one process between pipes  */
+static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, \
+			t_sh_var *sh_var)
 {
 	if (cmd_idx < expr->proc_cnt - 1)
 		create_pipe(expr, cmd_idx);
@@ -40,13 +53,13 @@ static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_
 		safe_func(close(proc->fd[1]));
 }
 
-/*  execute procs between semicolons, double ampersand, and double pipe  */
+/*  execute processes between semicolons, double ampersand, and double pipe  */
 int	exec_procs(t_expr *expr, t_sh_var *sh_var)
 {
 	int			wstatus;
 	int			cmd_idx;
 	t_list		*proc_list;
-	t_proc	*proc;
+	t_proc		*proc;
 
 	cmd_idx = 0;
 	proc_list = expr->proc_list;

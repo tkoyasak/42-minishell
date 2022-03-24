@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_single_process.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 11:16:41 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 11:39:05 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 /*  execute single external command  */
@@ -27,11 +39,11 @@ int	exec_single_external(t_expr *expr, t_proc *proc, t_sh_var *sh_var)
 	return (g_exit_status);
 }
 
-/*  execute single proc  */
+/*  execute single process  */
 int	exec_single_proc(t_expr *expr, t_sh_var *sh_var)
 {
 	t_list		*proc_list;
-	t_proc	*proc;
+	t_proc		*proc;
 
 	set_io_and_commands(expr);
 	if (g_exit_status)

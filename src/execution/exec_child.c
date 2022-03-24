@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_child.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 11:12:27 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 11:37:43 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-/*  execute child proc  */
-void	exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_sh_var *sh_var)
+/*  execute child process  */
+void	exec_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
 {
 	char		*cmd;
 	char		*fullpath_cmd;

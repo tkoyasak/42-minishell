@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   set_heredoc.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 11:57:02 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 11:57:53 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
@@ -7,7 +19,7 @@ int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 	bool	in_quote;
 
 	safe_func((ssize_t)signal(SIGINT, SIG_DFL));
-	safe_func(close(proc->here_pipefd[0]));
+	safe_func(close(proc->here_pipefd[PIPEIN]));
 	limiter = remove_quote_heredoc(limiter, &in_quote);
 	len = ft_strlen(limiter);
 	limiter[len] = '\0';
@@ -16,7 +28,7 @@ int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 	{
 		if (in_quote == false)
 			temp = expansion_heredoc(temp, sh_var);
-		ft_putendl_fd(temp, proc->here_pipefd[1]);
+		ft_putendl_fd(temp, proc->here_pipefd[PIPEOUT]);
 		free(temp);
 		temp = readline(HEREDOC_PROMPT);
 	}
@@ -30,12 +42,12 @@ int	heredoc_parent(t_proc *proc, pid_t pid)
 	int	wstatus;
 	int	child_status;
 
-	proc->here_fd = proc->here_pipefd[0];
-	safe_func(close(proc->here_pipefd[1]));
+	proc->here_fd = proc->here_pipefd[PIPEIN];
+	safe_func(close(proc->here_pipefd[PIPEOUT]));
 	waitpid(pid, &wstatus, WUNTRACED);
 	if (WIFSIGNALED(wstatus) && (WTERMSIG(wstatus) == SIGINT))
 	{
-		safe_func(close(proc->here_pipefd[0]));
+		safe_func(close(proc->here_pipefd[PIPEIN]));
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		g_exit_status = 1;
 		return (1);
@@ -73,7 +85,7 @@ int	set_heredoc_in_token(t_proc *proc, t_sh_var *sh_var)
 // itr  token_list;
 int	set_heredoc_in_proc(t_proc *proc, t_sh_var *sh_var)
 {
-	t_list				*itr;
+	t_list		*itr;
 	t_io_kind	kind;
 
 	itr = proc->token_list;
