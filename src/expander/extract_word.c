@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:58:22 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 12:01:03 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 13:14:45 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ static size_t	get_word_len(char *str, bool in_squote, bool in_dquote)
 	return (str - head);
 }
 
-t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expd_kind kind)
+t_list	*extract_word(char **str, bool in_squote, bool in_dquote, \
+													t_expd_kind kind)
 {
 	t_expd	*expd;
 
@@ -53,7 +54,7 @@ t_list	*extract_word(char **str, bool in_squote, bool in_dquote, t_expd_kind kin
 	expd->in_dquote = in_dquote;
 	expd->kind = kind;
 	if (!in_squote && expd->str && expd->str[0] == '$' && \
-		(ft_isalnum(expd->str[1]) || expd->str[1] == '_' || expd->str[1] == '?'))
+	(ft_isalnum(expd->str[1]) || expd->str[1] == '_' || expd->str[1] == '?'))
 		expd->kind = PD_ENV;
 	if (!in_squote && !in_dquote && expd->str && expd->str[0] == ' ')
 		expd->kind = PD_NAKED_SP;

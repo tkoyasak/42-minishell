@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-static t_list	*create_zero_str(bool in_squote, bool in_dquote, t_expd_kind kind)
+static t_list	*create_zero_str(bool in_squote, bool in_dquote, \
+													t_expd_kind kind)
 {
 	t_expd	*expd;
 
@@ -25,26 +26,37 @@ static t_list	*create_zero_str(bool in_squote, bool in_dquote, t_expd_kind kind)
 	return (ft_xlstnew(expd));
 }
 
-static t_list	*split_by_expd_kid(char *str, bool par_in_dquote)
+static t_list	*split_squote_str(char **str, bool in_dquote)
+{
+	t_list	*head;
+
+	head = NULL;
+	ft_lstadd_back(&head, extract_word(str, true, in_dquote, PD_SQUOTE));
+	if (*(*str) == '\'')
+		ft_lstadd_back(&head, create_zero_str(true, in_dquote, PD_STRING));
+	else
+		ft_lstadd_back(&head, extract_word(str, true, in_dquote, PD_STRING));
+	ft_lstadd_back(&head, extract_word(str, true, in_dquote, PD_SQUOTE));
+	return (head);
+}
+
+static t_list	*split_by_expd_kind(char *str, bool par_in_dquote)
 {
 	t_list	*head;
 	bool	in_dquote;
 	bool	flag;
 
+	if (!str)
+		return (NULL);
+	if (*str == '\0')
+		return (extract_word(&str, false, par_in_dquote, PD_STRING));
 	head = NULL;
 	in_dquote = false;
 	while (*str)
 	{
 		flag = par_in_dquote | in_dquote;
 		if (!in_dquote && *str == '\'')
-		{
-			ft_lstadd_back(&head, extract_word(&str, true, flag, PD_SQUOTE));
-			if (*str == '\'')
-				ft_lstadd_back(&head, create_zero_str(true, flag, PD_STRING));
-			else
-				ft_lstadd_back(&head, extract_word(&str, true, flag, PD_STRING));
-			ft_lstadd_back(&head, extract_word(&str, true, flag, PD_SQUOTE));
-		}
+			ft_lstadd_back(&head, split_squote_str(&str, flag));
 		else if (*str == '\"')
 		{
 			in_dquote ^= 1;
@@ -56,15 +68,6 @@ static t_list	*split_by_expd_kid(char *str, bool par_in_dquote)
 	return (head);
 }
 
-static t_list	*split_token(char *str, bool par_in_dquote)
-{
-	if (!str)
-		return (NULL);
-	if (*str == '\0')
-		return (extract_word(&str, false, par_in_dquote, PD_STRING));
-	return (split_by_expd_kid(str, par_in_dquote));
-}
-
 t_list	*expand_token(char *str, bool par_in_dquote, t_sh_var *sh_var)
 {
 	t_list	head;
@@ -73,7 +76,7 @@ t_list	*expand_token(char *str, bool par_in_dquote, t_sh_var *sh_var)
 	t_list	*next;
 	t_expd	*expd;
 
-	head.next = split_token(str, par_in_dquote);
+	head.next = split_by_expd_kind(str, par_in_dquote);
 	itr = head.next;
 	prev = &head;
 	while (itr)
