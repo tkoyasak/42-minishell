@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   struct.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 14:16:13 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 14:22:04 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef STRUCT_H
 # define STRUCT_H
 
+/*  shell var  */
 typedef struct s_sh_var
 {
 	t_list		*env_list;
@@ -8,14 +21,15 @@ typedef struct s_sh_var
 	char		*oldpwd;
 }	t_sh_var;
 
+/*  environment variable  */
 typedef struct s_env
 {
 	char	*key;
 	char	*val;
 }	t_env;
 
-/*  TK_DELIM is token proc delimiter ; | && ||
-TK_IO <, >, <<, >>  */
+/*  TK_DELIM is token process delimiter such as ; | && ||
+TK_IO is such as <, >, <<, >>  */
 typedef enum e_token_kind
 {
 	TK_DELIM,
@@ -31,6 +45,7 @@ typedef struct s_token
 	char			*str;
 }	t_token;
 
+/*  expander kind  */
 typedef enum e_expd_kind
 {
 	PD_SQUOTE,
@@ -41,6 +56,7 @@ typedef enum e_expd_kind
 	PD_FILENAME
 }	t_expd_kind;
 
+/*  expander  */
 typedef struct s_expd
 {
 	int			len;
@@ -50,6 +66,7 @@ typedef struct s_expd
 	t_expd_kind	kind;
 }	t_expd;
 
+/*  input/output kind  */
 typedef enum e_io_kind
 {
 	IO_NONE,
@@ -59,6 +76,7 @@ typedef enum e_io_kind
 	IO_APPEND
 }	t_io_kind;
 
+/*  process  */
 typedef struct s_proc
 {
 	t_list		*token_list;
@@ -81,6 +99,7 @@ typedef enum e_node_kind
 	ND_EXPR
 }	t_node_kind;
 
+/*  expression  */
 typedef struct s_expr
 {
 	t_list		*proc_list;
@@ -89,7 +108,6 @@ typedef struct s_expr
 	pid_t		*pid;
 }	t_expr;
 
-// 抽象構文木のノードの型
 typedef struct s_node
 {
 	t_node_kind		kind;
