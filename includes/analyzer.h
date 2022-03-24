@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:07:20 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 14:08:04 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 14:14:13 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ t_list		*extract_word(char **str, bool in_squote, bool in_dquote, \
 														t_expd_kind kind);
 t_list		*remove_quotes(t_list *src_list);
 t_list		*convert_to_token_list(t_list *expd_list);
-t_list		*get_filename_expansion(t_list *expd_list);
+t_list		*expand_wildcard(t_list *expd_list);
 bool		match_given_pattern(char *str, char *pattern);
 
 #endif

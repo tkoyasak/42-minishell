@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 11:17:18 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 14:14:13 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ t_list	*get_expanded_filename_token(t_list *expansion_list)
 
 /*   t_expansion_kindがSTRINGでかつin_squoteとin_dquoteがfalseで、
 *を含むものを展開   */
-t_list	*get_filename_expansion(t_list *expansion_list)
+t_list	*expand_wildcard(t_list *expansion_list)
 {
 	t_list	head;
 	t_list	*itr; //expansion_list_itr

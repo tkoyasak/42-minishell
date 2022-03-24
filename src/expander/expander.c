@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:10 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 11:38:15 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 14:14:13 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static t_list	*get_expanded_token_list(t_list *token_list, t_sh_var *sh_var)
 
 	token = token_list->content;
 	expd_list = expand_token(token->str, false, sh_var);
-	expd_list = get_filename_expansion(expd_list);
+	expd_list = expand_wildcard(expd_list);
 	expd_list = remove_quotes(expd_list);
 	expanded_token_list = convert_to_token_list(expd_list);
 	ft_lstdelone(token_list, delete_token);
