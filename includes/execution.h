@@ -26,16 +26,16 @@ bool		is_builtin(char *cmd);
 int			exec_procs(t_expr *expr, t_sh_var *sh_var);
 int			exec_single_proc(t_expr *expr, t_sh_var *sh_var);
 void		exec_child(t_expr *expr, t_proc *proc, const int cmd_idx, t_sh_var *sh_var);
-t_io_kind	get_io_kind(char *redirect_str);
 void		dup2_func(t_expr *expr, t_proc *proc, const int cmd_idx);
 void		close_func(t_expr *expr, t_proc *proc, const int cmd_idx);
 
 /*  io  */
+// t_io_kind	get_io_kind(char *redirect_str);
+// void		remove_io_token(t_proc *proc);
 t_io_kind	get_io_kind(char *redirect_str);
-void		remove_io_token(t_proc *proc);
 void		open_error_handler(char *filename);
 void		set_io_params(t_proc *proc);
-void		set_command(t_proc *proc);
+// void		set_command(t_proc *proc);
 void		set_io_and_commands(t_expr *expr);
 
 /*  heredoc  */
