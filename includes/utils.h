@@ -20,6 +20,7 @@ char		*ft_xstrdup(const char *s1);
 char		*ft_xstrndup(const char *s1, size_t len);
 char		*ft_xsubstr(char const *s, unsigned int start, size_t len);
 char		*ft_xstrjoin(char *s1, char *s2);
+char		*ft_xstrjoin_free(char *s1, char *s2, bool is_s2_free);
 char		**ft_xsplit(char *s, char c);
 char		*ft_xitoa(int n);
 t_list		*ft_xlstnew(void *content);

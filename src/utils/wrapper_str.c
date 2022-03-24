@@ -39,3 +39,13 @@ char	*ft_xstrjoin(char *s1, char *s2)
 		error_handler("malloc");
 	return (ret);
 }
+
+char	*ft_xstrjoin_free(char *s1, char *s2, bool is_s2_free)
+{
+	char	*ret;
+
+	ret = ft_strjoin_free(s1, s2, is_s2_free);
+	if (!ret)
+		error_handler("malloc");
+	return (ret);
+}
