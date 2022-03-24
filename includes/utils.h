@@ -1,8 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 14:22:15 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/24 14:23:17 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef UTILS_H
 # define UTILS_H
 
 # include <stdlib.h>
 
+void		sigint_handler(int sig);
+ssize_t		safe_func(ssize_t res);
+void		error_handler(char *str);
+
+/*  delete  */
 void		delete_env(void *arg);
 void		delete_token(void *arg);
 void		delete_expansion(void *arg);
@@ -11,9 +28,7 @@ void		delete_expr(void *arg);
 void		delete_node(void *arg);
 void		delete_astree(t_node *node);
 
-void		sigint_handler(int sig);
-ssize_t		safe_func(ssize_t res);
-void		error_handler(char *str);
+/*  malloc  */
 void		*ft_xmalloc(size_t size);
 void		*ft_xcalloc(size_t count, size_t size);
 char		*ft_xstrdup(const char *s1);
