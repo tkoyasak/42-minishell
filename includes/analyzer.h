@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   analyzer.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/24 14:07:20 by tkoyasak          #+#    #+#             */
+/*   Updated: 2022/03/24 14:08:04 by tkoyasak         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef ANALYZER_H
 # define ANALYZER_H
 
@@ -32,12 +44,11 @@ t_node		*create_proc_node(t_list **itr, bool *is_valid);
 /* expander */
 void		expansion(t_expr *expr, t_sh_var *sh_var);
 t_list		*expand_token(char *str, bool par_in_dquote, t_sh_var *sh_var);
-t_list		*extract_word(char **str, bool in_squote, bool in_dquote, t_expd_kind kind);
+t_list		*extract_word(char **str, bool in_squote, bool in_dquote, \
+														t_expd_kind kind);
 t_list		*remove_quotes(t_list *src_list);
-t_list		*convert_to_token_list(t_list *expansion_list);
-t_list		*get_filename_expansion(t_list *expansion_list);
+t_list		*convert_to_token_list(t_list *expd_list);
+t_list		*get_filename_expansion(t_list *expd_list);
 bool		match_given_pattern(char *str, char *pattern);
-
-
 
 #endif

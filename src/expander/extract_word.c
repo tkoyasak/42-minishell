@@ -6,13 +6,13 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:58:22 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 13:14:45 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 14:06:54 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static size_t	get_word_len(char *str, bool in_squote, bool in_dquote)
+static size_t	expd_str_len(char *str, bool in_squote, bool in_dquote)
 {
 	char	*head;
 
@@ -47,7 +47,7 @@ t_list	*extract_word(char **str, bool in_squote, bool in_dquote, \
 	t_expd	*expd;
 
 	expd = ft_xcalloc(1, sizeof(t_expd));
-	expd->str = ft_xsubstr(*str, 0, get_word_len(*str, in_squote, in_dquote));
+	expd->str = ft_xsubstr(*str, 0, expd_str_len(*str, in_squote, in_dquote));
 	expd->len = ft_strlen(expd->str);
 	*str += expd->len;
 	expd->in_squote = in_squote;
