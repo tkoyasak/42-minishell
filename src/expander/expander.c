@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:10 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 11:30:37 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/24 11:38:15 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
 // token->strをt_exp_strlist_typeで分割・分類する
 // 環境変数の展開
-static t_list	*get_expanded_token(t_list *token_list, t_sh_var *sh_var)
+static t_list	*get_expanded_token_list(t_list *token_list, t_sh_var *sh_var)
 {
 	t_token	*token;
 	t_list	*expd_list;
@@ -34,7 +34,7 @@ static t_list	*get_expanded_token(t_list *token_list, t_sh_var *sh_var)
 static void	consume_token_to_expand(t_list **itr, \
 				t_list **prev, t_list **next, t_sh_var *sh_var)
 {
-	*itr = get_expanded_token(*itr, sh_var);
+	*itr = get_expanded_token_list(*itr, sh_var);
 	if (itr == NULL)
 	{
 		*itr = *next;
