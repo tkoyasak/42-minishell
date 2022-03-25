@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 17:20:18 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/25 17:27:29 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
+static int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
 {
 	char	*relative_path;
 	char	*cwd_path;
@@ -52,11 +52,7 @@ int	builtin_cd(t_proc *proc, t_sh_var *sh_var)
 			return (1);
 		}
 		if (*path_name == '\0')
-		{
-			detect_leak(__LINE__, __FILE__);
-			free(path_name);
-			return (0);
-		}
+			return (free(path_name), 0);
 	}
 	if (chdir(path_name) == -1)
 	{
