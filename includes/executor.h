@@ -45,8 +45,8 @@ void		close_func(t_expr *expr, t_proc *proc, const int cmd_idx);
 /*  io  */
 t_io_kind	get_io_kind(char *redirect_str);
 void		open_error_handler(char *filename);
-void		set_io_params(t_proc *proc);
-void		set_io_and_commands(t_expr *expr);
+int			set_io_params(t_proc *proc, t_sh_var *sh_var);
+int			set_io_and_commands(t_proc *proc, t_sh_var *sh_var);
 
 /*  heredoc  */
 char		*expander_heredoc(char *str, t_sh_var *sh_var);

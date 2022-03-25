@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:07:20 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 00:08:54 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 14:47:32 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ t_node	*create_proc_node(t_list **itr, bool *is_valid);
 
 /* expander */
 void	expander(t_expr *expr, t_sh_var *sh_var);
+t_list	*get_expanded_token_list(char *str, t_sh_var *sh_var);
 t_list	*split_by_expd_kind(char *str, bool par_in_dquote, bool heredoc);
 t_list	*expand_env(t_list *expd_list, t_sh_var *sh_var, bool heredoc);
 t_list	*extract_word(char **str, bool in_squote, bool in_dquote, \

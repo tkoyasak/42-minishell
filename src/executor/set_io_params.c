@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:43:21 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 14:27:24 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 15:24:46 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,32 @@ void	open_error_handler(char *filename)
 	}
 }
 
-static int	set_input(t_proc *proc, t_list *itr, t_io_kind kind)
+static int	set_io_filename(char **target_filename, char *str, t_sh_var *sh_var)
+{
+	t_list	*token_list;
+
+	token_list = get_expanded_token_list(str, sh_var);
+	if (ft_lstsize(token_list) != 1)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putendl_fd(": ambiguous redirect", STDERR_FILENO);
+		ft_lstclear(&token_list, delete_token);
+		return (1);
+	}
+	free(*target_filename);
+	*target_filename = ft_xstrdup(((t_token *)(token_list->content))->str);
+	ft_lstclear(&token_list, delete_token);
+	return (0);
+}
+
+static int	set_input(t_proc *proc, t_list *itr, \
+										t_io_kind kind, t_sh_var *sh_var)
 {
 	proc->kind[0] = kind;
-	free(proc->filename[0]);
-	proc->filename[0] = ft_xstrdup(((t_token *)(itr->content))->str);
+	if (set_io_filename(&proc->filename[0], \
+				((t_token *)(itr->content))->str, sh_var))
+		return (-1);
 	if (kind == IO_INPUT)
 	{
 		if (proc->fd[0])
@@ -52,13 +73,14 @@ static int	set_input(t_proc *proc, t_list *itr, t_io_kind kind)
 	return (0);
 }
 
-int	set_io_output(t_proc *proc, t_list *itr, t_io_kind kind)
+int	set_io_output(t_proc *proc, t_list *itr, t_io_kind kind, t_sh_var *sh_var)
 {
 	if (proc->fd[1])
 		safe_func(close(proc->fd[1]));
 	proc->kind[1] = kind;
-	free(proc->filename[1]);
-	proc->filename[1] = ft_xstrdup(((t_token *)(itr->content))->str);
+	if (set_io_filename(&proc->filename[1], \
+						((t_token *)(itr->content))->str, sh_var))
+		return (-1);
 	if (kind == IO_OUTPUT)
 		proc->fd[1] = \
 			open(proc->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
@@ -75,7 +97,7 @@ int	set_io_output(t_proc *proc, t_list *itr, t_io_kind kind)
 }
 
 /*  set input/output parameters  */
-void	set_io_params(t_proc *proc)
+int	set_io_params(t_proc *proc, t_sh_var *sh_var)
 {
 	t_list		*itr;
 	t_io_kind	kind;
@@ -89,15 +111,16 @@ void	set_io_params(t_proc *proc)
 			itr = itr->next;
 			if (kind == IO_INPUT || kind == IO_HEREDOC)
 			{
-				if (set_input(proc, itr, kind) == -1)
-					return ;
+				if (set_input(proc, itr, kind, sh_var) == -1)
+					return (-1);
 			}
 			else if (kind == IO_OUTPUT || kind == IO_APPEND)
 			{
-				if (set_io_output(proc, itr, kind) == -1)
-					return ;
+				if (set_io_output(proc, itr, kind, sh_var) == -1)
+					return (-1);
 			}
 		}
 		itr = itr->next;
 	}
+	return (0);
 }

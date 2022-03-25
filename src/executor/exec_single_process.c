@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_single_process.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:41 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 11:39:05 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/25 15:26:01 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ int	exec_single_proc(t_expr *expr, t_sh_var *sh_var)
 	t_list		*proc_list;
 	t_proc		*proc;
 
-	set_io_and_commands(expr);
-	if (g_exit_status)
-		return (g_exit_status);
 	proc_list = expr->proc_list;
 	proc = proc_list->content;
+	g_exit_status = set_io_and_commands(proc, sh_var);
+	if (g_exit_status)
+		return (g_exit_status);
 	if (is_builtin(proc->command[0]))
 	{
 		dup2_func(expr, proc, 0);

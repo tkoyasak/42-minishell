@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_redirections_and_commands.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:52:19 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 11:52:20 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/25 16:16:08 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,23 +86,11 @@ static void	set_command(t_proc *proc)
 }
 
 /*  set input/output parameters ans commands  */
-void	set_io_and_commands(t_expr *expr)
+int	set_io_and_commands(t_proc *proc, t_sh_var *sh_var)
 {
-	int			cmd_idx;
-	t_list		*proc_list;
-	t_proc		*proc;
-
-	proc_list = expr->proc_list;
-	cmd_idx = 0;
-	while (cmd_idx < expr->proc_cnt)
-	{
-		proc = proc_list->content;
-		set_io_params(proc);
-		if (g_exit_status)
-			return ;
-		remove_io_token(proc);
-		set_command(proc);
-		proc_list = proc_list->next;
-		cmd_idx++;
-	}
+	if (set_io_params(proc, sh_var))
+		return (1);
+	remove_io_token(proc);
+	set_command(proc);
+	return (0);
 }
