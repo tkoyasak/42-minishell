@@ -6,11 +6,19 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:12:27 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 16:47:58 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/25 17:38:29 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	path_error(char *fullpath_cmd)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(fullpath_cmd, STDERR_FILENO);
+	ft_putendl_fd(": is a directory", STDERR_FILENO);
+	return (NO_PERMISSION);
+}
 
 /*  execute child process  */
 void	exec_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
@@ -34,12 +42,7 @@ void	exec_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
 	{
 		safe_func(stat(fullpath_cmd, &buf));
 		if ((buf.st_mode & S_IFMT) == S_IFDIR)
-		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);
-			ft_putstr_fd(fullpath_cmd, STDERR_FILENO);
-			ft_putendl_fd(": is a directory", STDERR_FILENO);
-			exit(NO_PERMISSION);
-		}
+			exit(path_error(fullpath_cmd));
 	}
 	execve(fullpath_cmd, proc->command, get_environ(sh_var));
 	exit(NO_CMD);
