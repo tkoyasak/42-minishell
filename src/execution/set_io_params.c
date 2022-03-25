@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_io_params.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:43:21 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 11:52:34 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/25 14:27:24 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	open_error_handler(char *filename)
 static int	set_input(t_proc *proc, t_list *itr, t_io_kind kind)
 {
 	proc->kind[0] = kind;
+	free(proc->filename[0]);
 	proc->filename[0] = ft_xstrdup(((t_token *)(itr->content))->str);
 	if (kind == IO_INPUT)
 	{
@@ -56,6 +57,7 @@ int	set_io_output(t_proc *proc, t_list *itr, t_io_kind kind)
 	if (proc->fd[1])
 		safe_func(close(proc->fd[1]));
 	proc->kind[1] = kind;
+	free(proc->filename[1]);
 	proc->filename[1] = ft_xstrdup(((t_token *)(itr->content))->str);
 	if (kind == IO_OUTPUT)
 		proc->fd[1] = \

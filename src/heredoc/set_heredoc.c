@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:57:02 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 13:43:26 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 14:26:24 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,8 @@ int	set_heredoc_in_proc(t_proc *proc, t_sh_var *sh_var)
 			if (kind == IO_HEREDOC)
 			{
 				proc->kind[0] = kind;
-				proc->filename[0] = ((t_token *)(itr->content))->str;
+				free(proc->filename[0]);
+				proc->filename[0] = ft_xstrdup(((t_token *)(itr->content))->str);
 				if (set_heredoc_in_token(proc, sh_var) == 1)
 					return (1);
 			}
