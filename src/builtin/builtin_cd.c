@@ -6,11 +6,21 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 17:27:29 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 22:42:40 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	cd_error(char *path_name)
+{
+	ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+	ft_putstr_fd(path_name, STDERR_FILENO);
+	if (errno == ENOTDIR)
+		ft_putendl_fd(": Not a directory", STDERR_FILENO);
+	else
+		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+}
 
 static int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
 {
@@ -56,9 +66,7 @@ int	builtin_cd(t_proc *proc, t_sh_var *sh_var)
 	}
 	if (chdir(path_name) == -1)
 	{
-		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-		ft_putstr_fd(path_name, STDERR_FILENO);
-		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		cd_error(path_name);
 		free(path_name);
 		return (1);
 	}
