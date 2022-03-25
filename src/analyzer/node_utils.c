@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   node_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/25 10:48:30 by tkoyasak          #+#    #+#             */
+/*   Updated: 2022/03/25 11:00:38 by tkoyasak         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_node	*parser_error(t_list **itr, char *str, bool *is_valid, int line)
@@ -6,7 +18,6 @@ t_node	*parser_error(t_list **itr, char *str, bool *is_valid, int line)
 	if (*is_valid)
 	{
 		*is_valid = false;
-		// printf("syntax:%d\n", line);
 		ft_putstr_fd("minishell: syntax error near unexpected token `", \
 			STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
@@ -42,6 +53,23 @@ bool	consume_node_kind(t_list **itr, char *op)
 	return (false);
 }
 
+static	int	consume_one_proc(t_list **itr, bool *is_valid)
+{
+	while ((*itr)->next != NULL && \
+		(((t_token *)((*itr)->next->content))->kind == TK_IO || \
+		((t_token *)((*itr)->next->content))->kind == TK_STRING))
+	{
+		if (((t_token *)(*itr)->content)->kind == TK_IO && \
+				((t_token *)((*itr)->next->content))->kind != TK_STRING)
+		{
+			*is_valid = false;
+			return (1);
+		}
+		*itr = (*itr)->next;
+	}
+	return (0);
+}
+
 // 次の|か;か一番最後までを塊として読む
 t_node	*create_proc_node(t_list **itr, bool *is_valid)
 {
@@ -51,19 +79,8 @@ t_node	*create_proc_node(t_list **itr, bool *is_valid)
 	node = ft_xcalloc(1, sizeof(t_node));
 	node->kind = ND_PROC;
 	node->token_list = *itr;
-	while ((*itr)->next != NULL && \
-		((t_token *)((*itr)->next->content))->kind != TK_DELIM && \
-		((t_token *)((*itr)->next->content))->kind != TK_L_PAREN && \
-		((t_token *)((*itr)->next->content))->kind != TK_R_PAREN)
-	{
-		if (((t_token *)(*itr)->content)->kind == TK_IO && \
-				((t_token *)((*itr)->next->content))->kind != TK_STRING)
-		{
-			*is_valid = false;
-			return (node);
-		}
-		*itr = (*itr)->next;
-	}
+	if (consume_one_proc(itr, is_valid))
+		return (node);
 	tail = *itr;
 	*itr = tail->next;
 	tail->next = NULL;

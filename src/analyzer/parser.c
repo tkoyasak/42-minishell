@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/25 10:48:38 by tkoyasak          #+#    #+#             */
+/*   Updated: 2022/03/25 10:48:41 by tkoyasak         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static t_node	*create_astree(t_list **itr, bool *is_valid);
@@ -77,20 +89,6 @@ static t_node	*create_astree(t_list **itr, bool *is_valid)
 	return (node);
 }
 
-// static void	dfs(t_node *tree)
-// {
-// 	if (tree->lhs)
-// 		dfs(tree->lhs);
-// 	printf("kind:%d\n", tree->kind);
-// 	while (tree->token)
-// 	{
-// 		printf("%s\n", tree->token->str);
-// 		tree->token = tree->token->next;
-// 	}
-// 	if (tree->rhs)
-// 		dfs(tree->rhs);
-// }
-
 /*  token_listからND_SEMICOLON, ND_PIPE, ND_PROCの
 nodeで形成されるtreeのrootを返す  */
 int	parser(t_node **tree, t_list *token_list)
@@ -101,12 +99,3 @@ int	parser(t_node **tree, t_list *token_list)
 	*tree = create_astree(&token_list, &is_valid);
 	return (!is_valid);
 }
-
-// int	main()
-// {
-// 	// parser("ls -al ; ; cat");
-// 	// return (0);
-// 	parser("ls -al | cat $PATH");
-// 	printf("ok\n");
-// 	return (0);
-// }
