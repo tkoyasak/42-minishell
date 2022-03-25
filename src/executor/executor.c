@@ -57,14 +57,16 @@ void	exec_subshell(t_node *tree, t_sh_var *sh_var)
 	if (pid == 0)
 	{
 		g_exit_status = executor(tree->lhs, sh_var);
-		delete_astree(tree->lhs);
+		delete_astree(tree);
+		// delete_astree(tree->lhs);
+		// delete_node(tree);
 		exit(g_exit_status);
 	}
 	else
 	{
 		safe_func(waitpid(pid, &wstatus, WUNTRACED));
 		g_exit_status = wstatus;
-		delete_astree(tree->lhs);
+		// delete_astree(tree->lhs);
 	}
 }
 

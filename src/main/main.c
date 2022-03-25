@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:36 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 17:23:41 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 22:19:15 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	minish_loop(t_sh_var *sh_var)
 				g_exit_status = executor(tree, sh_var);
 			delete_astree(tree);
 		}
-		// detect_leak(__LINE__, __FILE__);
+		detect_leak(__LINE__, __FILE__);
 		// printf("g_exit_status:%d\n", g_exit_status);
 		free(line);
 	}
