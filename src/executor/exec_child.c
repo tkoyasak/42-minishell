@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_child.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:12:27 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 16:07:55 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 16:47:58 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ void	exec_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
 	signal(SIGQUIT, SIG_DFL);
 	g_exit_status = set_io_and_commands(proc, sh_var);
 	cmd = ((t_token *)(proc->token_list->content))->str;
-	if (g_exit_status)
-		cmd = NULL;
 	dup2_func(expr, proc, cmd_idx);
 	close_func(expr, proc, cmd_idx);
+	if (g_exit_status)
+		exit(1);
 	if (is_builtin(cmd))
 		exit(exec_builtin(proc, sh_var));
 	fullpath_cmd = get_fullpath_cmd(cmd, sh_var);
