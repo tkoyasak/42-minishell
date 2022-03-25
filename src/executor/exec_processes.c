@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_processes.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:13:45 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 16:16:17 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 16:48:16 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int	exec_procs(t_expr *expr, t_sh_var *sh_var)
 		exec_one_proc(expr, proc, cmd_idx, sh_var);
 		proc_list = proc_list->next;
 	}
+
 	wstatus = wait_all_procs(expr);
 	signal(SIGINT, sigint_handler);
 	return (WEXITSTATUS(wstatus));

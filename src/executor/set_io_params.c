@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_io_params.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:43:21 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 15:24:46 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 16:51:15 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,15 @@ static int	set_input(t_proc *proc, t_list *itr, \
 										t_io_kind kind, t_sh_var *sh_var)
 {
 	proc->kind[0] = kind;
-	if (set_io_filename(&proc->filename[0], \
-				((t_token *)(itr->content))->str, sh_var))
-		return (-1);
 	if (kind == IO_INPUT)
 	{
+		if (set_io_filename(&proc->filename[0], \
+					((t_token *)(itr->content))->str, sh_var))
+		{
+			proc->kind[0] = IO_NONE;
+			proc->kind[1] = IO_NONE;
+			return (-1);
+		}
 		if (proc->fd[0])
 			safe_func(close(proc->fd[0]));
 		proc->fd[0] = open(proc->filename[0], R_OK);
@@ -80,7 +84,11 @@ int	set_io_output(t_proc *proc, t_list *itr, t_io_kind kind, t_sh_var *sh_var)
 	proc->kind[1] = kind;
 	if (set_io_filename(&proc->filename[1], \
 						((t_token *)(itr->content))->str, sh_var))
+	{
+		proc->kind[0] = IO_NONE;
+		proc->kind[1] = IO_NONE;
 		return (-1);
+	}
 	if (kind == IO_OUTPUT)
 		proc->fd[1] = \
 			open(proc->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
