@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 13:58:20 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/25 17:20:18 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
 {
 	char	*relative_path;
+	char	*cwd_path;
 
+	free(sh_var->oldpwd);
 	sh_var->oldpwd = sh_var->pwd;
-	if (getcwd(NULL, 0) == NULL)
+	cwd_path = getcwd(NULL, 0);
+	if (cwd_path == NULL)
 	{
 		ft_putendl_fd("cd: error retrieving current directory: \
 			getcwd: cannot access parent directories: \
@@ -26,7 +29,7 @@ int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
 		sh_var->pwd = ft_xstrjoin_free(sh_var->pwd, relative_path, true);
 	}
 	else
-		sh_var->pwd = getcwd(NULL, 0);
+		sh_var->pwd = cwd_path;
 	free(path_name);
 	set_env_value("OLDPWD", sh_var->oldpwd, sh_var);
 	set_env_value("PWD", sh_var->pwd, sh_var);
@@ -49,7 +52,11 @@ int	builtin_cd(t_proc *proc, t_sh_var *sh_var)
 			return (1);
 		}
 		if (*path_name == '\0')
+		{
+			detect_leak(__LINE__, __FILE__);
+			free(path_name);
 			return (0);
+		}
 	}
 	if (chdir(path_name) == -1)
 	{
