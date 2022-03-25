@@ -6,13 +6,21 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:19 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 12:04:29 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 14:05:41 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	builtin_export_print(t_list *env_list)
+static int	export_error(char *str)
+{
+	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+	ft_putstr_fd(str, STDERR_FILENO);
+	ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+	return (1);
+}
+
+static void	builtin_export_print(t_list *env_list)
 {
 	t_list	*itr;
 
@@ -28,27 +36,21 @@ void	builtin_export_print(t_list *env_list)
 	}
 }
 
-static bool	validate_args(char *arg)
+static int	validate_arg(char *arg)
 {
-	bool	valid;
+	char	*itr;
 
-	valid = true;
 	if (ft_strlen(arg) == 0)
-		valid = false;
-	if (valid)
-	{
-		while (ft_isalnum(*arg) || *arg == '_')
-			arg++;
-		if (*arg != '=')
-			valid = false;
-	}
-	if (!valid)
-	{
-		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-		ft_putstr_fd(arg, STDERR_FILENO);
-		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-	}
-	return (valid);
+		return (export_error(arg));
+	itr = arg;
+	if (ft_isdigit(*itr) || *itr == '=')
+		return (export_error(arg));
+	while (*itr && (ft_isalnum(*itr) || *itr == '_'))
+		itr++;
+	if (*itr == '\0' || *itr == '=')
+		return (0);
+	else
+		return (export_error(arg));
 }
 
 int	builtin_export(t_proc *proc, t_sh_var *sh_var)
@@ -62,8 +64,10 @@ int	builtin_export(t_proc *proc, t_sh_var *sh_var)
 	else
 	{
 		arg = ((t_token *)(proc->token_list->next->content))->str;
-		if (!validate_args(arg))
+		if (validate_arg(arg))
 			return (1);
+		if (!ft_strchr(arg, '='))
+			return (0);
 		key = ft_xstrndup(arg, ft_strchr(arg, '=') - arg);
 		val = ft_xstrdup(ft_strchr(arg, '=') + 1);
 		set_env_value(key, val, sh_var);

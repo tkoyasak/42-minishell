@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:57:02 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 11:57:30 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 13:43:26 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,12 @@
 
 int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 {
-	size_t	len;
 	char	*temp;
 	bool	in_quote;
 
 	safe_func((ssize_t)signal(SIGINT, SIG_DFL));
 	safe_func(close(proc->here_pipefd[PIPEIN]));
 	limiter = remove_quote_heredoc(limiter, &in_quote);
-	len = ft_strlen(limiter);
 	temp = readline(HEREDOC_PROMPT);
 	while (temp && ft_strcmp(temp, limiter))
 	{
