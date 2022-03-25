@@ -12,7 +12,7 @@ do_test
 VAR="echo $PATH | head -n3 | cat >"
 do_test
 
-VAR="cat < execution.sh | echo $PATH | tail -n3 | cat >"
+VAR="cat < executor.sh | echo $PATH | tail -n3 | cat >"
 do_test
 
 # while read line; do

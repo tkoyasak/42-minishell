@@ -56,8 +56,8 @@ gtest:
 shtest: $(OBJS)
 	@$(CC) $(CFLAGS) $(INCLUDE) test/shtest/main.c $^ $(LFLAGS) -o test/shtest/shtest
 	@chmod +x test/shtest/shtest
-	@chmod +x test/shtest/execution.sh
-	@cd test/shtest && ./execution.sh
+	@chmod +x test/shtest/executor.sh
+	@cd test/shtest && ./executor.sh
 
 test:
 	./$(NAME) < ./test/test.sh

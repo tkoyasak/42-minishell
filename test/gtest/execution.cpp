@@ -4,7 +4,7 @@ extern "C" {
 	#include "lexer.h"
 	#include "parser.h"
 	#include "expander.h"
-	#include "execution.h"
+	#include "executor.h"
 	#include "libft.h"
 	#include <stdlib.h>
 	#include <stdio.h>
@@ -20,12 +20,12 @@ void	func()
 	EXPECT_EQ(system("diff outfile outfile_bash"), 0);
 }
 
-TEST(execution, execution_test00)
+TEST(executor, executor_test00)
 {
 	char		*input		= "echo aa | cat > outfile";
 	char		*input_bash	= "echo aa | cat > outfile_bash";
 	t_node		*expr_list = expander(input);
 
-	execution(expr_list);
+	executor(expr_list);
 	func();
 }

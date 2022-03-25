@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_processes.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:13:45 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 11:25:02 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/25 14:36:12 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,9 @@ int	exec_procs(t_expr *expr, t_sh_var *sh_var)
 		return (g_exit_status);
 	while (cmd_idx < expr->proc_cnt)
 	{
+		// if ( == 1)
+		// g_exit_status = 1;
+		// continue;
 		proc = proc_list->content;
 		exec_one_proc(expr, proc, cmd_idx, sh_var);
 		proc_list = proc_list->next;

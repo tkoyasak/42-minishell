@@ -1,6 +1,6 @@
 #include "lexer.h"
 #include "parser.h"
-#include "execution.h"
+#include "executor.h"
 #include "libft.h"
 
 int	main(int argc, char **argv)
@@ -9,6 +9,6 @@ int	main(int argc, char **argv)
 		return (1);
 	t_node		*expr_list = expander(argv[1]);
 
-	execution(expr_list);
+	executor(expr_list);
 	return (0);
 }

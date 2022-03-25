@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execution.c                                        :+:      :+:    :+:   */
+/*   executor.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -56,7 +56,7 @@ void	exec_subshell(t_node *tree, t_sh_var *sh_var)
 	pid = safe_func(fork());
 	if (pid == 0)
 	{
-		g_exit_status = execution(tree->lhs, sh_var);
+		g_exit_status = executor(tree->lhs, sh_var);
 		delete_astree(tree->lhs);
 		exit(g_exit_status);
 	}
@@ -69,20 +69,20 @@ void	exec_subshell(t_node *tree, t_sh_var *sh_var)
 }
 
 /*  evaluate expression of tree, or execute lhs and rhs of tree  */
-int	execution(t_node *tree, t_sh_var *sh_var)
+int	executor(t_node *tree, t_sh_var *sh_var)
 {
 	if (tree->kind == ND_SUBSHELL)
 		exec_subshell(tree, sh_var);
 	else if (ND_SEMICOLON <= tree->kind && tree->kind <= ND_DPIPE)
 	{
 		if (tree->lhs)
-			g_exit_status = execution(tree->lhs, sh_var);
+			g_exit_status = executor(tree->lhs, sh_var);
 		if (tree->kind == ND_DAND && g_exit_status != 0)
 			return (g_exit_status);
 		if (tree->kind == ND_DPIPE && g_exit_status == 0)
 			return (g_exit_status);
 		if (tree->rhs)
-			g_exit_status = execution(tree->rhs, sh_var);
+			g_exit_status = executor(tree->rhs, sh_var);
 	}
 	else
 		g_exit_status = evaluate_expr(tree->expr, sh_var);

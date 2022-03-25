@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execution.h                                        :+:      :+:    :+:   */
+/*   executor.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXECUTION_H
-# define EXECUTION_H
+#ifndef EXECUTOR_H
+# define EXECUTOR_H
 
 # include <fcntl.h>
 # include "libft.h"
@@ -27,11 +27,11 @@
 # define FD_MAX 256
 # define PATH_PREFIX 5
 
-/*  execution  */
+/*  executor  */
 t_node		*convert_to_expr_tree(t_node *tree);
 int			evaluate_expr(t_expr *expr, t_sh_var *sh_var);
 char		*get_fullpath_cmd(char *cmd, t_sh_var *sh_var);
-int			execution(t_node *tree, t_sh_var *sh_var);
+int			executor(t_node *tree, t_sh_var *sh_var);
 int			set_heredoc(t_node *tree, t_sh_var *sh_var);
 int			exec_builtin(t_proc *proc, t_sh_var *sh_var);
 bool		is_builtin(char *cmd);
