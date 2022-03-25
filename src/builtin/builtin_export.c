@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:19 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 11:04:20 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 12:04:29 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ void	builtin_export_print(t_list *env_list)
 	}
 }
 
-static bool validate_args(char *arg)
+static bool	validate_args(char *arg)
 {
-	bool valid;
+	bool	valid;
 
 	valid = true;
 	if (ft_strlen(arg) == 0)

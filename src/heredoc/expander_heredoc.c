@@ -1,57 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_heredoc_utils.c                                :+:      :+:    :+:   */
+/*   expander_heredoc.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/24 11:56:50 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 11:56:55 by jkosaka          ###   ########.fr       */
+/*   Created: 2022/03/24 11:54:11 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/25 12:03:37 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-size_t	get_word_len_heredoc(char *str, bool in_squote, bool in_dquote)
-{
-	char	*head;
-
-	(void)in_squote;
-	(void)in_dquote;
-	head = str;
-	if (*str == '$')
-	{
-		str++;
-		while (*str && ft_isalnum(*str))
-			str++;
-	}
-	else
-		while (*str && *str != '$')
-			str++;
-	return (str - head);
-}
-
-t_list	*split_str_heredoc(char *str, bool par_in_dquote)
-{
-	t_list	*head;
-	bool	in_dquote;
-
-	if (!str)
-		return (NULL);
-	head = NULL;
-	if (*str == '\0')
-		ft_lstadd_back(&head, extract_word_heredoc(&str, false, \
-				par_in_dquote, PD_STRING));
-	in_dquote = false;
-	while (*str)
-	{
-		ft_lstadd_back(&head, extract_word_heredoc(&str, false, \
-				par_in_dquote | in_dquote, PD_STRING));
-	}
-	return (head);
-}
-
-size_t	get_expanded_len_heredoc(t_list *exp_list)
+static size_t	get_expanded_len_heredoc(t_list *exp_list)
 {
 	size_t	len;
 
@@ -83,5 +44,30 @@ char	*remove_quote_heredoc(char *limiter, bool *in_quote)
 		}
 		dst[dst_idx++] = limiter[src_idx++];
 	}
+	return (dst);
+}
+
+/*  expand env word in here document like aa$PATH  */
+char	*expander_heredoc(char *str, t_sh_var *sh_var)
+{
+	char	*dst;
+	char	*cur;
+	size_t	len;
+	t_list	*expd_list;
+	t_list	*head;
+
+	expd_list = split_by_expd_kind(str, false, true);
+	expd_list = expand_env(expd_list, sh_var, true);
+	len = get_expanded_len_heredoc(expd_list);
+	dst = (char *)ft_xmalloc(sizeof(char) * (len + 1));
+	dst[0] = '\0';
+	head = expd_list;
+	while (expd_list)
+	{
+		cur = ((t_expd *)(expd_list->content))->str;
+		ft_strlcat(dst, cur, ft_strlen(dst) + ft_strlen(cur) + 1);
+		expd_list = expd_list->next;
+	}
+	ft_lstclear(&head, delete_expd);
 	return (dst);
 }

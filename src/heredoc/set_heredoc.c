@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:57:02 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 15:59:00 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 11:57:30 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 	while (temp && ft_strcmp(temp, limiter))
 	{
 		if (in_quote == false)
-			temp = expansion_heredoc(temp, sh_var);
+			temp = expander_heredoc(temp, sh_var);
 		ft_putendl_fd(temp, proc->here_pipefd[PIPEOUT]);
 		free(temp);
 		temp = readline(HEREDOC_PROMPT);

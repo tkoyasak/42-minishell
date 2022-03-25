@@ -1,28 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_env.c                                      :+:      :+:    :+:   */
+/*   delete_content2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/25 11:04:13 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 12:04:59 by tkoyasak         ###   ########.fr       */
+/*   Created: 2022/03/25 12:02:27 by tkoyasak          #+#    #+#             */
+/*   Updated: 2022/03/25 12:04:14 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	builtin_env(t_proc *proc, t_sh_var *sh_var)
+void	delete_node(void *arg)
 {
-	t_list	*itr;
+	t_node	*node;
 
-	(void)proc;
-	itr = sh_var->env_list->next;
-	while (itr)
+	if (!arg)
+		return ;
+	node = (t_node *)arg;
+	ft_lstclear(&node->token_list, delete_token);
+	delete_expr(node->expr);
+	free(node);
+	node = NULL;
+}
+
+void	delete_astree(t_node *node)
+{
+	if (!node)
+		return ;
+	if (node->kind == ND_SUBSHELL)
 	{
-		printf("%s=%s\n", ((t_env *)(itr->content))->key, \
-							((t_env *)(itr->content))->val);
-		itr = itr->next;
+		delete_node(node);
+		return ;
 	}
-	return (0);
+	if (node->lhs)
+		delete_astree(node->lhs);
+	if (node->rhs)
+		delete_astree(node->rhs);
+	delete_node(node);
 }

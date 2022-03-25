@@ -6,13 +6,13 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:24 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 11:04:25 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 12:04:50 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		builtin_unset(t_proc *proc, t_sh_var *sh_var)
+int	builtin_unset(t_proc *proc, t_sh_var *sh_var)
 {
 	t_list	*itr;
 	t_list	*next;

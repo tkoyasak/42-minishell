@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:04:40 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 14:04:56 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/25 12:01:42 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,7 @@ void		set_io_params(t_proc *proc);
 void		set_io_and_commands(t_expr *expr);
 
 /*  heredoc  */
-size_t		get_word_len_heredoc(char *str, bool in_squote, bool in_dquote);
-t_list		*extract_word_heredoc(char **str, bool in_squote, \
-								bool in_dquote, t_expd_kind kind);
-t_list		*split_str_heredoc(char *str, bool par_in_dquote);
-t_list		*get_expansion_list_heredoc(char *str, bool par_in_dquote, \
-								t_sh_var *sh_var);
-size_t		get_expanded_len_heredoc(t_list *exp_list);
-char		*expansion_heredoc(char *str, t_sh_var *sh_var);
+char		*expander_heredoc(char *str, t_sh_var *sh_var);
 char		*remove_quote_heredoc(char *limiter, bool *in_quote);
 
 #endif
