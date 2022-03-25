@@ -24,7 +24,7 @@
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
 
-# define PROMPT CYAN"minish$ "RESET
+# define PROMPT "\x1b[36mminish$ \x1b[0m"
 # define HEREDOC_PROMPT "> "
 
 extern volatile sig_atomic_t	g_exit_status;

@@ -45,7 +45,12 @@ t_list	*split_by_expd_kind(char *str, bool par_in_dquote, bool heredoc)
 	if (!str)
 		return (NULL);
 	if (*str == '\0')
-		return (extract_word(&str, false, par_in_dquote, PD_STRING));
+	{
+		if (!par_in_dquote && !heredoc)
+			return (NULL);
+		else
+			return (extract_word(&str, false, par_in_dquote, PD_STRING));
+	}
 	head = NULL;
 	in_dquote = false;
 	while (*str)
