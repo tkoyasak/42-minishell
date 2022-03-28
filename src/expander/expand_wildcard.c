@@ -3,14 +3,73 @@
 /*                                                        :::      ::::::::   */
 /*   expand_wildcard.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/26 11:04:21 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/28 15:56:44 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	swap_expd(t_expd **a, t_expd **b)
+{
+	t_expd	*temp;
+
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+static t_expd	**bubble_expd_sort(t_expd **expd_list, int size)
+{
+	int	target;
+	int	end;
+
+	target = 0;
+	end = size - 1;
+	while (target < end)
+	{
+		while (target < end)
+		{
+			if (ft_strcmp(expd_list[target]->str, expd_list[target + 1]->str) > 0)
+				swap_expd(&(expd_list[target]), &(expd_list[target + 1]));
+			target++;
+		}
+		target = 0;
+		end--;
+	}
+	return (expd_list);
+}
+
+static void	sort_expd_list(t_list *lst)
+{
+	t_expd	**expd_list;
+	t_list	*itr;
+	int		size;
+	int		idx;
+
+	size = ft_lstsize(lst);
+	expd_list = (t_expd **)malloc(sizeof(t_expd *) * size);
+	itr = lst;
+	idx = 0;
+	while (itr)
+	{
+		expd_list[idx] = itr->content;
+		itr = itr->next;
+		idx++;
+	}
+	expd_list = bubble_expd_sort(expd_list, size);
+	itr = lst;
+	idx = 0;
+	while (itr)
+	{
+		itr->content = expd_list[idx];
+		itr = itr->next;
+		idx++;
+	}
+	free(expd_list);
+}
 
 static t_list	*get_matched_token_list(t_list *itr)
 {
@@ -18,7 +77,7 @@ static t_list	*get_matched_token_list(t_list *itr)
 	char	*str;
 	char	*prefix;
 	char	**slash_splitted_strs;
-	int		i;
+	int		target;
 
 	str = ((t_expd *)(itr->content))->str;
 	if (ft_strchr(str, '*') == NULL)
@@ -29,14 +88,15 @@ static t_list	*get_matched_token_list(t_list *itr)
 	else
 		prefix = ft_strdup("");
 	head = matched_files(prefix, slash_splitted_strs);
-	i = -1;
-	while (slash_splitted_strs[++i])
-		free(slash_splitted_strs[i]);
+	target = -1;
+	while (slash_splitted_strs[++target])
+		free(slash_splitted_strs[target]);
 	free(slash_splitted_strs);
 	free(prefix);
 	if (head == NULL)
 		return (itr);
 	ft_lstdelone(itr, delete_expd);
+	sort_expd_list(head);
 	return (head);
 }
 

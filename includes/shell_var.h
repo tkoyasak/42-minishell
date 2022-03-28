@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_var.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:05:10 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 11:05:11 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/28 15:59:37 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,6 @@ char		**get_environ(t_sh_var *sh_var);
 char		*get_env_value(char *key, t_sh_var *sh_var);
 void		set_env_value(char *key, char *val, t_sh_var *sh_var);
 char		*get_env_value_str(char *key, t_sh_var *sh_var);
+void		sort_env_list(t_list *lst);
 
 #endif

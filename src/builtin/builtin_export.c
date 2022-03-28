@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:19 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/28 14:53:48 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/28 15:59:14 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,10 @@ int	builtin_export(t_proc *proc, t_sh_var *sh_var)
 
 	ret = 0;
 	if (ft_lstsize((t_list *)(proc->token_list)) == 1)
+	{
+		sort_env_list(sh_var->env_list->next);
 		builtin_export_print(sh_var->env_list);
+	}
 	else
 	{
 		itr = proc->token_list->next;
