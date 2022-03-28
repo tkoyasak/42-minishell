@@ -32,9 +32,6 @@ static t_list	*split_str_nonheredoc(char **str, bool *in_dquote, bool flag)
 		ft_lstadd_back(&head, extract_word(str, false, true, PD_DQUOTE));
 		if (*(*str) == '\"')
 			ft_lstadd_back(&head, create_zero_str(false, true, PD_STRING));
-		else
-			ft_lstadd_back(&head, extract_word(str, false, true, PD_STRING));
-		ft_lstadd_back(&head, extract_word(str, false, true, PD_DQUOTE));
 	}
 	else
 		ft_lstadd_back(&head, extract_word(str, false, flag, PD_STRING));

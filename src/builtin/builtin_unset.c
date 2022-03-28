@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:24 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 13:30:26 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/28 15:05:43 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,12 @@ static int	validate_arg(char *arg)
 		return (unset_error(arg));
 }
 
-int	builtin_unset(t_proc *proc, t_sh_var *sh_var)
+static int	builtin_unset_core(char *key, t_sh_var *sh_var)
 {
 	t_list	*itr;
 	t_list	*next;
 	t_list	*prev;
-	char	*key;
 
-	if (proc->token_list->next == NULL)
-		return (0);
-	key = ((t_token *)(proc->token_list->next->content))->str;
 	if (validate_arg(key))
 		return (1);
 	prev = sh_var->env_list;
@@ -62,4 +58,22 @@ int	builtin_unset(t_proc *proc, t_sh_var *sh_var)
 		itr = next;
 	}
 	return (0);
+}
+
+int	builtin_unset(t_proc *proc, t_sh_var *sh_var)
+{
+	int		ret;
+	t_list	*itr;
+	char	*key;
+
+	ret = 0;
+	itr = proc->token_list->next;
+	while (itr)
+	{
+		key = ((t_token *)(itr->content))->str;
+		if (builtin_unset_core(key, sh_var))
+			ret = 1;
+		itr = itr->next;
+	}
+	return (ret);
 }
