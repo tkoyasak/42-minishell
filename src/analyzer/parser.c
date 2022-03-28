@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:38 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 10:48:41 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/26 10:42:48 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static t_node	*create_subshell_tree(t_list **itr, bool *is_valid)
 		node->lhs = create_astree(itr, is_valid);
 		if (consume_node_kind(itr, ")") == false)
 		{
-			parser_error(itr, "(", is_valid, __LINE__);
+			parser_error(itr, "(", is_valid);
 			return (node);
 		}
 		return (node);
@@ -37,12 +37,11 @@ static t_node	*create_subshell_tree(t_list **itr, bool *is_valid)
 		return (create_proc_node(itr, is_valid));
 	else if (((t_token *)((*itr)->content))->kind == TK_DELIM)
 		return (parser_error(itr, ((t_token *)((*itr)->content))->str, \
-			is_valid, __LINE__));
+			is_valid));
 	else
 		return (NULL);
 }
 
-// semicolon間の部分木
 static t_node	*create_sub_astree(t_list **itr, bool *is_valid)
 {
 	t_node	*node;
@@ -57,7 +56,7 @@ static t_node	*create_sub_astree(t_list **itr, bool *is_valid)
 		{
 			r_node = create_subshell_tree(itr, is_valid);
 			if (r_node == NULL)
-				return (parser_error(itr, "|", is_valid, __LINE__));
+				return (parser_error(itr, "|", is_valid));
 			node = node_new(ND_PIPE, node, r_node);
 		}
 		else
@@ -66,7 +65,7 @@ static t_node	*create_sub_astree(t_list **itr, bool *is_valid)
 	return (node);
 }
 
-// 全体のrootのnodeへのポインタを返す
+/*  create abstract syntax tree  */
 static t_node	*create_astree(t_list **itr, bool *is_valid)
 {
 	t_node		*node;
@@ -89,8 +88,6 @@ static t_node	*create_astree(t_list **itr, bool *is_valid)
 	return (node);
 }
 
-/*  token_listからND_SEMICOLON, ND_PIPE, ND_PROCの
-nodeで形成されるtreeのrootを返す  */
 int	parser(t_node **tree, t_list *token_list)
 {
 	bool	is_valid;

@@ -28,8 +28,6 @@
 # define PATH_PREFIX 5
 
 /*  executor  */
-t_node		*convert_to_expr_tree(t_node *tree);
-int			evaluate_expr(t_expr *expr, t_sh_var *sh_var);
 char		*get_fullpath_cmd(char *cmd, t_sh_var *sh_var);
 int			executor(t_node *tree, t_sh_var *sh_var);
 int			set_heredoc(t_node *tree, t_sh_var *sh_var);
@@ -44,7 +42,6 @@ void		close_func(t_expr *expr, t_proc *proc, const int cmd_idx);
 
 /*  io  */
 t_io_kind	get_io_kind(char *redirect_str);
-void		open_error_handler(char *filename);
 int			set_io_params(t_proc *proc, t_sh_var *sh_var);
 int			set_io_and_commands(t_proc *proc, t_sh_var *sh_var);
 

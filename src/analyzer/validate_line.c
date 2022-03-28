@@ -6,14 +6,13 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:35 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 10:48:51 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 23:10:33 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// <<< などを弾く
-static bool	is_valid_str(char *p)
+static bool	is_valid_delim_or_io(char *p)
 {
 	bool	is_valid;
 	int		idx;
@@ -76,7 +75,7 @@ static int	token_string_len(char *p)
 
 bool	set_token_len_and_kind(char *p, int *len, t_token_kind *kind)
 {
-	if (is_valid_str(p) == false)
+	if (is_valid_delim_or_io(p) == false)
 		return (false);
 	if (ft_strchr(PROC_DELIM_CHAR, *p))
 	{

@@ -6,13 +6,13 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:55 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 11:04:56 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/26 10:57:13 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*consume_new_env(t_list *itr, char *str)
+static t_list	*consume_new_env(t_list *itr, char *str)
 {
 	t_env	*env;
 
@@ -45,17 +45,3 @@ t_list	*init_envlist(void)
 	}
 	return (env_list);
 }
-
-// int	main(void)
-// {
-// 	t_list	*env;
-
-// 	env = init_env();
-// 	while (env)
-// 	{
-// 		ft_putendl_fd(((t_env *)env->content)->key, STDOUT_FILENO);
-// 		ft_putendl_fd(((t_env *)env->content)->val, STDOUT_FILENO);
-// 		env = env->next;
-// 	}
-// 	return (0);
-// }

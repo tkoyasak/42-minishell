@@ -6,15 +6,13 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:10 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 14:48:18 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 23:19:36 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// expansion前のトークン１つを受け取って、展開して新しいトークン列を返す
-// token->strをt_exp_strlist_typeで分割・分類する
-// 環境変数の展開
+/*  expand one string and retrun token_list  */
 t_list	*get_expanded_token_list(char *str, t_sh_var *sh_var)
 {
 	t_list	*expd_list;

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_wildcard.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/28 10:58:44 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/26 11:04:21 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*get_matched_token_list(t_list *itr)
+static t_list	*get_matched_token_list(t_list *itr)
 {
 	t_list	*head;
 	char	*str;
@@ -37,13 +37,11 @@ t_list	*get_matched_token_list(t_list *itr)
 	if (head == NULL)
 		return (itr);
 	ft_lstdelone(itr, delete_expd);
-	head = sorted_expd_list(head);
 	return (head);
 }
 
-/*   t_expd_kindがSTRINGでかつin_squoteとin_dquoteがfalseで、
-*を含むものを展開   */
-t_list	*expand_wildcard(t_list *expansion_list)
+/*  if naked PD_STRING, expand wildcard  */
+t_list	*expand_wildcard(t_list *expd_list)
 {
 	t_list	head;
 	t_list	*itr;
@@ -52,7 +50,7 @@ t_list	*expand_wildcard(t_list *expansion_list)
 
 	head.next = NULL;
 	prev = &head;
-	itr = expansion_list;
+	itr = expd_list;
 	while (itr)
 	{
 		next = itr->next;

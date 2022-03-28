@@ -3,33 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   set_io_params.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:43:21 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 16:51:15 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/26 11:01:42 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	open_error_handler(char *filename)
+static void	open_error_handler(char *filename)
 {
-	printf("errno:%d\n", errno);
-	if (errno == EACCES)
-	{
-		ft_putstr_fd(filename, STDERR_FILENO);
-		ft_putendl_fd(": Permission denied", STDERR_FILENO);
-	}
-	else if (errno == ENOENT)
-	{
-		ft_putstr_fd(filename, STDERR_FILENO);
-		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-	}
-	else if (errno == EISDIR)
-	{
-		ft_putstr_fd(filename, STDERR_FILENO);
-		ft_putendl_fd(": Is a directory", STDERR_FILENO);
-	}
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	perror(filename);
 }
 
 static int	set_io_filename(char **target_filename, char *str, t_sh_var *sh_var)
@@ -77,7 +63,8 @@ static int	set_input(t_proc *proc, t_list *itr, \
 	return (0);
 }
 
-int	set_io_output(t_proc *proc, t_list *itr, t_io_kind kind, t_sh_var *sh_var)
+static int	set_output(t_proc *proc, t_list *itr, \
+										t_io_kind kind, t_sh_var *sh_var)
 {
 	if (proc->fd[1])
 		safe_func(close(proc->fd[1]));
@@ -124,7 +111,7 @@ int	set_io_params(t_proc *proc, t_sh_var *sh_var)
 			}
 			else if (kind == IO_OUTPUT || kind == IO_APPEND)
 			{
-				if (set_io_output(proc, itr, kind, sh_var) == -1)
+				if (set_output(proc, itr, kind, sh_var) == -1)
 					return (-1);
 			}
 		}

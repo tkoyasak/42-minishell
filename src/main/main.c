@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:36 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 22:19:15 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/25 23:22:25 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 volatile sig_atomic_t	g_exit_status;
 
-void	init_sh_var(t_sh_var *sh_var)
+static void	init_sh_var(t_sh_var *sh_var)
 {
 	sh_var->env_list = init_envlist();
 	sh_var->pwd = getcwd(NULL, 0);
 	sh_var->oldpwd = NULL;
 }
 
-int	analyzer(char *line, t_node **tree, t_sh_var *sh_var)
+static int	analyzer(char *line, t_node **tree, t_sh_var *sh_var)
 {
 	t_list	*token_list;
 
@@ -45,7 +45,7 @@ int	analyzer(char *line, t_node **tree, t_sh_var *sh_var)
 	return (0);
 }
 
-void	minish_loop(t_sh_var *sh_var)
+static void	minish_loop(t_sh_var *sh_var)
 {
 	char		*line;
 	t_node		*tree;
@@ -65,13 +65,11 @@ void	minish_loop(t_sh_var *sh_var)
 				g_exit_status = executor(tree, sh_var);
 			delete_astree(tree);
 		}
-		detect_leak(__LINE__, __FILE__);
-		// printf("g_exit_status:%d\n", g_exit_status);
 		free(line);
 	}
 }
 
-void	test_one_line(char *line, t_sh_var *sh_var)
+static void	test_one_line(char *line, t_sh_var *sh_var)
 {
 	t_node		*tree;
 

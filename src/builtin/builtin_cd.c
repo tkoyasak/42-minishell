@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 22:42:40 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/26 10:45:37 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,7 @@
 static void	cd_error(char *path_name)
 {
 	ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-	ft_putstr_fd(path_name, STDERR_FILENO);
-	if (errno == ENOTDIR)
-		ft_putendl_fd(": Not a directory", STDERR_FILENO);
-	else
-		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	perror(path_name);
 }
 
 static int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
@@ -32,7 +28,7 @@ static int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
 	cwd_path = getcwd(NULL, 0);
 	if (cwd_path == NULL)
 	{
-		ft_putendl_fd("cd: error retrieving current directory: \
+		ft_putendl_fd("minishell: cd: error retrieving current directory: \
 			getcwd: cannot access parent directories: \
 			No such file or directory", STDERR_FILENO);
 		relative_path = ft_xstrjoin("/", path_name);

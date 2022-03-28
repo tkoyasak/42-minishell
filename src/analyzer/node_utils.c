@@ -6,15 +6,14 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:30 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 11:00:38 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/26 10:42:21 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_node	*parser_error(t_list **itr, char *str, bool *is_valid, int line)
+t_node	*parser_error(t_list **itr, char *str, bool *is_valid)
 {
-	(void)line;
 	if (*is_valid)
 	{
 		*is_valid = false;
@@ -38,7 +37,7 @@ t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs)
 	return (node);
 }
 
-// 比較と，一致していれば進める
+/*  compare string with operator, and if match consume iterator  */
 bool	consume_node_kind(t_list **itr, char *op)
 {
 	t_list	*delete_itr;
@@ -70,7 +69,6 @@ static	int	consume_one_proc(t_list **itr, bool *is_valid)
 	return (0);
 }
 
-// 次の|か;か一番最後までを塊として読む
 t_node	*create_proc_node(t_list **itr, bool *is_valid)
 {
 	t_node	*node;
@@ -87,7 +85,7 @@ t_node	*create_proc_node(t_list **itr, bool *is_valid)
 	if (((t_token *)tail->content)->kind == TK_IO || \
 		(*itr && ((t_token *)(*itr)->content)->kind == TK_L_PAREN))
 	{
-		parser_error(itr, ((t_token *)tail->content)->str, is_valid, __LINE__);
+		parser_error(itr, ((t_token *)tail->content)->str, is_valid);
 		return (node);
 	}
 	return (node);

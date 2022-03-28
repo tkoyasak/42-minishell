@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:26 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 10:48:31 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 23:03:55 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static t_list	*consume_new_token(t_list *itr,
 	return (itr->next);
 }
 
-/*  スペースで分割し、token(TK_DELIM, TK_IO, TK_STRING)に分割  */
+/*  split by space and tokenize.  */
 static t_list	*tokenize(char *p)
 {
 	t_list			head;

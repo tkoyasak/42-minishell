@@ -6,13 +6,13 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:57:02 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 14:28:54 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 23:21:21 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
+static int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 {
 	char	*temp;
 	bool	in_quote;
@@ -34,7 +34,7 @@ int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 	exit(0);
 }
 
-int	heredoc_parent(t_proc *proc, pid_t pid)
+static int	heredoc_parent(t_proc *proc, pid_t pid)
 {
 	int	wstatus;
 	int	child_status;
@@ -62,7 +62,7 @@ int	heredoc_parent(t_proc *proc, pid_t pid)
 	}
 }
 
-int	set_heredoc_in_token(t_proc *proc, t_sh_var *sh_var)
+static int	set_heredoc_in_token(t_proc *proc, t_sh_var *sh_var)
 {
 	pid_t				pid;
 
@@ -79,8 +79,7 @@ int	set_heredoc_in_token(t_proc *proc, t_sh_var *sh_var)
 	return (0);
 }
 
-// itr  token_list;
-int	set_heredoc_in_proc(t_proc *proc, t_sh_var *sh_var)
+static int	set_heredoc_in_proc(t_proc *proc, t_sh_var *sh_var)
 {
 	t_list		*itr;
 	t_io_kind	kind;

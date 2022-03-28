@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:06 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/24 16:33:35 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/25 23:16:53 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,15 +96,15 @@ static t_list	*consume_new_joined_token(t_list **itr)
 	return (ft_xlstnew(token));
 }
 
-// naked spaceで分割し、文字列(t_exp_strlist)を連結してトークン化する
-t_list	*convert_to_token_list(t_list *expansion_list)
+/*  split by naked space and connect expd_list  */
+t_list	*convert_to_token_list(t_list *expd_list)
 {
 	t_list	*head;
 	t_list	*itr;
 	t_expd	*expd;
 
 	head = NULL;
-	itr = expansion_list;
+	itr = expd_list;
 	while (itr)
 	{
 		expd = (t_expd *)(itr->content);

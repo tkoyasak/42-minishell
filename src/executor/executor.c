@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 /*  initialize expression. prepare pipefd and pid  */
-void	init_expr(t_expr *expr)
+static void	init_expr(t_expr *expr)
 {
 	int	pipe_cnt;
 
@@ -23,7 +23,7 @@ void	init_expr(t_expr *expr)
 }
 
 /*  expression is between semicolon, double ampersand, and double pipe  */
-int	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
+static int	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 {
 	int		stdin_copy;
 	int		stdout_copy;
@@ -48,7 +48,7 @@ int	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 }
 
 /*  execute subshell. does not affect outside job  */
-void	exec_subshell(t_node *tree, t_sh_var *sh_var)
+static void	exec_subshell(t_node *tree, t_sh_var *sh_var)
 {
 	int				wstatus;
 	pid_t			pid;

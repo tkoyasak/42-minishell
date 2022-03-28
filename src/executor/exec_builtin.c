@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:11:26 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 11:53:47 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/25 23:24:10 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	exec_builtin(t_proc *proc, t_sh_var *sh_var)
 	idx = 0;
 	while (idx < 7)
 	{
-		if (strcmp(cmd, builtin_str[idx]) == 0)
+		if (ft_strcmp(cmd, builtin_str[idx]) == 0)
 			return ((*builtin_func[idx])(proc, sh_var));
 		idx++;
 	}
