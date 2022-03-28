@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:19 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 14:05:41 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/28 14:53:48 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,26 +53,45 @@ static int	validate_arg(char *arg)
 		return (export_error(arg));
 }
 
-int	builtin_export(t_proc *proc, t_sh_var *sh_var)
+static int	builtin_export_core(char *arg, t_sh_var *sh_var)
 {
-	char	*arg;
+	int		ret;
 	char	*key;
 	char	*val;
 
-	if (ft_lstsize((t_list *)(proc->token_list)) == 1)
-		builtin_export_print(sh_var->env_list);
+	ret = 0;
+	if (validate_arg(arg))
+		ret = 1;
+	else if (!ft_strchr(arg, '='))
+		set_env_value(arg, NULL, sh_var);
 	else
 	{
-		arg = ((t_token *)(proc->token_list->next->content))->str;
-		if (validate_arg(arg))
-			return (1);
-		if (!ft_strchr(arg, '='))
-			return (0);
 		key = ft_xstrndup(arg, ft_strchr(arg, '=') - arg);
 		val = ft_xstrdup(ft_strchr(arg, '=') + 1);
 		set_env_value(key, val, sh_var);
 		free(key);
 		free(val);
 	}
-	return (0);
+	return (ret);
+}
+
+int	builtin_export(t_proc *proc, t_sh_var *sh_var)
+{
+	t_list	*itr;
+	int		ret;
+
+	ret = 0;
+	if (ft_lstsize((t_list *)(proc->token_list)) == 1)
+		builtin_export_print(sh_var->env_list);
+	else
+	{
+		itr = proc->token_list->next;
+		while (itr)
+		{
+			if (builtin_export_core(((t_token *)(itr->content))->str, sh_var))
+				ret = 1;
+			itr = itr->next;
+		}
+	}
+	return (ret);
 }
