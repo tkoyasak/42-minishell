@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:50 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 11:36:05 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/28 11:55:19 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,6 @@ char	*get_fullpath_cmd(char *cmd, t_sh_var *sh_var)
 		cmd_not_found(cmd);
 		return (NULL);
 	}
-	all_paths = ft_xsplit(&(path_env[PATH_PREFIX]), ':');
+	all_paths = ft_xsplit(path_env, ':');
 	return (get_fullcmd_core(cmd, all_paths));
 }

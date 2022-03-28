@@ -25,7 +25,6 @@
 # define NO_PERMISSION 126
 # define EXIT_OUT_RANGE 255
 # define FD_MAX 256
-# define PATH_PREFIX 5
 
 /*  executor  */
 char		*get_fullpath_cmd(char *cmd, t_sh_var *sh_var);
