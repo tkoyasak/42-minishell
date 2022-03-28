@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:13:45 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/28 21:45:22 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/28 22:10:38 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,20 +39,21 @@ static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, \
 		safe_func(close(proc->fd[1]));
 }
 
-static void	wait_all_procs(t_expr *expr, bool *caught_sigint)
+static int	wait_all_procs(t_expr *expr, bool *caught_sigint)
 {
 	int		cmd_idx;
 	int		wstatus;
 
 	*caught_sigint = 0;
 	cmd_idx = 0;
-	while (cmd_idx < expr->proc_cnt - 1)
+	while (cmd_idx < expr->proc_cnt)
 	{
 		safe_func(waitpid(expr->pid[cmd_idx], &wstatus, WUNTRACED));
 		if (WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
 			*caught_sigint = 1;
 		cmd_idx++;
 	}
+	return (wstatus);
 }
 
 /*  execute processes between semicolons, double ampersand, and double pipe  */
@@ -72,22 +73,10 @@ int	exec_procs(t_expr *expr, t_sh_var *sh_var)
 		exec_one_proc(expr, proc, cmd_idx, sh_var);
 		proc_list = proc_list->next;
 	}
-	waitpid(expr->pid[expr->proc_cnt - 1], &wstatus, WUNTRACED);
-	wait_all_procs(expr, &caught_sigint);
-	if (WIFSIGNALED(wstatus))
-	{
-		if (WTERMSIG(wstatus) == SIGQUIT)
-			ft_putendl_fd("Quit: 3", STDERR_FILENO);
-		else if (WTERMSIG(wstatus) == SIGINT)
-			ft_putchar_fd('\n', STDERR_FILENO);
-		g_exit_status = WTERMSIG(wstatus) + 128;
-	}
-	else
-	{
-		if (caught_sigint)
-			ft_putchar_fd('\n', STDERR_FILENO);
-		g_exit_status = WEXITSTATUS(wstatus);
-	}
+	wstatus = wait_all_procs(expr, &caught_sigint);
+	last_proc_signal(wstatus);
+	if (!WIFSIGNALED(wstatus) && caught_sigint)
+		ft_putchar_fd('\n', STDERR_FILENO);
 	signal(SIGINT, sigint_handler);
 	return (g_exit_status);
 }

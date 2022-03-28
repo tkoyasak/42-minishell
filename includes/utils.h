@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:22:15 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/28 11:36:43 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/28 21:58:48 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdlib.h>
 
+void		last_proc_signal(int wstatus);
 void		sigint_handler(int sig);
 ssize_t		safe_func(ssize_t res);
 void		error_handler(char *str);
