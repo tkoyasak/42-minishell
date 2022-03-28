@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_single_process.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:41 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 15:26:01 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/28 21:59:02 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,7 @@ int	exec_single_external(t_expr *expr, t_proc *proc, t_sh_var *sh_var)
 	if (expr->pid[0] == 0)
 		exec_child(expr, proc, 0, sh_var);
 	safe_func(waitpid(expr->pid[0], &wstatus, WUNTRACED));
-	if (WIFSIGNALED(wstatus))
-	{
-		if (WTERMSIG(wstatus) == SIGQUIT)
-			ft_putendl_fd("Quit: 3", STDERR_FILENO);
-		else if (WTERMSIG(wstatus) == SIGINT)
-			ft_putchar_fd('\n', STDERR_FILENO);
-		g_exit_status = WTERMSIG(wstatus) + 128;
-	}
-	else
-		g_exit_status = WEXITSTATUS(wstatus);
+	last_proc_signal(wstatus);
 	signal(SIGINT, sigint_handler);
 	return (g_exit_status);
 }
