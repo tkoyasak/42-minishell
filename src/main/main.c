@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:36 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 23:22:25 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/28 14:21:31 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ static int	analyzer(char *line, t_node **tree, t_sh_var *sh_var)
 	t_list	*token_list;
 
 	*tree = NULL;
+	while (*line && ft_isspace(*line))
+		line++;
+	if (*line == '\0')
+		return (1);
 	if (lexer(line, &token_list) == 1)
 	{
 		g_exit_status = 258;
