@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_wildcard.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 01:07:50 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/28 10:58:44 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ t_list	*get_matched_token_list(t_list *itr)
 	if (head == NULL)
 		return (itr);
 	ft_lstdelone(itr, delete_expd);
+	head = sorted_expd_list(head);
 	return (head);
 }
 

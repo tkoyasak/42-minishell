@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   analyzer.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:07:20 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 14:47:32 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/28 11:15:36 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,7 @@ t_list	*convert_to_token_list(t_list *expd_list);
 t_list	*expand_wildcard(t_list *expd_list);
 t_list	*matched_files(char *prefix, char **slash_splitted_strs);
 bool	match_pattern(char *str, char *pattern);
+t_list	*sorted_expd_list(t_list *lst);
+t_list	*sorted_env_list(t_list *lst);
 
 #endif
