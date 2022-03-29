@@ -6,20 +6,13 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:36 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/28 14:21:31 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/29 12:47:12 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 volatile sig_atomic_t	g_exit_status;
-
-static void	init_sh_var(t_sh_var *sh_var)
-{
-	sh_var->env_list = init_envlist();
-	sh_var->pwd = getcwd(NULL, 0);
-	sh_var->oldpwd = NULL;
-}
 
 static int	analyzer(char *line, t_node **tree, t_sh_var *sh_var)
 {
