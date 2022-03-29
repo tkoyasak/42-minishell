@@ -6,17 +6,17 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:26 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 23:03:55 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/29 15:12:25 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	lexer_error(char *p, int idx)
+void	lexer_error(char *p, int size)
 {
 	ft_putstr_fd("minishell: syntax error near unexpected token `", \
 		STDERR_FILENO);
-	ft_putnchar_fd(p, idx, STDERR_FILENO);
+	ft_putnchar_fd(p, size, STDERR_FILENO);
 	ft_putstr_fd("'\n", STDERR_FILENO);
 }
 
@@ -64,22 +64,31 @@ static t_list	*tokenize(char *p)
 
 static int	validate_syntax(t_list *token_list)
 {
-	t_list	*itr;
-	int		parenthesis;
+	t_list			*itr;
+	t_token_kind	kind;
+	int				parenthesis;
+	char			p;
 
 	itr = token_list;
 	parenthesis = 0;
 	while (itr)
 	{
-		if (((t_token *)(itr->content))->kind == TK_L_PAREN)
-			parenthesis++;
-		else if (((t_token *)(itr->content))->kind == TK_R_PAREN)
-			parenthesis--;
+		kind = ((t_token *)itr->content)->kind;
+		if (kind == TK_L_PAREN || kind == TK_R_PAREN)
+		{
+			parenthesis += 1 - 2 * (kind - TK_L_PAREN);
+			p = '(' + (kind - TK_L_PAREN);
+		}
 		if (parenthesis < 0)
-			return (1);
+			break ;
 		itr = itr->next;
 	}
-	return (parenthesis != 0);
+	if (parenthesis != 0)
+	{
+		lexer_error(&p, 1);
+		return (1);
+	}
+	return (0);
 }
 
 int	lexer(char *line, t_list **token_list)
@@ -89,7 +98,6 @@ int	lexer(char *line, t_list **token_list)
 		return (1);
 	if (validate_syntax(*token_list))
 	{
-		lexer_error("(", 1);
 		ft_lstclear(token_list, delete_token);
 		return (1);
 	}
