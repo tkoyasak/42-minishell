@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:50 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/29 14:32:33 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 00:03:15 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ char	*get_fullpath_cmd(char *cmd, t_sh_var *sh_var)
 	if (!cmd)
 		exit(EXIT_FAILURE);
 	if (!cmd[0])
-		return (cmd);
+	{
+		cmd_not_found(cmd);
+		return (NULL);
+	}
 	if (!access(cmd, X_OK))
 	{
 		if (ft_strchr(cmd, '/'))

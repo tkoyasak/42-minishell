@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_redirections_and_commands.c                    :+:      :+:    :+:   */
+/*   set_io_and_commands.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:52:19 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 16:16:08 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 00:03:02 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,7 @@ static void	set_command(t_proc *proc)
 	int		cmd_idx;
 
 	if (ft_lstsize(proc->token_list) == 0)
-	{
-		proc->command = ft_xcalloc(2, sizeof(char *));
-		proc->command[0] = ft_xstrdup("");
 		return ;
-	}
 	proc->command = \
 			ft_xcalloc(ft_lstsize(proc->token_list) + 1, sizeof(char *));
 	itr = proc->token_list;

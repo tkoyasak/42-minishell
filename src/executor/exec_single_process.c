@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:41 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/29 22:49:53 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/29 23:53:45 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,6 @@ int	exec_single_external(t_expr *expr, t_proc *proc, t_sh_var *sh_var)
 
 	proc_list = expr->proc_list;
 	proc = proc_list->content;
-	if (ft_strcmp(proc->command[0], "") == 0)
-	{
-		free(proc->command[0]);
-		return (g_exit_status);
-	}
 	signal(SIGINT, SIG_IGN);
 	expr->pid[0] = safe_func(fork());
 	if (expr->pid[0] == 0)
@@ -71,6 +66,8 @@ int	exec_single_proc(t_expr *expr, t_sh_var *sh_var)
 	g_exit_status = set_io_and_commands(proc, sh_var);
 	if (g_exit_status)
 		return (g_exit_status);
+	if (proc->command == NULL)
+		return (0);
 	if (is_builtin(proc->command[0]))
 	{
 		dup2_func(expr, proc, 0);

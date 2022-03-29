@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:12:27 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/29 22:09:06 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 00:03:33 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,13 @@ void	exec_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	g_exit_status = set_io_and_commands(proc, sh_var);
-	cmd = ((t_token *)(proc->token_list->content))->str;
 	dup2_func(expr, proc, cmd_idx);
 	close_func(expr, proc, cmd_idx);
 	if (g_exit_status)
 		exit(1);
+	if (proc->command == NULL)
+		exit(0);
+	cmd = proc->command[0];
 	if (is_builtin(cmd))
 		exit(exec_builtin(proc, sh_var));
 	fullpath_cmd = get_fullpath_cmd(cmd, sh_var);
