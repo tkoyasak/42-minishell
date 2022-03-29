@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:07:20 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/26 10:53:17 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/29 21:39:10 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	lexer_error(char *p, int idx);
 int		parser(t_node **tree, t_list *token_list);
 t_node	*parser_error(t_list **itr, char *str, bool *is_valid);
 t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs);
-bool	consume_node_kind(t_list **itr, char *op);
+bool	consume_node_kind(t_list **itr, char *op, bool *is_valid);
 t_node	*create_proc_node(t_list **itr, bool *is_valid);
 t_node	*convert_to_expr_tree(t_node *tree);
 
