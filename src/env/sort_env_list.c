@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sort_env_list.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 08:26:17 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/28 15:58:45 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 00:16:11 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,20 @@ static void	swap_env(t_env **a, t_env **b)
 
 static t_env	**bubble_env_sort(t_env **env_list, int size)
 {
-	int	target;
+	int	idx;
 	int	end;
 
-	target = 0;
+	idx = 0;
 	end = size - 1;
 	while (end > 0)
 	{
-		while (target < end)
+		while (idx < end)
 		{
-			if (ft_strcmp(env_list[target]->key, env_list[target+1]->key) > 0)
-				swap_env(&(env_list[target]), &(env_list[target+1]));
-			target++;
+			if (ft_strcmp(env_list[idx]->key, env_list[idx + 1]->key) > 0)
+				swap_env(&(env_list[idx]), &(env_list[idx + 1]));
+			idx++;
 		}
-		target = 0;
+		idx = 0;
 		end--;
 	}
 	return (env_list);
@@ -50,7 +50,7 @@ void	sort_env_list(t_list *lst)
 	int		idx;
 
 	size = ft_lstsize(lst);
-	env_list = (t_env **)malloc(sizeof(t_env *) * size);
+	env_list = (t_env **)ft_xmalloc(sizeof(t_env *) * size);
 	itr = lst;
 	idx = 0;
 	while (itr)

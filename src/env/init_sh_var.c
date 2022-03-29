@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 12:46:50 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/29 13:25:50 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 00:16:47 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,3 @@ void	init_sh_var(t_sh_var *sh_var)
 	init_pwd(sh_var);
 	init_old_pwd(sh_var);
 }
-

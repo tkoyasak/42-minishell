@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   exec_single_process.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:41 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/29 23:53:45 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 00:17:17 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*  execute single child process  */
-static void	exec_single_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
+static void	exec_single_child(t_expr *expr, t_proc *proc, int cmd_idx, \
+															t_sh_var *sh_var)
 {
 	char		*cmd;
 	char		*fullpath_cmd;
