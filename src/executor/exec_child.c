@@ -6,13 +6,13 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:12:27 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 17:38:29 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/29 22:09:06 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	path_error(char *fullpath_cmd)
+int	path_error(char *fullpath_cmd)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(fullpath_cmd, STDERR_FILENO);

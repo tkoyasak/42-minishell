@@ -38,6 +38,7 @@ void		exec_child(t_expr *expr, t_proc *proc, \
 						int cmd_idx, t_sh_var *sh_var);
 void		dup2_func(t_expr *expr, t_proc *proc, const int cmd_idx);
 void		close_func(t_expr *expr, t_proc *proc, const int cmd_idx);
+int			path_error(char *fullpath_cmd);
 
 /*  io  */
 t_io_kind	get_io_kind(char *redirect_str);
