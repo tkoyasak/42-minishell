@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/29 17:08:11 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/29 17:35:53 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,43 +18,56 @@ static void	cd_error(char *path_name)
 	perror(path_name);
 }
 
-static void	remove_last_dir(char **new_pwd)
+static void	remove_last_dir(char **update_relative_path)
 {
 	char	*target;
 
-	target = ft_strrchr(*new_pwd, '/');
-	if (target != *new_pwd)
+	target = ft_strrchr(*update_relative_path, '/');
+	if (target != *update_relative_path)
 		*target = '\0';
 	else
 		*(target + 1) = '\0';
 }
 
-static char	*new_pwd(char *old_pwd, char *path_name)
+static void	update_relative_path(char *old_pwd, char *path_name, t_sh_var *sh_var)
 {
-	char	*new_pwd;
+	char	*update_relative_path;
 	char	**splitted_str;
 	char	**head;
 	size_t	len;
 
 	len = ft_strlen(old_pwd) + ft_strlen(path_name) + 2;
-	new_pwd = ft_xcalloc(len, sizeof(char));
-	ft_strlcat(new_pwd, old_pwd, len);
+	update_relative_path = ft_xcalloc(len, sizeof(char));
+	ft_strlcat(update_relative_path, old_pwd, len);
 	splitted_str = ft_xsplit(path_name, '/');
 	head = splitted_str;
 	while (*splitted_str)
 	{
 		if (ft_strcmp(*splitted_str, "..") == 0)
-			remove_last_dir(&new_pwd);
+			remove_last_dir(&update_relative_path);
 		else if (ft_strcmp(*splitted_str, ".") != 0)
 		{
-			ft_strlcat(new_pwd, "/", len);
-			ft_strlcat(new_pwd, *splitted_str, len);
+			ft_strlcat(update_relative_path, "/", len);
+			ft_strlcat(update_relative_path, *splitted_str, len);
 		}
 		splitted_str++;
 	}
 	ft_split_free(head);
 	free(old_pwd);
-	return (new_pwd);
+	sh_var->pwd = update_relative_path;
+}
+
+static void	update_absolute_path(char *path_name, t_sh_var *sh_var)
+{
+	int	i;
+
+	i = 0;
+	if (ft_strncmp(path_name, "///", 3) == 0)
+	{
+		while (path_name[i] == '/' && path_name[i + 1] == '/')
+			i++;
+	}
+	sh_var->pwd = ft_xstrdup(&(path_name[i]));
 }
 
 static int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
@@ -74,9 +87,9 @@ static int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
 		sh_var->pwd = ft_xstrjoin_free(sh_var->pwd, relative_path, true);
 	}
 	else if (*path_name == '/')
-		sh_var->pwd = ft_xstrdup(path_name);
+		update_absolute_path(path_name, sh_var);
 	else
-		sh_var->pwd = new_pwd(ft_xstrdup(sh_var->pwd), path_name);
+		update_relative_path(ft_xstrdup(sh_var->pwd), path_name, sh_var);
 	free(path_name);
 	free(cwd_path);
 	set_env_value("OLDPWD", sh_var->oldpwd, sh_var);
