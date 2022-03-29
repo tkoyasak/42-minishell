@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:05:05 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 14:36:12 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/29 19:23:25 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 
 int		builtin_echo(t_proc *proc, t_sh_var *sh_var);
 int		builtin_cd(t_proc *proc, t_sh_var *sh_var);
+void	update_relative_path(char *old_pwd, char *path_name, \
+											 t_sh_var *sh_var);
+void	update_absolute_path(char *path_name, t_sh_var *sh_var);
 int		builtin_pwd(t_proc *proc, t_sh_var *sh_var);
 int		builtin_export(t_proc *proc, t_sh_var *sh_var);
 int		builtin_unset(t_proc *proc, t_sh_var *sh_var);
