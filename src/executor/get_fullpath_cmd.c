@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:50 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/28 21:47:18 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/29 10:34:40 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	cmd_not_found(char *cmd)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
-	ft_putendl_fd(": command not found: ", STDERR_FILENO);
+	ft_putendl_fd(": command not found", STDERR_FILENO);
 }
 
 static char	*get_fullcmd_core(char *cmd, char **all_paths)
