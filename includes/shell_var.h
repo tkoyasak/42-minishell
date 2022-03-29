@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_var.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:05:10 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/28 15:59:37 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/29 12:47:37 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "libft.h"
 # include "struct.h"
 
+void		init_sh_var(t_sh_var *sh_var);
 t_list		*init_envlist(void);
 char		**get_environ(t_sh_var *sh_var);
 char		*get_env_value(char *key, t_sh_var *sh_var);
