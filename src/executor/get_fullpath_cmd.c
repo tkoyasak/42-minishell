@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:50 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/29 10:34:40 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/29 10:38:36 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ static char	*get_fullcmd_core(char *cmd, char **all_paths)
 			return (fullcmd);
 		free_str(&fullcmd);
 	}
+	if (!access(cmd, X_OK) && ft_strchr(cmd, '/'))
+		return (cmd);
 	cmd_not_found(cmd);
 	return (NULL);
 }
@@ -57,15 +59,6 @@ char	*get_fullpath_cmd(char *cmd, t_sh_var *sh_var)
 		exit(EXIT_FAILURE);
 	if (!cmd[0])
 		return (cmd);
-	if (!access(cmd, X_OK))
-	{
-		if (ft_strchr(cmd, '/') == NULL)
-		{
-			cmd_not_found(cmd);
-			return (NULL);
-		}
-		return (cmd);
-	}
 	path_env = get_env_value_str("PATH", sh_var);
 	if (!path_env)
 	{
