@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/28 15:56:44 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/29 16:56:52 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,7 @@ static t_list	*get_matched_token_list(t_list *itr)
 	else
 		prefix = ft_strdup("");
 	head = matched_files(prefix, slash_splitted_strs);
-	target = -1;
-	while (slash_splitted_strs[++target])
-		free(slash_splitted_strs[target]);
-	free(slash_splitted_strs);
+	ft_split_free(slash_splitted_strs);
 	free(prefix);
 	if (head == NULL)
 		return (itr);
