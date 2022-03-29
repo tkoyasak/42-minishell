@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/26 10:45:37 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/29 19:22:10 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,12 @@ static int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
 		relative_path = ft_xstrjoin("/", path_name);
 		sh_var->pwd = ft_xstrjoin_free(sh_var->pwd, relative_path, true);
 	}
+	else if (*path_name == '/')
+		update_absolute_path(path_name, sh_var);
 	else
-		sh_var->pwd = cwd_path;
+		update_relative_path(ft_xstrdup(sh_var->pwd), path_name, sh_var);
 	free(path_name);
+	free(cwd_path);
 	set_env_value("OLDPWD", sh_var->oldpwd, sh_var);
 	set_env_value("PWD", sh_var->pwd, sh_var);
 	return (0);
