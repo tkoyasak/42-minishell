@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:24 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/28 15:05:43 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 00:04:16 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ static int	validate_arg(char *arg)
 	if (ft_strlen(arg) == 0)
 		return (unset_error(arg));
 	itr = arg;
+	if (ft_isdigit(*itr))
+		return (unset_error(arg));
 	while (*itr && (ft_isalnum(*itr) || *itr == '_'))
 		itr++;
 	if (*itr == '\0')
