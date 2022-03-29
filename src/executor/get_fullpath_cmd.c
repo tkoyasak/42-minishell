@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:50 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/29 10:38:36 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/29 14:32:33 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,10 @@ static void	cmd_not_found(char *cmd)
 
 static char	*get_fullcmd_core(char *cmd, char **all_paths)
 {
-	int		path_index;
-	char	*fullcmd;
-	char	*temp;
+	int			path_index;
+	char		*fullcmd;
+	char		*temp;
+	struct stat	buf;
 
 	path_index = -1;
 	while (all_paths[++path_index])
@@ -40,11 +41,13 @@ static char	*get_fullcmd_core(char *cmd, char **all_paths)
 		temp = ft_xstrjoin(all_paths[path_index], "/");
 		fullcmd = ft_xstrjoin_free(temp, cmd, false);
 		if (!(access(fullcmd, X_OK)))
-			return (fullcmd);
+		{
+			stat(fullcmd, &buf);
+			if (S_ISREG(buf.st_mode))
+				return (fullcmd);
+		}
 		free_str(&fullcmd);
 	}
-	if (!access(cmd, X_OK) && ft_strchr(cmd, '/'))
-		return (cmd);
 	cmd_not_found(cmd);
 	return (NULL);
 }
@@ -59,6 +62,11 @@ char	*get_fullpath_cmd(char *cmd, t_sh_var *sh_var)
 		exit(EXIT_FAILURE);
 	if (!cmd[0])
 		return (cmd);
+	if (!access(cmd, X_OK))
+	{
+		if (ft_strchr(cmd, '/'))
+			return (cmd);
+	}
 	path_env = get_env_value_str("PATH", sh_var);
 	if (!path_env)
 	{
