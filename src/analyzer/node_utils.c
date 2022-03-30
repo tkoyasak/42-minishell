@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   node_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:30 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/29 21:30:18 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 11:01:14 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_node	*parser_error(t_list **itr, char *str, bool *is_valid)
+void	parser_error(t_list **itr, char *str, bool *is_valid)
 {
 	if (*is_valid)
 	{
@@ -23,7 +23,6 @@ t_node	*parser_error(t_list **itr, char *str, bool *is_valid)
 		ft_putendl_fd("\'", STDERR_FILENO);
 		ft_lstclear(itr, delete_token);
 	}
-	return (NULL);
 }
 
 t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs)

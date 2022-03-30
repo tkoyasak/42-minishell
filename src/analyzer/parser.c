@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:38 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 09:36:56 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 11:03:08 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,9 @@ static t_node	*create_subshell_tree(t_list **itr, bool *is_valid)
 	{
 		node = node_new(ND_SUBSHELL, create_astree(itr, is_valid), NULL);
 		if (!consume_node_kind(itr, ")", is_valid))
-		{
-			parser_error(itr, "(", is_valid);
-			return (node);
-		}
+			return (parser_error(itr, "(", is_valid), node);
 		if (consume_node_kind(itr, "|", is_valid))
-		{
-			parser_error(itr, "|", is_valid);
-			return (node);
-		}
+			return (parser_error(itr, "|", is_valid), node);
 		return (node);
 	}
 	return (create_proc_node(itr, is_valid));
@@ -49,16 +43,10 @@ static t_node	*create_sub_astree(t_list **itr, bool *is_valid)
 		if (consume_node_kind(itr, "|", is_valid))
 		{
 			if (consume_node_kind(itr, "(", is_valid))
-			{
-				parser_error(itr, "(", is_valid);
-				return (node);
-			}
+				return (parser_error(itr, "(", is_valid), node);
 			rhs = create_subshell_tree(itr, is_valid);
 			if (rhs == NULL)
-			{
-				parser_error(itr, "|", is_valid);
-				return (node);
-			}
+				return (parser_error(itr, "|", is_valid), node);
 			node = node_new(ND_PIPE, node, rhs);
 		}
 		else

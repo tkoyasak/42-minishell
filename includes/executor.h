@@ -28,7 +28,7 @@
 
 /*  executor  */
 char		*get_fullpath_cmd(char *cmd, t_sh_var *sh_var);
-int			executor(t_node *tree, t_sh_var *sh_var);
+void		executor(t_node *tree, t_sh_var *sh_var);
 int			set_heredoc(t_node *tree, t_sh_var *sh_var);
 int			exec_builtin(t_proc *proc, t_sh_var *sh_var);
 bool		is_builtin(char *cmd);
