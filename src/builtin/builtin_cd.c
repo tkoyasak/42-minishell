@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 23:07:43 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 23:12:29 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	cd_error(char *path_name)
 
 static void	no_current_dir(void)
 {
-	ft_putstr_fd("minishell: cd: error retrieving current directory:", \
+	ft_putstr_fd("cd: error retrieving current directory:", \
 													STDERR_FILENO);
 	ft_putstr_fd("getcwd: cannot access parent directories:", STDERR_FILENO);
 	ft_putendl_fd("No such file or directory", STDERR_FILENO);
