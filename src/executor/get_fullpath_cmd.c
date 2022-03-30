@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:50 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 00:03:15 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 15:30:49 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,12 @@ char	*get_fullpath_cmd(char *cmd, t_sh_var *sh_var)
 	if (!cmd)
 		exit(EXIT_FAILURE);
 	if (!cmd[0])
+		return (cmd_not_found(cmd), NULL);
+	if (ft_strcmp(cmd, ".") == 0)
 	{
-		cmd_not_found(cmd);
-		return (NULL);
+		ft_putendl_fd("minishell: .: filename argument required", \
+								STDERR_FILENO);
+		exit(2);
 	}
 	if (!access(cmd, X_OK))
 	{
@@ -72,10 +75,7 @@ char	*get_fullpath_cmd(char *cmd, t_sh_var *sh_var)
 	}
 	path_env = get_env_value_str("PATH", sh_var);
 	if (!path_env)
-	{
-		cmd_not_found(cmd);
-		return (NULL);
-	}
+		return (cmd_not_found(cmd), NULL);
 	all_paths = ft_xsplit(path_env, ':');
 	return (get_fullcmd_core(cmd, all_paths));
 }
