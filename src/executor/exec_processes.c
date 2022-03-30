@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_processes.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:13:45 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/28 22:10:38 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 15:38:19 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, \
 {
 	if (cmd_idx < expr->proc_cnt - 1)
 		create_pipe(expr, cmd_idx);
-	signal(SIGINT, SIG_IGN);
+	xsignal(SIGINT, SIG_IGN);
 	expr->pid[cmd_idx] = safe_func(fork());
 	if (expr->pid[cmd_idx] == 0)
 		exec_child(expr, proc, cmd_idx, sh_var);
@@ -77,6 +77,6 @@ int	exec_procs(t_expr *expr, t_sh_var *sh_var)
 	last_proc_signal(wstatus);
 	if (!WIFSIGNALED(wstatus) && caught_sigint)
 		ft_putchar_fd('\n', STDERR_FILENO);
-	signal(SIGINT, sigint_handler);
+	xsignal(SIGINT, sigint_handler);
 	return (g_exit_status);
 }

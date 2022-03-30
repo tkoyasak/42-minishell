@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:57 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/28 14:59:04 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 15:44:09 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ static t_list	*set_new_env(char *key, char *val)
 void	set_env_value(char *key, char *val, t_sh_var *sh_var)
 {
 	t_list	*itr;
-	t_env	*env;
 	char	*old_val;
 
 	if (ft_strcmp(key, "?") == 0)

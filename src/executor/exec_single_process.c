@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_single_process.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:41 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 11:19:17 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 15:38:40 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ static void	exec_single_child(t_expr *expr, t_proc *proc, int cmd_idx, \
 	char		*fullpath_cmd;
 	struct stat	buf;
 
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	xsignal(SIGINT, SIG_DFL);
+	xsignal(SIGQUIT, SIG_DFL);
 	cmd = ((t_token *)(proc->token_list->content))->str;
 	dup2_func(expr, proc, cmd_idx);
 	close_func(expr, proc, cmd_idx);
@@ -46,13 +46,13 @@ static int	exec_single_external(t_expr *expr, t_proc *proc, t_sh_var *sh_var)
 
 	proc_list = expr->proc_list;
 	proc = proc_list->content;
-	signal(SIGINT, SIG_IGN);
+	xsignal(SIGINT, SIG_IGN);
 	expr->pid[0] = safe_func(fork());
 	if (expr->pid[0] == 0)
 		exec_single_child(expr, proc, 0, sh_var);
 	safe_func(waitpid(expr->pid[0], &wstatus, WUNTRACED));
 	last_proc_signal(wstatus);
-	signal(SIGINT, sigint_handler);
+	xsignal(SIGINT, sigint_handler);
 	return (g_exit_status);
 }
 

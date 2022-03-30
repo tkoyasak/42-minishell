@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_wildcard.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 11:10:41 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 15:44:36 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ static t_list	*get_matched_token_list(t_list *itr)
 	char	*str;
 	char	*prefix;
 	char	**slash_splitted_strs;
-	int		target;
 
 	str = ((t_expd *)(itr->content))->str;
 	if (ft_strchr(str, '*') == NULL)

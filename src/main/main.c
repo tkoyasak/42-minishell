@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:36 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 11:04:57 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 15:41:21 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,9 @@ static void	minish_loop(t_sh_var *sh_var)
 		}
 		free(line);
 	}
+	ft_lstclear(&sh_var->env_list, delete_env);
+	free(sh_var->pwd);
+	free(sh_var->oldpwd);
 }
 
 static void	test_one_line(char *line, t_sh_var *sh_var)
@@ -84,9 +87,8 @@ int	main(int argc, char **argv)
 {
 	t_sh_var	sh_var;
 
-	if (signal(SIGINT, sigint_handler) == SIG_ERR || \
-		signal(SIGQUIT, SIG_IGN) == SIG_ERR)
-		return (1);
+	xsignal(SIGINT, sigint_handler);
+	xsignal(SIGQUIT, SIG_IGN);
 	init_sh_var(&sh_var);
 	if (argc == 3 && !ft_strcmp("-c", argv[1]))
 		test_one_line(argv[2], &sh_var);

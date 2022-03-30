@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_child.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:12:27 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 00:03:33 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 15:37:10 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ void	exec_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
 	char		*fullpath_cmd;
 	struct stat	buf;
 
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	xsignal(SIGINT, SIG_DFL);
+	xsignal(SIGQUIT, SIG_DFL);
 	g_exit_status = set_io_and_commands(proc, sh_var);
 	dup2_func(expr, proc, cmd_idx);
 	close_func(expr, proc, cmd_idx);

@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:57:02 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 23:21:21 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 15:39:04 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 	char	*temp;
 	bool	in_quote;
 
-	safe_func((ssize_t)signal(SIGINT, SIG_DFL));
+	xsignal(SIGINT, SIG_DFL);
 	safe_func(close(proc->here_pipefd[PIPEIN]));
 	limiter = remove_quote_heredoc(limiter, &in_quote);
 	temp = readline(HEREDOC_PROMPT);
@@ -66,7 +66,7 @@ static int	set_heredoc_in_token(t_proc *proc, t_sh_var *sh_var)
 {
 	pid_t				pid;
 
-	safe_func((ssize_t)signal(SIGINT, SIG_IGN));
+	xsignal(SIGINT, SIG_IGN);
 	safe_func(pipe(proc->here_pipefd));
 	pid = safe_func(fork());
 	if (pid == 0)
@@ -103,7 +103,7 @@ static int	set_heredoc_in_proc(t_proc *proc, t_sh_var *sh_var)
 		}
 		itr = itr->next;
 	}
-	safe_func((ssize_t)signal(SIGINT, sigint_handler));
+	xsignal(SIGINT, sigint_handler);
 	return (0);
 }
 
