@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:36 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 15:41:21 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 17:07:04 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,7 @@ static void	minish_loop(t_sh_var *sh_var)
 	{
 		line = readline(PROMPT);
 		if (line == NULL)
-		{
-			printf("exit\n");
 			line = ft_xstrdup("exit");
-		}
 		if (ft_strlen(line))
 		{
 			add_history(line);

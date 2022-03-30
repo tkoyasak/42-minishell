@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:59:56 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/24 14:02:14 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 17:07:26 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int	builtin_exit(t_proc *proc, t_sh_var *sh_var)
 	char	**command;
 
 	(void)sh_var;
+	ft_putendl_fd("exit", STDERR_FILENO);
 	command = proc->command;
 	if (command[1] == NULL)
 		exit(0);
