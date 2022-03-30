@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/30 15:51:03 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/30 15:51:04 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 /*
 ** Copies 'len' bytes from string 'src' to string 'dst'.
 ** Two strings may overlap; copy is always done non-destructively.

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/30 15:51:13 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/30 15:51:14 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 /*
 ** Converts initial portion of string pointed to by 'str' to int representation.
 ** It is equivalent to:

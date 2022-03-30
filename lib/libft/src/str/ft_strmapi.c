@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/30 15:52:27 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/30 15:52:28 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 /*
 ** Applies 'f' to each character of 's' to create new string (with malloc)
 ** resulting from successive applications of 'f'.

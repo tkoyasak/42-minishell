@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_lstmap.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/30 15:49:13 by jkosaka           #+#    #+#             */
+/*   Updated: 2022/03/30 15:49:14 by jkosaka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 /*
 ** Iterates list 'lst' and applies function 'f' to 'content' of each element.
 ** Creates a new list resulting of the successive applications of function 'f'.
