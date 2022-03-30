@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extract_word.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:58:22 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 10:44:24 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 11:11:06 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ t_list	*extract_word(char **str, bool in_squote, bool in_dquote, \
 		expd->len = heredoc_str_len(*str);
 	else
 		expd->len = expd_str_len(*str, in_squote, in_dquote);
-	expd->str = ft_strndup(*str, expd->len);
+	expd->str = ft_xstrndup(*str, expd->len);
 	*str += expd->len;
 	expd->in_squote = in_squote;
 	expd->in_dquote = in_dquote;

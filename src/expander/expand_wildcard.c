@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_wildcard.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 00:15:56 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 11:10:41 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ static t_list	*get_matched_token_list(t_list *itr)
 		return (itr);
 	slash_splitted_strs = ft_xsplit(str, '/');
 	if (*str == '/')
-		prefix = ft_strdup("/");
+		prefix = ft_xstrdup("/");
 	else
-		prefix = ft_strdup("");
+		prefix = ft_xstrdup("");
 	head = matched_files(prefix, slash_splitted_strs);
 	ft_split_free(slash_splitted_strs);
 	free(prefix);
