@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 23:12:29 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 23:21:35 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	no_current_dir(void)
 {
 	ft_putstr_fd("cd: error retrieving current directory:", \
 													STDERR_FILENO);
-	ft_putstr_fd("getcwd: cannot access parent directories:", STDERR_FILENO);
+	ft_putstr_fd("getcwd: cannot access parent directories: ", STDERR_FILENO);
 	ft_putendl_fd("No such file or directory", STDERR_FILENO);
 }
 
@@ -58,11 +58,14 @@ static int	builtin_cd_core(char *path_name, t_sh_var *sh_var)
 {
 	char	*dst_path;
 
-	if (chdir(path_name) == -1)
+	dst_path = cd_dst_path(path_name, sh_var);
+	if (chdir(dst_path) == -1)
+	{
+		free(dst_path);
 		return (fail_chdir(path_name, sh_var));
+	}
 	else
 	{
-		dst_path = cd_dst_path(path_name, sh_var);
 		free(sh_var->oldpwd);
 		sh_var->oldpwd = sh_var->pwd;
 		sh_var->pwd = dst_path;
