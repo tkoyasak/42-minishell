@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:36 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/29 16:41:46 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 11:04:57 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,9 @@ static void	minish_loop(t_sh_var *sh_var)
 		{
 			add_history(line);
 			if (analyzer(line, &tree, sh_var) == 0)
-				g_exit_status = executor(tree, sh_var);
+				executor(tree, sh_var);
 			delete_astree(tree);
 		}
-		detect_leak(__LINE__, __FILE__);
 		free(line);
 	}
 }
@@ -74,7 +73,7 @@ static void	test_one_line(char *line, t_sh_var *sh_var)
 	if (ft_strlen(line) == 0)
 		exit(0);
 	if (analyzer(line, &tree, sh_var) == 0)
-		g_exit_status = executor(tree, sh_var);
+		executor(tree, sh_var);
 	delete_astree(tree);
 	ft_lstclear(&sh_var->env_list, delete_env);
 	free(sh_var->pwd);

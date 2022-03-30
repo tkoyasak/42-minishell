@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   analyzer.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:07:20 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/29 21:39:10 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 11:01:26 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	lexer_error(char *p, int idx);
 
 /* parser */
 int		parser(t_node **tree, t_list *token_list);
-t_node	*parser_error(t_list **itr, char *str, bool *is_valid);
+void	parser_error(t_list **itr, char *str, bool *is_valid);
 t_node	*node_new(t_node_kind kind, t_node *lhs, t_node *rhs);
 bool	consume_node_kind(t_list **itr, char *op, bool *is_valid);
 t_node	*create_proc_node(t_list **itr, bool *is_valid);

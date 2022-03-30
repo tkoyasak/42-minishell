@@ -23,7 +23,7 @@ static void	init_expr(t_expr *expr)
 }
 
 /*  expression is between semicolon, double ampersand, and double pipe  */
-static int	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
+static void	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 {
 	int		stdin_copy;
 	int		stdout_copy;
@@ -44,7 +44,6 @@ static int	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 	}
 	else
 		g_exit_status = exec_procs(expr, sh_var);
-	return (g_exit_status);
 }
 
 /*  execute subshell. does not affect outside job  */
@@ -56,7 +55,7 @@ static void	exec_subshell(t_node *tree, t_sh_var *sh_var)
 	pid = safe_func(fork());
 	if (pid == 0)
 	{
-		g_exit_status = executor(tree->lhs, sh_var);
+		executor(tree->lhs, sh_var);
 		delete_astree(tree);
 		exit(g_exit_status);
 	}
@@ -68,22 +67,21 @@ static void	exec_subshell(t_node *tree, t_sh_var *sh_var)
 }
 
 /*  evaluate expression of tree, or execute lhs and rhs of tree  */
-int	executor(t_node *tree, t_sh_var *sh_var)
+void	executor(t_node *tree, t_sh_var *sh_var)
 {
 	if (tree->kind == ND_SUBSHELL)
 		exec_subshell(tree, sh_var);
 	else if (ND_SEMICOLON <= tree->kind && tree->kind <= ND_DPIPE)
 	{
 		if (tree->lhs)
-			g_exit_status = executor(tree->lhs, sh_var);
+			executor(tree->lhs, sh_var);
 		if (tree->kind == ND_DAND && g_exit_status != 0)
-			return (g_exit_status);
+			return ;
 		if (tree->kind == ND_DPIPE && g_exit_status == 0)
-			return (g_exit_status);
+			return ;
 		if (tree->rhs)
-			g_exit_status = executor(tree->rhs, sh_var);
+			executor(tree->rhs, sh_var);
 	}
 	else
-		g_exit_status = evaluate_expr(tree->expr, sh_var);
-	return (g_exit_status);
+		evaluate_expr(tree->expr, sh_var);
 }
