@@ -51,6 +51,9 @@ re: fclean all
 debug: CFLAGS += -g3 -fsanitize=address
 debug: re
 
+leak:
+	while [ 1 ]; do leaks minishell; sleep 1; done
+
 gtest:
 	cmake -S ./test/gtest -B ./test/gtest/build && cmake --build ./test/gtest/build && ./test/gtest/build/main
 
