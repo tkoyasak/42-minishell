@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 22:50:58 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 23:07:43 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,11 @@ static int	builtin_cd_core(char *path_name, t_sh_var *sh_var)
 {
 	char	*dst_path;
 
-	dst_path = cd_dst_path(path_name, sh_var);
-	if (chdir(dst_path) == -1)
-	{
-		free(dst_path);
+	if (chdir(path_name) == -1)
 		return (fail_chdir(path_name, sh_var));
-	}
 	else
 	{
+		dst_path = cd_dst_path(path_name, sh_var);
 		free(sh_var->oldpwd);
 		sh_var->oldpwd = sh_var->pwd;
 		sh_var->pwd = dst_path;
