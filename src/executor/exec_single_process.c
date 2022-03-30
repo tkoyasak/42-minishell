@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_single_process.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:41 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 00:17:17 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 11:19:17 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	exec_single_child(t_expr *expr, t_proc *proc, int cmd_idx, \
 }
 
 /*  execute single external command  */
-int	exec_single_external(t_expr *expr, t_proc *proc, t_sh_var *sh_var)
+static int	exec_single_external(t_expr *expr, t_proc *proc, t_sh_var *sh_var)
 {
 	int			wstatus;
 	t_list		*proc_list;
