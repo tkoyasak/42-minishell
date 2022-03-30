@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:38 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/29 21:38:45 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 09:36:56 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ static t_node	*create_subshell_tree(t_list **itr, bool *is_valid)
 			parser_error(itr, "(", is_valid);
 			return (node);
 		}
+		if (consume_node_kind(itr, "|", is_valid))
+		{
+			parser_error(itr, "|", is_valid);
+			return (node);
+		}
 		return (node);
 	}
 	return (create_proc_node(itr, is_valid));
@@ -43,6 +48,11 @@ static t_node	*create_sub_astree(t_list **itr, bool *is_valid)
 	{
 		if (consume_node_kind(itr, "|", is_valid))
 		{
+			if (consume_node_kind(itr, "(", is_valid))
+			{
+				parser_error(itr, "(", is_valid);
+				return (node);
+			}
 			rhs = create_subshell_tree(itr, is_valid);
 			if (rhs == NULL)
 			{
