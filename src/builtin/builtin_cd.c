@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 15:04:18 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 22:50:58 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,31 +18,62 @@ static void	cd_error(char *path_name)
 	perror(path_name);
 }
 
-static int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
+static void	no_current_dir(void)
 {
-	char	*relative_path;
-	char	*cwd_path;
+	ft_putstr_fd("minishell: cd: error retrieving current directory:", \
+													STDERR_FILENO);
+	ft_putstr_fd("getcwd: cannot access parent directories:", STDERR_FILENO);
+	ft_putendl_fd("No such file or directory", STDERR_FILENO);
+}
 
-	free(sh_var->oldpwd);
-	sh_var->oldpwd = sh_var->pwd;
-	cwd_path = getcwd(NULL, 0);
-	if (cwd_path == NULL)
+static int	fail_chdir(char *path_name, t_sh_var *sh_var)
+{
+	char	*cwd_path;
+	char	*relative_path;
+
+	if (path_name[0] != '/')
 	{
-		ft_putendl_fd("minishell: cd: error retrieving current directory: \
-			getcwd: cannot access parent directories: \
-			No such file or directory", STDERR_FILENO);
-		relative_path = ft_xstrjoin("/", path_name);
-		sh_var->pwd = ft_xstrjoin_free(sh_var->pwd, relative_path, true);
-		free(path_name);
+		cwd_path = getcwd(NULL, 0);
+		if (cwd_path == NULL)
+		{
+			no_current_dir();
+			free(sh_var->oldpwd);
+			sh_var->oldpwd = sh_var->pwd;
+			relative_path = ft_xstrjoin("/", path_name);
+			sh_var->pwd = ft_xstrjoin(sh_var->pwd, relative_path);
+			free(path_name);
+			free(relative_path);
+			set_env_value("PWD", sh_var->pwd, sh_var);
+			set_env_value("OLDPWD", sh_var->oldpwd, sh_var);
+			return (0);
+		}
+		free(cwd_path);
 	}
-	else if (*path_name == '/')
-		update_absolute_path(path_name, sh_var);
+	cd_error(path_name);
+	free(path_name);
+	return (1);
+}
+
+static int	builtin_cd_core(char *path_name, t_sh_var *sh_var)
+{
+	char	*dst_path;
+
+	dst_path = cd_dst_path(path_name, sh_var);
+	if (chdir(dst_path) == -1)
+	{
+		free(dst_path);
+		return (fail_chdir(path_name, sh_var));
+	}
 	else
-		update_relative_path(ft_xstrdup(sh_var->pwd), path_name, sh_var);
-	free(cwd_path);
-	set_env_value("OLDPWD", sh_var->oldpwd, sh_var);
-	set_env_value("PWD", sh_var->pwd, sh_var);
-	return (0);
+	{
+		free(sh_var->oldpwd);
+		sh_var->oldpwd = sh_var->pwd;
+		sh_var->pwd = dst_path;
+		set_env_value("PWD", sh_var->pwd, sh_var);
+		set_env_value("OLDPWD", sh_var->oldpwd, sh_var);
+		free(path_name);
+		return (0);
+	}
 }
 
 int	builtin_cd(t_proc *proc, t_sh_var *sh_var)
@@ -63,11 +94,5 @@ int	builtin_cd(t_proc *proc, t_sh_var *sh_var)
 		if (*path_name == '\0')
 			return (free(path_name), 0);
 	}
-	if (chdir(path_name) == -1)
-	{
-		cd_error(path_name);
-		free(path_name);
-		return (1);
-	}
-	return (builtin_cd_pwd_update(path_name, sh_var));
+	return (builtin_cd_core(path_name, sh_var));
 }

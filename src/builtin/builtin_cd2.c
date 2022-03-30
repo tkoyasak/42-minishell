@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 19:21:10 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 15:05:01 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 22:51:44 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ static void	concatenate_path(char **updated_path, char *splitted_str, \
 	}
 }
 
-void	update_relative_path(char *old_pwd, char *path_name, \
-											 t_sh_var *sh_var)
+static char	*search_from_relative_path(char *old_pwd, char *path_name)
 {
 	char	*updated_path;
 	char	**splitted_str;
@@ -62,13 +61,12 @@ void	update_relative_path(char *old_pwd, char *path_name, \
 	}
 	ft_split_free(head);
 	free(old_pwd);
-	free(path_name);
 	if (ft_strcmp(updated_path, "") == 0)
 		ft_strlcat(updated_path, "/", len);
-	sh_var->pwd = updated_path;
+	return (updated_path);
 }
 
-void	update_absolute_path(char *path_name, t_sh_var *sh_var)
+static char	*search_from_absolute_path(char *path_name)
 {
 	int		idx;
 
@@ -81,11 +79,22 @@ void	update_absolute_path(char *path_name, t_sh_var *sh_var)
 	if (ft_strcmp(&(path_name[idx]), "/") == 0 || \
 				ft_strcmp(&(path_name[idx]), "//") == 0)
 	{
-		sh_var->pwd = ft_xstrdup(&(path_name[idx]));
-		free(path_name);
-		return ;
+		return (ft_xstrdup(&(path_name[idx])));
 	}
-	update_relative_path(ft_xstrdup(""), \
-			ft_xstrdup(&(path_name[idx + 1])), sh_var);
-	free(path_name);
+	return (search_from_relative_path(ft_xstrdup(""), &path_name[idx + 1]));
+}
+
+char	*cd_dst_path(char *path_name, t_sh_var *sh_var)
+{
+	char	*no_dot_pwd_path;
+	char	*dst_path;
+
+	if (*path_name == '/')
+		dst_path = search_from_absolute_path(path_name);
+	else
+	{
+		no_dot_pwd_path = search_from_absolute_path(sh_var->pwd);
+		dst_path = search_from_relative_path(no_dot_pwd_path, path_name);
+	}
+	return (dst_path);
 }
