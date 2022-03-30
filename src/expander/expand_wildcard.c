@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_wildcard.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:17 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/29 16:56:52 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 00:15:56 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,20 @@ static void	swap_expd(t_expd **a, t_expd **b)
 
 static t_expd	**bubble_expd_sort(t_expd **expd_list, int size)
 {
-	int	target;
+	int	idx;
 	int	end;
 
-	target = 0;
+	idx = 0;
 	end = size - 1;
-	while (target < end)
+	while (idx < end)
 	{
-		while (target < end)
+		while (idx < end)
 		{
-			if (ft_strcmp(expd_list[target]->str, expd_list[target + 1]->str) > 0)
-				swap_expd(&(expd_list[target]), &(expd_list[target + 1]));
-			target++;
+			if (ft_strcmp(expd_list[idx]->str, expd_list[idx + 1]->str) > 0)
+				swap_expd(&(expd_list[idx]), &(expd_list[idx + 1]));
+			idx++;
 		}
-		target = 0;
+		idx = 0;
 		end--;
 	}
 	return (expd_list);
@@ -50,7 +50,7 @@ static void	sort_expd_list(t_list *lst)
 	int		idx;
 
 	size = ft_lstsize(lst);
-	expd_list = (t_expd **)malloc(sizeof(t_expd *) * size);
+	expd_list = (t_expd **)ft_xmalloc(sizeof(t_expd *) * size);
 	itr = lst;
 	idx = 0;
 	while (itr)
