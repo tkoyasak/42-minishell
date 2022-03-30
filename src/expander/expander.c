@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:17:10 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 23:19:36 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 23:48:40 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,8 @@ void	expander(t_expr *expr, t_sh_var *sh_var)
 	while (itr)
 	{
 		handle_proc(&((t_proc *)(itr->content))->token_list, sh_var);
-		g_exit_status = 0;
+		if (itr->next)
+			g_exit_status = 0;
 		itr = itr->next;
 	}
 }

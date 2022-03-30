@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_single_process.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:41 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 15:38:40 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/30 23:44:20 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,16 @@ int	exec_single_proc(t_expr *expr, t_sh_var *sh_var)
 {
 	t_list		*proc_list;
 	t_proc		*proc;
+	int			res;
 
 	proc_list = expr->proc_list;
 	proc = proc_list->content;
-	g_exit_status = set_io_and_commands(proc, sh_var);
-	if (g_exit_status)
+	res = set_io_and_commands(proc, sh_var);
+	if (res)
+	{
+		g_exit_status = 1;
 		return (g_exit_status);
+	}
 	if (proc->command == NULL)
 		return (0);
 	if (is_builtin(proc->command[0]))
