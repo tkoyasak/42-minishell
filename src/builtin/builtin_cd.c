@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/29 19:22:10 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/30 15:04:18 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ static int	builtin_cd_pwd_update(char *path_name, t_sh_var *sh_var)
 			No such file or directory", STDERR_FILENO);
 		relative_path = ft_xstrjoin("/", path_name);
 		sh_var->pwd = ft_xstrjoin_free(sh_var->pwd, relative_path, true);
+		free(path_name);
 	}
 	else if (*path_name == '/')
 		update_absolute_path(path_name, sh_var);
 	else
 		update_relative_path(ft_xstrdup(sh_var->pwd), path_name, sh_var);
-	free(path_name);
 	free(cwd_path);
 	set_env_value("OLDPWD", sh_var->oldpwd, sh_var);
 	set_env_value("PWD", sh_var->pwd, sh_var);
