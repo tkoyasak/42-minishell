@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:59:17 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/26 10:56:00 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/31 11:05:34 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static bool	is_valid_option(char *str)
 	if (*str != '-')
 		return (false);
 	str++;
+	if (*str != 'n')
+		return (false);
 	while (*str)
 	{
 		if (*str != 'n')
