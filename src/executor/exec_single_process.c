@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_single_process.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:41 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 23:44:20 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/03/31 10:42:30 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,14 @@
 static void	exec_single_child(t_expr *expr, t_proc *proc, int cmd_idx, \
 															t_sh_var *sh_var)
 {
-	char		*cmd;
 	char		*fullpath_cmd;
 	struct stat	buf;
 
 	xsignal(SIGINT, SIG_DFL);
 	xsignal(SIGQUIT, SIG_DFL);
-	cmd = ((t_token *)(proc->token_list->content))->str;
 	dup2_func(expr, proc, cmd_idx);
 	close_func(expr, proc, cmd_idx);
-	if (g_exit_status)
-		exit(1);
-	fullpath_cmd = get_fullpath_cmd(cmd, sh_var);
+	fullpath_cmd = get_fullpath_cmd(proc->command[0], sh_var);
 	if (fullpath_cmd)
 	{
 		safe_func(stat(fullpath_cmd, &buf));
