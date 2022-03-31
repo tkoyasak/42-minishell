@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:35 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 23:10:33 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/03/31 14:52:32 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,20 @@ static bool	is_valid_delim_or_io(char *p)
 	idx = 0;
 	if (p[0] && ft_strchr(PAREN_CHAR, p[0]))
 		return (true);
-	while (p[idx] && ft_strchr(RESERVED_CHAR, p[idx]))
+	while (p[idx] && ft_strchr(RESERVED_CHAR, p[idx]) && p[idx] == p[0])
 		idx++;
 	if (idx == 1 && p[0] == '&')
 		is_valid = false;
-	if (idx == 2 && (p[0] != p[1] || p[0] == ';'))
+	if (idx == 2 && p[0] == ';')
 		is_valid = false;
 	if (idx > 2)
 		is_valid = false;
 	if (!is_valid)
+	{
+		if (idx > 2)
+			idx = 2;
 		lexer_error(p, idx);
+	}
 	return (is_valid);
 }
 
@@ -40,7 +44,7 @@ static int	token_reserved_len(char *p, char *defined_char)
 	int	idx;
 
 	idx = 0;
-	while (p[idx] && ft_strchr(defined_char, p[idx]))
+	while (p[idx] && ft_strchr(defined_char, p[idx]) && p[idx] == p[0])
 		idx++;
 	return (idx);
 }
