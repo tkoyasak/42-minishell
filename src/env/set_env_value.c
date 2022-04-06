@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:57 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 15:44:09 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/06 22:57:40 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static t_list	*set_new_env(char *key, char *val)
 	return (ft_xlstnew(env));
 }
 
-void	set_env_value(char *key, char *val, t_sh_var *sh_var)
+static void	setup_env_value(char *key, char *val, t_sh_var *sh_var, bool is_set)
 {
 	t_list	*itr;
 	char	*old_val;
@@ -40,7 +40,10 @@ void	set_env_value(char *key, char *val, t_sh_var *sh_var)
 			old_val = ((t_env *)(itr->content))->val;
 			if (val)
 			{
-				((t_env *)(itr->content))->val = ft_xstrdup(val);
+				if (is_set)
+					((t_env *)(itr->content))->val = ft_xstrdup(val);
+				else
+					((t_env *)(itr->content))->val = ft_xstrjoin(old_val, val);
 				free(old_val);
 			}
 			return ;
@@ -49,4 +52,14 @@ void	set_env_value(char *key, char *val, t_sh_var *sh_var)
 	}
 	if (itr == NULL)
 		ft_lstadd_back(&(sh_var->env_list), set_new_env(key, val));
+}
+
+void	set_env_value(char *key, char *val, t_sh_var *sh_var)
+{
+	setup_env_value(key, val, sh_var, true);
+}
+
+void	append_env_value(char *key, char *val, t_sh_var *sh_var)
+{
+	setup_env_value(key, val, sh_var, false);
 }

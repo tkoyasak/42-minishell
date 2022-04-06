@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:19 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/28 15:59:14 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/06 22:42:04 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ static int	validate_arg(char *arg)
 	if (ft_strlen(arg) == 0)
 		return (export_error(arg));
 	itr = arg;
-	if (ft_isdigit(*itr) || *itr == '=')
+	if (ft_isdigit(*itr) || *itr == '=' || *itr == '+')
 		return (export_error(arg));
 	while (*itr && (ft_isalnum(*itr) || *itr == '_'))
 		itr++;
-	if (*itr == '\0' || *itr == '=')
+	if (*itr == '\0' || *itr == '=' || !ft_strncmp(itr, "+=", 2))
 		return (0);
 	else
 		return (export_error(arg));
@@ -55,24 +55,29 @@ static int	validate_arg(char *arg)
 
 static int	builtin_export_core(char *arg, t_sh_var *sh_var)
 {
-	int		ret;
+	char	*itr;
 	char	*key;
 	char	*val;
 
-	ret = 0;
 	if (validate_arg(arg))
-		ret = 1;
-	else if (!ft_strchr(arg, '='))
+		return (1);
+	if (!ft_strchr(arg, '='))
 		set_env_value(arg, NULL, sh_var);
 	else
 	{
-		key = ft_xstrndup(arg, ft_strchr(arg, '=') - arg);
-		val = ft_xstrdup(ft_strchr(arg, '=') + 1);
-		set_env_value(key, val, sh_var);
+		itr = arg;
+		while (*itr && (ft_isalnum(*itr) || *itr == '_'))
+			itr++;
+		key = ft_xstrndup(arg, itr - arg);
+		val = ft_xstrdup(itr + 1 + (*itr == '+'));
+		if (*itr == '=')
+			set_env_value(key, val, sh_var);
+		else
+			append_env_value(key, val, sh_var);
 		free(key);
 		free(val);
 	}
-	return (ret);
+	return (0);
 }
 
 int	builtin_export(t_proc *proc, t_sh_var *sh_var)
