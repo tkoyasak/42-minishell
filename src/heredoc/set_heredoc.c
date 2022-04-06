@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_heredoc.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:57:02 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 15:39:04 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/06 20:22:20 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 
 	xsignal(SIGINT, SIG_DFL);
 	safe_func(close(proc->here_pipefd[PIPEIN]));
+	in_quote = false;
 	limiter = remove_quote_heredoc(limiter, &in_quote);
 	temp = readline(HEREDOC_PROMPT);
 	while (temp && ft_strcmp(temp, limiter))
