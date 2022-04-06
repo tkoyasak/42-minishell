@@ -12,8 +12,8 @@ SRCS		:= src/utils/delete_content.c src/utils/delete_content2.c src/utils/error_
 
 
 OBJROOT		:= obj
-OBJDIRS		:= $(subst $(SRCROOT), $(OBJROOT), $(SRCDIRS))
-OBJS		:= $(subst $(SRCROOT), $(OBJROOT), $(SRCS:.c=.o))
+OBJDIRS		:= $(patsubst $(SRCROOT)/%, $(OBJROOT)/%, $(SRCDIRS))
+OBJS		:= $(patsubst $(SRCROOT)/%, $(OBJROOT)/%, $(SRCS:.c=.o))
 
 DEPS		:= $(OBJS:.o=.d)
 
@@ -32,7 +32,7 @@ $(NAME): $(LIBFTDIR)/$(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $^ $(LFLAGS) -o $@
 
 $(OBJROOT)/%.o: $(SRCROOT)/%.c
-	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
+	@if [ ! -e $(@D) ]; then mkdir -p $(@D); fi
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 $(LIBFTDIR)/$(LIBFT):
