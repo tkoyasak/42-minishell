@@ -12,16 +12,17 @@ SRCS		:= src/utils/delete_content.c src/utils/delete_content2.c src/utils/error_
 
 
 OBJROOT		:= obj
-OBJDIRS		:= $(subst $(SRCROOT), $(OBJROOT), $(SRCDIRS))
-OBJS		:= $(subst $(SRCROOT), $(OBJROOT), $(SRCS:.c=.o))
+OBJDIRS		:= $(patsubst $(SRCROOT)/%, $(OBJROOT)/%, $(SRCDIRS))
+OBJS		:= $(patsubst $(SRCROOT)/%, $(OBJROOT)/%, $(SRCS:.c=.o))
 
 DEPS		:= $(OBJS:.o=.d)
+
+INCDIRS		:= includes $(LIBFTDIR)/includes $(READLINEDIR)/include
+INCLUDE		:= $(addprefix -I, $(INCDIRS))
 
 CC			:= gcc
 CFLAGS		:= -Wall -Wextra -Werror -MMD -MP
 LFLAGS		:= -L$(LIBFTDIR) -lft -L$(READLINEDIR)/lib -lreadline -lhistory
-INCLUDE		:= -Iincludes -I$(LIBFTDIR)/includes -I$(READLINEDIR)/include
-
 
 RM			:= rm -f
 
@@ -32,7 +33,7 @@ $(NAME): $(LIBFTDIR)/$(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $^ $(LFLAGS) -o $@
 
 $(OBJROOT)/%.o: $(SRCROOT)/%.c
-	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 $(LIBFTDIR)/$(LIBFT):
