@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:59:56 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 23:35:30 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/06 20:41:50 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ static int	a_to_uchar(const char *str)
 		sign = 44 - *str;
 		str++;
 	}
-	if (ft_isdigit(*str) == false)
-		return (-1);
 	while (ft_isdigit(*str))
 	{
 		if (is_over(ret, *str - '0', sign))
@@ -44,6 +42,8 @@ static int	a_to_uchar(const char *str)
 		ret = ret * 10 + (*str - '0');
 		str++;
 	}
+	while (ft_isspace(*str))
+		str++;
 	if (*str)
 		return (-1);
 	return ((unsigned char)(ret * sign));
