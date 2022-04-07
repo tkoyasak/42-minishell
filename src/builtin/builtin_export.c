@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:19 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/04/06 22:42:04 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/07 14:43:57 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,15 @@ int	builtin_export(t_proc *proc, t_sh_var *sh_var)
 	t_list	*itr;
 	int		ret;
 
-	ret = 0;
 	if (ft_lstsize((t_list *)(proc->token_list)) == 1)
 	{
 		sort_env_list(sh_var->env_list->next);
 		builtin_export_print(sh_var->env_list);
+		return (fd_error_handler("export"));
 	}
 	else
 	{
+		ret = 0;
 		itr = proc->token_list->next;
 		while (itr)
 		{
@@ -100,6 +101,6 @@ int	builtin_export(t_proc *proc, t_sh_var *sh_var)
 				ret = 1;
 			itr = itr->next;
 		}
+		return (ret);
 	}
-	return (ret);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:59:17 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/31 11:05:34 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/07 14:43:26 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	builtin_echo(t_proc *proc, t_sh_var *sh_var)
 	if (itr == NULL)
 	{
 		printf("\n");
-		return (0);
+		return (fd_error_handler("echo"));
 	}
 	if (is_valid_option(((t_token *)(itr->content))->str))
 		has_endl = false;
@@ -56,5 +56,5 @@ int	builtin_echo(t_proc *proc, t_sh_var *sh_var)
 	}
 	if (has_endl)
 		printf("\n");
-	return (0);
+	return (fd_error_handler("echo"));
 }

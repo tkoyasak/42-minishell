@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:13 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 21:05:55 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/07 14:43:41 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,5 @@ int	builtin_env(t_proc *proc, t_sh_var *sh_var)
 		}
 		itr = itr->next;
 	}
-	return (0);
+	return (fd_error_handler("env"));
 }
