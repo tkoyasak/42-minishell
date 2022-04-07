@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:22:15 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 15:37:38 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/07 11:26:29 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,7 @@ char		*ft_xstrjoin_free(char *s1, char *s2, bool is_s2_free);
 char		**ft_xsplit(char *s, char c);
 char		*ft_xitoa(int n);
 t_list		*ft_xlstnew(void *content);
+
+void	detect_leak(int line, char *file); //削除
 
 #endif
