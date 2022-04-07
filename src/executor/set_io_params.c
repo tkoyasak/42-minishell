@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:43:21 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/26 11:01:42 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/07 14:38:23 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static void	open_error_handler(char *filename)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	perror(filename);
+	errno = 0;
 }
 
 static int	set_io_filename(char **target_filename, char *str, t_sh_var *sh_var)

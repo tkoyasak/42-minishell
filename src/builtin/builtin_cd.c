@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:57:29 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 23:33:22 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/07 14:38:10 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static void	cd_error(char *path_name)
 {
 	ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
 	perror(path_name);
+	errno = 0;
 }
 
 static void	no_current_dir(void)
