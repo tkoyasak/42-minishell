@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:12:27 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/08 16:45:20 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/08 20:57:52 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	exec_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
 	char		*cmd;
 	char		*fullpath_cmd;
 	int			res;
+	char		**environ;
 
 	xsignal(SIGINT, SIG_DFL);
 	xsignal(SIGQUIT, SIG_DFL);
@@ -54,6 +55,8 @@ void	exec_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
 	fullpath_cmd = get_fullpath_cmd(cmd, sh_var);
 	if (fullpath_cmd)
 		exit_if_directory(fullpath_cmd);
-	execve(fullpath_cmd, proc->command, get_environ(sh_var));
+	environ = get_environ(sh_var);
+	execve(fullpath_cmd, proc->command, environ);
+	ft_split_free(environ);
 	exit(NO_CMD);
 }
