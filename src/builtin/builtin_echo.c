@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:59:17 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/07 14:43:26 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/08 20:29:39 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,26 +32,28 @@ static bool	is_valid_option(char *str)
 
 int	builtin_echo(t_proc *proc, t_sh_var *sh_var)
 {
-	t_list			*itr;
 	bool			has_endl;
+	int				i;
+	char			**command;
 
 	(void)sh_var;
 	has_endl = true;
-	itr = proc->token_list->next;
-	if (itr == NULL)
+	command = proc->command;
+	if (command[1] == NULL)
 	{
 		printf("\n");
 		return (fd_error_handler("echo"));
 	}
-	if (is_valid_option(((t_token *)(itr->content))->str))
+	if (is_valid_option(command[1]))
 		has_endl = false;
-	while (itr && is_valid_option(((t_token *)(itr->content))->str))
-		itr = itr->next;
-	while (itr)
+	i = 1;
+	while (command[i] && is_valid_option(command[i]))
+		i++;
+	while (command[i])
 	{
-		printf("%s", ((t_token *)(itr->content))->str);
-		itr = itr->next;
-		if (itr)
+		printf("%s", command[i]);
+		i++;
+		if (command[i])
 			printf(" ");
 	}
 	if (has_endl)

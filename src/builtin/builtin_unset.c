@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_unset.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:24 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 00:04:16 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/08 20:28:19 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,17 +65,15 @@ static int	builtin_unset_core(char *key, t_sh_var *sh_var)
 int	builtin_unset(t_proc *proc, t_sh_var *sh_var)
 {
 	int		ret;
-	t_list	*itr;
-	char	*key;
+	int		idx;
 
+	idx = 1;
 	ret = 0;
-	itr = proc->token_list->next;
-	while (itr)
+	while (proc->command[idx])
 	{
-		key = ((t_token *)(itr->content))->str;
-		if (builtin_unset_core(key, sh_var))
+		if (builtin_unset_core(proc->command[idx], sh_var))
 			ret = 1;
-		itr = itr->next;
+		idx++;
 	}
 	return (ret);
 }
