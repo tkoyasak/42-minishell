@@ -3,19 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   convert_to_expression_tree.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:42 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/26 10:52:06 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/08 14:40:23 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static	t_list	*init_proc(t_list *token_list)
+{
+	t_proc	*proc;
+	int 	i;
+	
+	proc = ft_xcalloc(1, sizeof(t_proc));
+	proc->token_list = token_list;
+	i = -1;
+	while (++i < 2)
+	{
+		proc->fd[i] = FD_NONE;
+		proc->fd_backup[i] = FD_NONE;
+		proc->here_pipefd[i] = FD_NONE;
+	}
+	return (ft_xlstnew(proc));
+}
+
 static t_list	*convert_to_proc_list(t_node *tree)
 {
 	t_list	*proc_list;
-	t_proc	*proc;
 
 	proc_list = NULL;
 	if (tree->kind == ND_PIPE)
@@ -27,10 +43,8 @@ static t_list	*convert_to_proc_list(t_node *tree)
 	}
 	else
 	{
-		proc = ft_xcalloc(1, sizeof(t_proc));
-		proc->token_list = tree->token_list;
+		proc_list = init_proc(tree->token_list);
 		tree->token_list = NULL;
-		proc_list = ft_xlstnew(proc);
 	}
 	return (proc_list);
 }

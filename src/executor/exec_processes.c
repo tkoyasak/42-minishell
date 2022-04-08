@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_processes.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:13:45 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 15:38:19 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/08 16:03:08 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, \
 	if (cmd_idx < expr->proc_cnt - 1)
 		create_pipe(expr, cmd_idx);
 	xsignal(SIGINT, SIG_IGN);
+	set_command(proc);
 	expr->pid[cmd_idx] = safe_func(fork());
 	if (expr->pid[cmd_idx] == 0)
 		exec_child(expr, proc, cmd_idx, sh_var);
@@ -33,9 +34,9 @@ static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, \
 		safe_func(close(expr->pipefd[cmd_idx - 1][PIPEIN]));
 		safe_func(close(expr->pipefd[cmd_idx - 1][PIPEOUT]));
 	}
-	if (proc->fd[0])
+	if (proc->fd[0] != FD_NONE)
 		safe_func(close(proc->fd[0]));
-	if (proc->fd[1])
+	if (proc->fd[1] != FD_NONE)
 		safe_func(close(proc->fd[1]));
 }
 

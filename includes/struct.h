@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   struct.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:16:13 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 01:39:40 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/08 14:15:45 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ typedef struct s_proc
 	t_list		*token_list;
 	t_io_kind	kind[2];
 	int			fd[2];
+	int			fd_backup[2];
 	char		*filename[2];
 	int			here_pipefd[2];
 	int			here_fd;
