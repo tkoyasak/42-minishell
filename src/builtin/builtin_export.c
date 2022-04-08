@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:19 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/04/07 14:43:57 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/08 20:26:14 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,11 @@ static int	builtin_export_core(char *arg, t_sh_var *sh_var)
 
 int	builtin_export(t_proc *proc, t_sh_var *sh_var)
 {
-	t_list	*itr;
 	int		ret;
+	int		idx;
 
-	if (ft_lstsize((t_list *)(proc->token_list)) == 1)
+	idx = 1;
+	if (proc->command[idx] == NULL)
 	{
 		sort_env_list(sh_var->env_list->next);
 		builtin_export_print(sh_var->env_list);
@@ -94,12 +95,11 @@ int	builtin_export(t_proc *proc, t_sh_var *sh_var)
 	else
 	{
 		ret = 0;
-		itr = proc->token_list->next;
-		while (itr)
+		while (proc->command[idx])
 		{
-			if (builtin_export_core(((t_token *)(itr->content))->str, sh_var))
+			if (builtin_export_core(proc->command[idx], sh_var))
 				ret = 1;
-			itr = itr->next;
+			idx++;
 		}
 		return (ret);
 	}
