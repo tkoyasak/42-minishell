@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_single_process.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:41 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/31 10:42:30 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/08 15:21:17 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	exec_single_proc(t_expr *expr, t_sh_var *sh_var)
 		g_exit_status = 1;
 		return (g_exit_status);
 	}
-	if (proc->command == NULL)
+	if (proc->command[0] == NULL)
 		return (0);
 	if (is_builtin(proc->command[0]))
 	{

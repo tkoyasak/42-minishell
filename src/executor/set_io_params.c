@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:43:21 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/08 10:36:28 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/08 14:57:00 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,54 +38,37 @@ static int	set_io_filename(char **target_filename, char *str, t_sh_var *sh_var)
 	return (0);
 }
 
-static int	set_input(t_proc *proc, t_list *itr, \
-										t_io_kind kind, t_sh_var *sh_var)
+static int	open_file(char *file, t_io_kind kind)
 {
-	proc->kind[0] = kind;
 	if (kind == IO_INPUT)
-	{
-		if (set_io_filename(&proc->filename[0], \
-					((t_token *)(itr->content))->str, sh_var))
-		{
-			proc->kind[0] = IO_NONE;
-			proc->kind[1] = IO_NONE;
-			return (-1);
-		}
-		if (proc->fd[0])
-			safe_func(close(proc->fd[0]));
-		proc->fd[0] = open(proc->filename[0], O_RDONLY);
-		if (proc->fd[0] == -1)
-		{
-			open_error_handler(proc->filename[0]);
-			g_exit_status = 1;
-			return (-1);
-		}
-	}
-	return (0);
+		return (open(file, O_RDONLY));
+	else if (kind == IO_OUTPUT)
+		return (open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644));
+	else
+		return (open(file, O_WRONLY | O_CREAT | O_APPEND, 0644));		
 }
 
-static int	set_output(t_proc *proc, t_list *itr, \
+static int	open_io_file(t_proc *proc, t_list *itr, \
 										t_io_kind kind, t_sh_var *sh_var)
 {
-	if (proc->fd[1])
-		safe_func(close(proc->fd[1]));
-	proc->kind[1] = kind;
-	if (set_io_filename(&proc->filename[1], \
-						((t_token *)(itr->content))->str, sh_var))
-	{
-		proc->kind[0] = IO_NONE;
-		proc->kind[1] = IO_NONE;
-		return (-1);
-	}
-	if (kind == IO_OUTPUT)
-		proc->fd[1] = \
-			open(proc->filename[1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	int io;
+
+	if (kind == IO_INPUT || kind == IO_HEREDOC)
+		io = 0;
 	else
-		proc->fd[1] = \
-			open(proc->filename[1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (proc->fd[1] == -1)
+		io = 1;
+	proc->kind[io] = kind;
+	if (kind == IO_HEREDOC)
+		return (0);
+	if (proc->fd[io] != FD_NONE)
+		safe_func(close(proc->fd[io]));
+	if (set_io_filename(&proc->filename[io], \
+						((t_token *)(itr->content))->str, sh_var))
+		return (-1);
+	proc->fd[io] = open_file(proc->filename[io], kind);
+	if (proc->fd[io] == FD_NONE)
 	{
-		open_error_handler(proc->filename[1]);
+		open_error_handler(proc->filename[io]);
 		g_exit_status = 1;
 		return (-1);
 	}
@@ -105,14 +88,9 @@ int	set_io_params(t_proc *proc, t_sh_var *sh_var)
 		{
 			kind = get_io_kind(((t_token *)(itr->content))->str);
 			itr = itr->next;
-			if (kind == IO_INPUT || kind == IO_HEREDOC)
+			if (kind)
 			{
-				if (set_input(proc, itr, kind, sh_var) == -1)
-					return (-1);
-			}
-			else if (kind == IO_OUTPUT || kind == IO_APPEND)
-			{
-				if (set_output(proc, itr, kind, sh_var) == -1)
+				if (open_io_file(proc, itr, kind, sh_var) == -1)
 					return (-1);
 			}
 		}

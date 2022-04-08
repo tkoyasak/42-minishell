@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:52:19 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/30 23:38:00 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/08 15:53:38 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,66 +27,36 @@ t_io_kind	get_io_kind(char *redirect_str)
 	return (IO_NONE);
 }
 
-static void	remove_one_token(t_list **itr)
-{
-	t_list	*tmp;
-
-	tmp = (*itr)->next;
-	ft_lstdelone(*itr, delete_token);
-	*itr = tmp;
-}
-
-static void	remove_io_token(t_proc *proc)
-{
-	t_list	*itr;
-	t_list	*head;
-	t_list	*tmp;
-
-	head = NULL;
-	itr = proc->token_list;
-	while (itr)
-	{
-		if (((t_token *)(itr->content))->kind == TK_IO)
-		{
-			remove_one_token(&itr);
-			remove_one_token(&itr);
-		}
-		else
-		{
-			tmp = itr;
-			itr = itr->next;
-			tmp->next = NULL;
-			ft_lstadd_back(&head, tmp);
-		}
-	}
-	proc->token_list = head;
-}
-
 static void	set_command(t_proc *proc)
 {
 	t_list	*itr;
+	int		list_size;
 	int		cmd_idx;
+	t_token	*token;
 
-	if (ft_lstsize(proc->token_list) == 0)
-		return ;
-	proc->command = \
-			ft_xcalloc(ft_lstsize(proc->token_list) + 1, sizeof(char *));
+	list_size = ft_lstsize(proc->token_list);
+	proc->command = ft_xcalloc(list_size + 1, sizeof(char *));
 	itr = proc->token_list;
 	cmd_idx = 0;
 	while (itr)
 	{
-		proc->command[cmd_idx] = ((t_token *)(itr->content))->str;
+		token = itr->content;
+		if (token->kind == TK_IO)
+			itr = itr->next;
+		else
+		{
+			proc->command[cmd_idx] = token->str;
+			cmd_idx++;
+		}
 		itr = itr->next;
-		cmd_idx++;
 	}
 }
 
 /*  set input/output parameters ans commands  */
 int	set_io_and_commands(t_proc *proc, t_sh_var *sh_var)
 {
+	set_command(proc);
 	if (set_io_params(proc, sh_var))
 		return (1);
-	remove_io_token(proc);
-	set_command(proc);
 	return (0);
 }

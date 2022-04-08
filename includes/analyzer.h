@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 14:07:20 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 11:01:26 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/08 14:31:38 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # define REDIRECT_CHAR "<>"
 # define QUOTE_CHAR "\"\'"
 # define PAREN_CHAR "()"
+
+# define FD_NONE -1
 
 /* lexer */
 int		lexer(char *line, t_list **token_list);
