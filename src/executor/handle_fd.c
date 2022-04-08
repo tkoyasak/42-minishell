@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:39:54 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 16:47:33 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/08 13:54:32 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,8 @@ void	close_func(t_expr *expr, t_proc *proc, const int cmd_idx)
 		safe_func(close(expr->pipefd[cmd_idx][PIPEIN]));
 		safe_func(close(expr->pipefd[cmd_idx][PIPEOUT]));
 	}
+	if (proc->fd[0])
+		close(proc->fd[0]);
+	if (proc->fd[1])
+		close(proc->fd[1]);
 }
