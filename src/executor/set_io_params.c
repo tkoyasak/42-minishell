@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_io_params.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:43:21 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/07 14:38:23 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/08 10:36:28 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static int	set_input(t_proc *proc, t_list *itr, \
 		}
 		if (proc->fd[0])
 			safe_func(close(proc->fd[0]));
-		proc->fd[0] = open(proc->filename[0], R_OK);
+		proc->fd[0] = open(proc->filename[0], O_RDONLY);
 		if (proc->fd[0] == -1)
 		{
 			open_error_handler(proc->filename[0]);
@@ -79,10 +79,10 @@ static int	set_output(t_proc *proc, t_list *itr, \
 	}
 	if (kind == IO_OUTPUT)
 		proc->fd[1] = \
-			open(proc->filename[1], O_CREAT | O_TRUNC | W_OK, 0644);
+			open(proc->filename[1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else
 		proc->fd[1] = \
-			open(proc->filename[1], O_CREAT | O_APPEND | W_OK, 0644);
+			open(proc->filename[1], O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (proc->fd[1] == -1)
 	{
 		open_error_handler(proc->filename[1]);
