@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:52:19 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/08 15:53:38 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/08 16:45:53 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_io_kind	get_io_kind(char *redirect_str)
 	return (IO_NONE);
 }
 
-static void	set_command(t_proc *proc)
+void	set_command(t_proc *proc)
 {
 	t_list	*itr;
 	int		list_size;
@@ -50,13 +50,4 @@ static void	set_command(t_proc *proc)
 		}
 		itr = itr->next;
 	}
-}
-
-/*  set input/output parameters ans commands  */
-int	set_io_and_commands(t_proc *proc, t_sh_var *sh_var)
-{
-	set_command(proc);
-	if (set_io_params(proc, sh_var))
-		return (1);
-	return (0);
 }

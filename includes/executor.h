@@ -32,8 +32,10 @@ void		executor(t_node *tree, t_sh_var *sh_var);
 int			set_heredoc(t_node *tree, t_sh_var *sh_var);
 int			exec_builtin(t_proc *proc, t_sh_var *sh_var);
 bool		is_builtin(char *cmd);
+char		*first_command(t_list *token_list);
 int			exec_procs(t_expr *expr, t_sh_var *sh_var);
-int			exec_single_proc(t_expr *expr, t_sh_var *sh_var);
+// int			exec_single_proc(t_expr *expr, t_sh_var *sh_var);
+int			exec_single_builtin(t_expr *expr, t_sh_var *sh_var);
 void		exec_child(t_expr *expr, t_proc *proc, \
 						int cmd_idx, t_sh_var *sh_var);
 void		dup2_func(t_expr *expr, t_proc *proc, const int cmd_idx);
@@ -44,6 +46,7 @@ int			path_error(char *fullpath_cmd);
 t_io_kind	get_io_kind(char *redirect_str);
 int			set_io_params(t_proc *proc, t_sh_var *sh_var);
 int			set_io_and_commands(t_proc *proc, t_sh_var *sh_var);
+void		set_command(t_proc *proc);
 
 /*  heredoc  */
 char		*expander_heredoc(char *str, t_sh_var *sh_var);

@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:12:27 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/08 15:21:07 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/08 16:45:20 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	exec_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
 
 	xsignal(SIGINT, SIG_DFL);
 	xsignal(SIGQUIT, SIG_DFL);
-	res = set_io_and_commands(proc, sh_var);
+	res = set_io_params(proc, sh_var);
 	dup2_func(expr, proc, cmd_idx);
 	close_func(expr, proc, cmd_idx);
 	if (res)

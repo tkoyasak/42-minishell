@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:13:45 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/08 14:32:01 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/08 16:03:08 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, \
 	if (cmd_idx < expr->proc_cnt - 1)
 		create_pipe(expr, cmd_idx);
 	xsignal(SIGINT, SIG_IGN);
+	set_command(proc);
 	expr->pid[cmd_idx] = safe_func(fork());
 	if (expr->pid[cmd_idx] == 0)
 		exec_child(expr, proc, cmd_idx, sh_var);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:11:26 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/03/25 23:24:10 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/08 16:32:31 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ bool	is_builtin(char *cmd)
 			{"echo", "cd", "pwd", "export", "unset", "env", "exit"};
 	int			idx;
 
+	if (cmd == NULL)
+		return (false);
 	idx = 0;
 	while (idx < 7)
 	{
@@ -49,4 +51,21 @@ int	exec_builtin(t_proc *proc, t_sh_var *sh_var)
 		idx++;
 	}
 	return (1);
+}
+
+char	*first_command(t_list *token_list)
+{
+	t_list	*itr;
+	t_token	*token;
+
+	itr = token_list;
+	while (itr)
+	{
+		token = itr->content;
+		if (token->kind == TK_IO)
+			itr = itr->next->next;
+		else
+			return (token->str);
+	}
+	return (NULL);
 }
