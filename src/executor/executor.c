@@ -25,8 +25,6 @@ static void	init_expr(t_expr *expr)
 /*  expression is between semicolon, double ampersand, and double pipe  */
 static void	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 {
-	int		stdin_copy;
-	int		stdout_copy;
 	t_list	*token_list;
 
 	init_expr(expr);
@@ -35,15 +33,7 @@ static void	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 	if (token_list == NULL)
 		;
 	else if (expr->proc_cnt == 1 && is_builtin(first_command(token_list)))
-	{
-		stdin_copy = safe_func(dup(STDIN_FILENO));
-		stdout_copy = safe_func(dup(STDOUT_FILENO));
 		g_exit_status = exec_single_builtin(expr, sh_var);
-		safe_func(dup2(stdin_copy, STDIN_FILENO));
-		safe_func(dup2(stdout_copy, STDOUT_FILENO));
-		safe_func(close(stdin_copy));
-		safe_func(close(stdout_copy));
-	}
 	else
 		g_exit_status = exec_procs(expr, sh_var);
 }
