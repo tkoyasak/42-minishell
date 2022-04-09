@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:43:21 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/08 14:57:00 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/09 18:20:19 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 static void	open_error_handler(char *filename)
 {
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
-	perror(filename);
+	print_error_msg(filename, strerror(errno));
 	errno = 0;
 }
 
@@ -26,9 +25,7 @@ static int	set_io_filename(char **target_filename, char *str, t_sh_var *sh_var)
 	token_list = get_expanded_token_list(str, sh_var);
 	if (ft_lstsize(token_list) != 1)
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(str, STDERR_FILENO);
-		ft_putendl_fd(": ambiguous redirect", STDERR_FILENO);
+		print_error_msg(str, "ambiguous redirect");
 		ft_lstclear(&token_list, delete_token);
 		return (1);
 	}

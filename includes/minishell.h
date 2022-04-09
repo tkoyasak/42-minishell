@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:05:07 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/25 14:36:12 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/09 18:15:04 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@
 
 # define PROMPT "\x1b[36mminish$ \x1b[0m"
 # define HEREDOC_PROMPT "> "
+
+# define NO_CMD_MSG "command not found"
 
 extern volatile sig_atomic_t	g_exit_status;
 

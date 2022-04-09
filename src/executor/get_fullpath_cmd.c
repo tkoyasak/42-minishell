@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_fullpath_cmd.c                                 :+:      :+:    :+:   */
+/*   get_cmd_path.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:16:50 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/08 20:49:14 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/09 15:50:59 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,27 +21,37 @@ static void	free_str(char **str)
 	}
 }
 
-static void	cmd_not_found(char *cmd)
+static bool	exists_command(char *path)
 {
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
-	ft_putstr_fd(cmd, STDERR_FILENO);
-	ft_putendl_fd(": command not found", STDERR_FILENO);
+	struct stat	buf;
+
+	if (!path)
+		return (false);
+	if (stat(path, &buf) == -1)
+		return (false);
+	if (S_ISDIR(buf.st_mode))
+		return (false);
+	return (true);
 }
 
-static char	*get_fullcmd_core(char *cmd, char **all_paths)
+static char	*search_cmd_path(char *cmd, char **all_paths)
 {
 	int			path_index;
 	char		*fullcmd;
+	char		*cmd_candidate;
 	char		*temp;
 	struct stat	buf;
 
+	fullcmd = NULL;
 	path_index = -1;
 	while (all_paths[++path_index])
 	{
 		temp = ft_xstrjoin(all_paths[path_index], "/");
-		fullcmd = ft_xstrjoin_free(temp, cmd, false);
-		if (!(access(fullcmd, X_OK)))
+		cmd_candidate = ft_xstrjoin_free(temp, cmd, false);
+		if (exists_command(cmd_candidate))
 		{
+			free(fullcmd);
+			fullcmd = ft_xstrdup(cmd_candidate);
 			stat(fullcmd, &buf);
 			if (S_ISREG(buf.st_mode))
 			{
@@ -49,15 +59,15 @@ static char	*get_fullcmd_core(char *cmd, char **all_paths)
 				return (fullcmd);
 			}
 		}
-		free_str(&fullcmd);
+		free_str(&cmd_candidate);
 	}
-	cmd_not_found(cmd);
+	print_error_msg(cmd, NO_CMD_MSG);
 	ft_split_free(all_paths);
-	return (NULL);
+	exit(NO_CMD);
 }
 
 /*  return NULL if command not found  */
-char	*get_fullpath_cmd(char *cmd, t_sh_var *sh_var)
+char	*get_cmd_path(char *cmd, t_sh_var *sh_var)
 {
 	char	**all_paths;
 	char	*path_env;
@@ -65,21 +75,17 @@ char	*get_fullpath_cmd(char *cmd, t_sh_var *sh_var)
 	if (!cmd)
 		exit(EXIT_FAILURE);
 	if (!cmd[0])
-		return (cmd_not_found(cmd), NULL);
+		return (print_error_msg(cmd, NO_CMD_MSG), NULL);
 	if (ft_strcmp(cmd, ".") == 0)
 	{
-		ft_putendl_fd("minishell: .: filename argument required", \
-								STDERR_FILENO);
+		print_error_msg(".", "filename argument required");
 		exit(2);
 	}
-	if (!access(cmd, X_OK))
-	{
-		if (ft_strchr(cmd, '/'))
-			return (cmd);
-	}
+	if (ft_strchr(cmd, '/'))
+		return (cmd);
 	path_env = get_env_value_str("PATH", sh_var);
 	if (!path_env)
-		return (cmd_not_found(cmd), NULL);
+		return (print_error_msg(cmd, NO_CMD_MSG), NULL);
 	all_paths = ft_xsplit(path_env, ':');
-	return (get_fullcmd_core(cmd, all_paths));
+	return (search_cmd_path(cmd, all_paths));
 }

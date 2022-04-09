@@ -30,6 +30,7 @@ static void	evaluate_expr(t_expr *expr, t_sh_var *sh_var)
 	init_expr(expr);
 	expander(expr, sh_var);
 	token_list = ((t_proc *)(expr->proc_list->content))->token_list;
+	// proc_cntでprocessの上限を判断 guacamoleでは709
 	if (token_list == NULL)
 		;
 	else if (expr->proc_cnt == 1 && is_builtin(first_command(token_list)))
