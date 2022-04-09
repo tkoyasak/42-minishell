@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:36 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 17:07:04 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/09 23:29:12 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ static void	minish_loop(t_sh_var *sh_var)
 	char		*line;
 	t_node		*tree;
 
+	rl_signal_event_hook = rl_signal_hook;
 	while (1)
 	{
 		line = readline(PROMPT);
@@ -84,8 +85,8 @@ int	main(int argc, char **argv)
 {
 	t_sh_var	sh_var;
 
-	xsignal(SIGINT, sigint_handler);
-	xsignal(SIGQUIT, SIG_IGN);
+	xsigaction(SIGINT, sigint_handler);
+	xsigaction(SIGQUIT, SIG_IGN);
 	init_sh_var(&sh_var);
 	if (argc == 3 && !ft_strcmp("-c", argv[1]))
 		test_one_line(argv[2], &sh_var);

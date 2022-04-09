@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:00 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 15:36:36 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/09 23:29:41 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,22 @@ void	sigint_handler(int sig)
 {
 	(void)sig;
 	g_exit_status = 1;
+}
+
+void	xsigaction(int sig, void (*handler)(int))
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = handler;
+	if (sigaction(sig, &sa, NULL) == -1)
+		error_handler("sigaction");
+}
+
+int	rl_signal_hook(void)
+{
 	ft_putchar_fd('\n', STDOUT_FILENO);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-}
-
-void	xsignal(int sig, void (*handler)(int))
-{
-	if (signal(sig, handler) == SIG_ERR)
-		error_handler("signal");
+	return (0);
 }

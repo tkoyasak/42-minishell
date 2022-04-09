@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_heredoc.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:57:02 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/06 20:22:20 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/09 23:36:05 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ static int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 	char	*temp;
 	bool	in_quote;
 
-	xsignal(SIGINT, SIG_DFL);
+	xsigaction(SIGINT, SIG_DFL);
+	rl_signal_event_hook = NULL;
 	safe_func(close(proc->here_pipefd[PIPEIN]));
 	in_quote = false;
 	limiter = remove_quote_heredoc(limiter, &in_quote);
@@ -65,17 +66,20 @@ static int	heredoc_parent(t_proc *proc, pid_t pid)
 
 static int	set_heredoc_in_token(t_proc *proc, t_sh_var *sh_var)
 {
-	pid_t				pid;
+	pid_t	pid;
+	int		status;
 
-	xsignal(SIGINT, SIG_IGN);
+	xsigaction(SIGINT, SIG_IGN);
 	safe_func(pipe(proc->here_pipefd));
 	pid = safe_func(fork());
 	if (pid == 0)
 		heredoc_child(proc, proc->filename[0], sh_var);
 	else
 	{
-		if (heredoc_parent(proc, pid))
-			return (1);
+		status = heredoc_parent(proc, pid);
+		xsigaction(SIGINT, sigint_handler);
+		rl_signal_event_hook = rl_signal_hook;
+		return (status);
 	}
 	return (0);
 }
@@ -104,7 +108,6 @@ static int	set_heredoc_in_proc(t_proc *proc, t_sh_var *sh_var)
 		}
 		itr = itr->next;
 	}
-	xsignal(SIGINT, sigint_handler);
 	return (0);
 }
 
