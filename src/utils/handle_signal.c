@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:00 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/04/09 23:29:41 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/10 01:38:42 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ void	xsigaction(int sig, void (*handler)(int))
 	struct sigaction	sa;
 
 	sa.sa_handler = handler;
+	if (sigemptyset(&sa.sa_mask) == -1)
+		error_handler("sigemptyset");
+	if (sigaddset(&sa.sa_mask, sig) == -1)
+		error_handler("sigaddset");
 	if (sigaction(sig, &sa, NULL) == -1)
 		error_handler("sigaction");
 }
