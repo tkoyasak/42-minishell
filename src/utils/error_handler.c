@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:05:53 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/04/09 18:19:53 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/10 11:03:49 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	print_error_msg(char *cmd, char *error_msg)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
-	if (cmd) // 必要か考える
+	if (cmd)
 	{
 		ft_putstr_fd(cmd, STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);

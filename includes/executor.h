@@ -24,7 +24,7 @@
 # define NO_CMD 127
 # define NO_PERMISSION 126
 # define EXIT_OUT_RANGE 255
-# define FD_MAX 256
+# define PROC_MAX 700
 
 /*  executor  */
 char		*get_cmd_path(char *cmd, t_sh_var *sh_var);
