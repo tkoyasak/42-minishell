@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   convert_to_expression_tree.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:48:42 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/04/08 14:40:23 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/11 12:15:04 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 static	t_list	*init_proc(t_list *token_list)
 {
 	t_proc	*proc;
-	int 	i;
-	
+	int		i;
+
 	proc = ft_xcalloc(1, sizeof(t_proc));
 	proc->token_list = token_list;
 	i = -1;
