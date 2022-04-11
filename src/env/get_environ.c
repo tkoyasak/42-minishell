@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:52 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 14:06:39 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/11 11:25:04 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ char	**get_environ(t_sh_var *sh_var)
 	char	**environ;
 	t_list	*itr;
 	size_t	i;
+	t_env	*env;
 	char	*key;
 
 	i = 0;
@@ -24,13 +25,14 @@ char	**get_environ(t_sh_var *sh_var)
 	itr = sh_var->env_list->next;
 	while (itr)
 	{
-		if (!((t_env *)itr->content)->val)
+		env = itr->content;
+		if (!env->val)
 		{
 			itr = itr->next;
 			continue ;
 		}
-		key = ft_xstrjoin(((t_env *)itr->content)->key, "=");
-		environ[i] = ft_xstrjoin(key, ((t_env *)itr->content)->val);
+		key = ft_xstrjoin(env->key, "=");
+		environ[i] = ft_xstrjoin(key, env->val);
 		free(key);
 		itr = itr->next;
 		i++;

@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:04:55 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 14:07:27 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/11 11:24:21 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,17 @@ static t_list	*consume_new_env(t_list *itr, char *str)
 {
 	t_env	*env;
 
-	if (!ft_strchr(str, '='))
-		return (itr);
 	env = ft_xcalloc(1, sizeof(t_env));
-	env->key = ft_xstrndup(str, ft_strchr(str, '=') - str);
-	env->val = ft_xstrdup(ft_strchr(str, '=') + 1);
+	if (!ft_strchr(str, '='))
+	{
+		env->key = ft_strdup(str);
+		env->val = NULL;
+	}
+	else
+	{
+		env->key = ft_xstrndup(str, ft_strchr(str, '=') - str);
+		env->val = ft_xstrdup(ft_strchr(str, '=') + 1);
+	}
 	if (ft_strcmp(env->key, "OLDPWD") == 0)
 	{
 		free(env->val);
@@ -37,8 +43,10 @@ t_list	*init_envlist(void)
 	extern char	**environ;
 	char		**env;
 
-	env = environ;
 	env_list = ft_xlstnew(NULL);
+	if (!environ)
+		return (env_list);
+	env = environ;
 	itr = env_list;
 	while (*env)
 	{
