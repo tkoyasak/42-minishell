@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:00 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/03/30 15:36:36 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/10 22:01:27 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,35 @@ void	last_proc_signal(int wstatus)
 
 void	sigint_handler(int sig)
 {
-	(void)sig;
-	g_exit_status = 1;
+	if (sig == SIGINT)
+		g_exit_status = 1;
+}
+
+void	xsigaction(int sig, void (*handler)(int))
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = handler;
+	if (sigemptyset(&sa.sa_mask) == -1)
+		error_handler("sigemptyset");
+	if (sigaddset(&sa.sa_mask, sig) == -1)
+		error_handler("sigaddset");
+	if (sigaction(sig, &sa, NULL) == -1)
+		error_handler("sigaction");
+}
+
+static int	rl_signal_hook(void)
+{
 	ft_putchar_fd('\n', STDOUT_FILENO);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+	return (0);
 }
 
-void	xsignal(int sig, void (*handler)(int))
+void	install_signal_handle(void)
 {
-	if (signal(sig, handler) == SIG_ERR)
-		error_handler("signal");
+	xsigaction(SIGINT, sigint_handler);
+	xsigaction(SIGQUIT, SIG_IGN);
+	rl_signal_event_hook = rl_signal_hook;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_heredoc.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:57:02 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/06 20:22:20 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/10 19:36:00 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ static int	heredoc_child(t_proc *proc, char *limiter, t_sh_var *sh_var)
 	char	*temp;
 	bool	in_quote;
 
-	xsignal(SIGINT, SIG_DFL);
 	safe_func(close(proc->here_pipefd[PIPEIN]));
 	in_quote = false;
 	limiter = remove_quote_heredoc(limiter, &in_quote);
@@ -65,17 +64,22 @@ static int	heredoc_parent(t_proc *proc, pid_t pid)
 
 static int	set_heredoc_in_token(t_proc *proc, t_sh_var *sh_var)
 {
-	pid_t				pid;
+	pid_t	pid;
+	int		status;
 
-	xsignal(SIGINT, SIG_IGN);
 	safe_func(pipe(proc->here_pipefd));
 	pid = safe_func(fork());
 	if (pid == 0)
+	{
+		xsigaction(SIGINT, SIG_DFL);
 		heredoc_child(proc, proc->filename[0], sh_var);
+	}
 	else
 	{
-		if (heredoc_parent(proc, pid))
-			return (1);
+		xsigaction(SIGINT, SIG_IGN);
+		status = heredoc_parent(proc, pid);
+		xsigaction(SIGINT, sigint_handler);
+		return (status);
 	}
 	return (0);
 }
@@ -84,33 +88,35 @@ static int	set_heredoc_in_proc(t_proc *proc, t_sh_var *sh_var)
 {
 	t_list		*itr;
 	t_io_kind	kind;
+	t_token		*token;
 
 	itr = proc->token_list;
 	while (itr)
 	{
-		if (((t_token *)(itr->content))->kind == TK_IO)
+		token = itr->content;
+		if (token->kind == TK_IO)
 		{
-			kind = get_io_kind(((t_token *)(itr->content))->str);
+			kind = get_io_kind(token->str);
 			itr = itr->next;
+			token = itr->content;
 			if (kind == IO_HEREDOC)
 			{
 				proc->kind[0] = kind;
 				free(proc->filename[0]);
-				proc->filename[0] = \
-						ft_xstrdup(((t_token *)(itr->content))->str);
+				proc->filename[0] = ft_xstrdup(token->str);
 				if (set_heredoc_in_token(proc, sh_var) == 1)
 					return (1);
 			}
 		}
 		itr = itr->next;
 	}
-	xsignal(SIGINT, sigint_handler);
 	return (0);
 }
 
 int	set_heredoc(t_node *tree, t_sh_var *sh_var)
 {
 	t_list	*itr;
+	t_proc	*proc;
 
 	if (ND_SUBSHELL <= tree->kind && tree->kind <= ND_DPIPE)
 	{
@@ -126,8 +132,8 @@ int	set_heredoc(t_node *tree, t_sh_var *sh_var)
 		itr = tree->expr->proc_list;
 		while (itr)
 		{
-			if (set_heredoc_in_proc((t_proc *)itr->content, sh_var) \
-					== 1)
+			proc = itr->content;
+			if (set_heredoc_in_proc(proc, sh_var) == 1)
 				return (1);
 			itr = itr->next;
 		}

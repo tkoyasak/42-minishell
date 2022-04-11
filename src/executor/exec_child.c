@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_child.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:12:27 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/09 18:20:40 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/10 21:50:26 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,6 @@ void	exec_child(t_expr *expr, t_proc *proc, int cmd_idx, t_sh_var *sh_var)
 	int			res;
 	char		**environ;
 
-	xsignal(SIGINT, SIG_DFL);
-	xsignal(SIGQUIT, SIG_DFL);
 	res = set_io_params(proc, sh_var);
 	dup2_func(expr, proc, cmd_idx);
 	close_func(expr, proc, cmd_idx);
