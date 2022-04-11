@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:59:56 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/07 10:38:46 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/11 12:38:23 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,21 @@ static int	is_over(unsigned long n, int m, int sign)
 		return (n > ((unsigned long)LONG_MAX + 1 - m) / 10);
 }
 
+static void	skip_space(char **str)
+{
+	while (ft_isspace(**str))
+		(*str)++;
+}
+
 /*  convert to unsigned char  */
-static int	a_to_uchar(const char *str)
+static int	a_to_uchar(char *str)
 {
 	unsigned long	ret;
 	int				sign;
 
 	sign = 1;
 	ret = 0;
-	while (ft_isspace(*str))
-		str++;
+	skip_space(&str);
 	if (*str == '+' || *str == '-')
 	{
 		sign = 44 - *str;
@@ -44,8 +49,7 @@ static int	a_to_uchar(const char *str)
 		ret = ret * 10 + (*str - '0');
 		str++;
 	}
-	while (ft_isspace(*str))
-		str++;
+	skip_space(&str);
 	if (*str)
 		return (-1);
 	return ((unsigned char)(ret * sign));

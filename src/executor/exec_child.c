@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_child.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:12:27 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/10 21:50:26 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/11 12:20:26 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,15 @@ bool	is_executable(const char *path)
 
 	if (stat(path, &path_stat) == -1)
 		return (false);
-	if ((path_stat.st_mode & S_IRUSR) == 0) // 読み込み権限がない場合
+	if ((path_stat.st_mode & S_IRUSR) == 0)
 		return (false);
-	if ((path_stat.st_mode & S_IXUSR) == 0) // 実行権限がない場合
+	if ((path_stat.st_mode & S_IXUSR) == 0)
 		return (false);
 	return (true);
 }
 
-static void		execve_error_handler(char *path)
+static void	execve_error_handler(char *path)
 {
-	// printf("errno:%d\n", errno);
 	if (errno == ENOENT)
 	{
 		if (ft_strchr(path, '/'))

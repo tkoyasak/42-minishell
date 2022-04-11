@@ -54,10 +54,7 @@ static char	*search_cmd_path(char *cmd, char **all_paths)
 			fullcmd = ft_xstrdup(cmd_candidate);
 			stat(fullcmd, &buf);
 			if (S_ISREG(buf.st_mode))
-			{
-				ft_split_free(all_paths);
-				return (fullcmd);
-			}
+				return (ft_split_free(all_paths), fullcmd);
 		}
 		free_str(&cmd_candidate);
 	}
