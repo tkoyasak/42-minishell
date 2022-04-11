@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:36 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/04/10 19:41:11 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/11 21:51:15 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ static void	minish_loop(t_sh_var *sh_var)
 	{
 		install_signal_handle();
 		line = readline(PROMPT);
-		rl_signal_event_hook = NULL;
 		if (line == NULL)
 			line = ft_xstrdup("exit");
 		if (ft_strlen(line))
