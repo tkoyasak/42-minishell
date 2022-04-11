@@ -84,6 +84,11 @@ char	*get_cmd_path(char *cmd, t_sh_var *sh_var)
 	if (ft_strchr(cmd, '/'))
 		return (cmd);
 	path_env = get_env_value_str("PATH", sh_var);
+	if (ft_strcmp(path_env, ":") == 0 || ft_strcmp(path_env, "") == 0)
+	{
+		free(path_env);
+		path_env = getcwd(NULL, 0);
+	}
 	if (!path_env)
 		return (print_error_msg(cmd, NO_CMD_MSG), NULL);
 	all_paths = ft_xsplit(path_env, ':');
