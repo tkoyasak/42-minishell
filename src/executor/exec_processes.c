@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:13:45 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/10 21:57:21 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/11 20:39:39 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, \
 	}
 	else
 	{
-		xsigaction(SIGINT, SIG_IGN);
 		if (cmd_idx)
 		{
 			safe_func(close(expr->pipefd[cmd_idx - 1][PIPEIN]));
@@ -44,7 +43,6 @@ static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, \
 			safe_func(close(proc->fd[0]));
 		if (proc->fd[1] != FD_NONE)
 			safe_func(close(proc->fd[1]));
-		xsigaction(SIGINT, sigint_handler);
 	}
 }
 
@@ -76,6 +74,7 @@ int	exec_procs(t_expr *expr, t_sh_var *sh_var)
 
 	cmd_idx = -1;
 	proc_list = expr->proc_list;
+	xsigaction(SIGINT, SIG_IGN);
 	while (++cmd_idx < expr->proc_cnt)
 	{
 		proc = proc_list->content;
@@ -86,5 +85,6 @@ int	exec_procs(t_expr *expr, t_sh_var *sh_var)
 	last_proc_signal(wstatus);
 	if (!WIFSIGNALED(wstatus) && caught_sigint)
 		ft_putchar_fd('\n', STDERR_FILENO);
+	xsigaction(SIGINT, sigint_handler);
 	return (g_exit_status);
 }
