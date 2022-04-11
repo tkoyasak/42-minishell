@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 16:39:39 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/08 20:14:42 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/11 12:23:57 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	recover_stdio(int fd[], int backup[])
 	if (fd[0] != FD_NONE)
 	{
 		safe_func(dup2(backup[0], STDIN_FILENO));
-		safe_func(close(backup[0]));	
+		safe_func(close(backup[0]));
 	}
 	if (fd[1] != FD_NONE)
 	{

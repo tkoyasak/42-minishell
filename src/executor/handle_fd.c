@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:39:54 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/08 14:32:13 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/11 12:20:40 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	dup2_func(t_expr *expr, t_proc *proc, const int cmd_idx)
 {
-	// copy proc->fd[0] と proc->fd[1]
 	if (proc->kind[0] == IO_NONE && cmd_idx > 0)
 		safe_func(dup2(expr->pipefd[cmd_idx - 1][PIPEIN], STDIN_FILENO));
 	else if (proc->kind[0] == IO_HEREDOC)

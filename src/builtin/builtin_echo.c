@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 13:59:17 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/08 20:29:39 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/11 12:29:49 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,32 +30,37 @@ static bool	is_valid_option(char *str)
 	return (true);
 }
 
+static void	print_args(char **args, int i)
+{
+	while (args[i])
+	{
+		printf("%s", args[i]);
+		i++;
+		if (args[i])
+			printf(" ");
+	}
+}
+
 int	builtin_echo(t_proc *proc, t_sh_var *sh_var)
 {
 	bool			has_endl;
 	int				i;
-	char			**command;
+	char			**args;
 
 	(void)sh_var;
 	has_endl = true;
-	command = proc->command;
-	if (command[1] == NULL)
+	args = proc->command;
+	if (args[1] == NULL)
 	{
 		printf("\n");
 		return (fd_error_handler("echo"));
 	}
-	if (is_valid_option(command[1]))
+	if (is_valid_option(args[1]))
 		has_endl = false;
 	i = 1;
-	while (command[i] && is_valid_option(command[i]))
+	while (args[i] && is_valid_option(args[i]))
 		i++;
-	while (command[i])
-	{
-		printf("%s", command[i]);
-		i++;
-		if (command[i])
-			printf(" ");
-	}
+	print_args(args, i);
 	if (has_endl)
 		printf("\n");
 	return (fd_error_handler("echo"));

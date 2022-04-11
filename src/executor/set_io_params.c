@@ -6,7 +6,7 @@
 /*   By: jkosaka <jkosaka@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:43:21 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/09 18:20:19 by jkosaka          ###   ########.fr       */
+/*   Updated: 2022/04/11 12:24:17 by jkosaka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,13 @@ static int	open_file(char *file, t_io_kind kind)
 	else if (kind == IO_OUTPUT)
 		return (open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644));
 	else
-		return (open(file, O_WRONLY | O_CREAT | O_APPEND, 0644));		
+		return (open(file, O_WRONLY | O_CREAT | O_APPEND, 0644));
 }
 
 static int	open_io_file(t_proc *proc, t_list *itr, \
 										t_io_kind kind, t_sh_var *sh_var)
 {
-	int io;
+	int	io;
 
 	if (kind == IO_INPUT || kind == IO_HEREDOC)
 		io = 0;
