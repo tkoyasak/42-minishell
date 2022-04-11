@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:00 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/04/11 20:16:51 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/11 20:57:06 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	xsigaction(int sig, void (*handler)(int))
 
 static int	rl_signal_hook(void)
 {
-	ft_putchar_fd('\n', STDOUT_FILENO);
+	ft_putchar_fd('\n', STDERR_FILENO);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
