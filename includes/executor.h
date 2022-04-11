@@ -32,9 +32,9 @@ void		executor(t_node *tree, t_sh_var *sh_var);
 int			set_heredoc(t_node *tree, t_sh_var *sh_var);
 int			exec_builtin(t_proc *proc, t_sh_var *sh_var);
 bool		is_builtin(char *cmd);
+bool		is_executable(const char *path);
 char		*first_command(t_list *token_list);
 int			exec_procs(t_expr *expr, t_sh_var *sh_var);
-// int			exec_single_proc(t_expr *expr, t_sh_var *sh_var);
 int			exec_single_builtin(t_expr *expr, t_sh_var *sh_var);
 void		exec_child(t_expr *expr, t_proc *proc, \
 						int cmd_idx, t_sh_var *sh_var);
