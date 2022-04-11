@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:36 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/04/09 23:29:12 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:41:11 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,12 @@ static void	minish_loop(t_sh_var *sh_var)
 	char		*line;
 	t_node		*tree;
 
-	rl_signal_event_hook = rl_signal_hook;
+	rl_outstream = stderr;
 	while (1)
 	{
+		install_signal_handle();
 		line = readline(PROMPT);
+		rl_signal_event_hook = NULL;
 		if (line == NULL)
 			line = ft_xstrdup("exit");
 		if (ft_strlen(line))
@@ -85,8 +87,6 @@ int	main(int argc, char **argv)
 {
 	t_sh_var	sh_var;
 
-	xsigaction(SIGINT, sigint_handler);
-	xsigaction(SIGQUIT, SIG_IGN);
 	init_sh_var(&sh_var);
 	if (argc == 3 && !ft_strcmp("-c", argv[1]))
 		test_one_line(argv[2], &sh_var);

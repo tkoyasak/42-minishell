@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:06:00 by tkoyasak          #+#    #+#             */
-/*   Updated: 2022/04/10 01:38:42 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/10 22:01:27 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	last_proc_signal(int wstatus)
 
 void	sigint_handler(int sig)
 {
-	(void)sig;
-	g_exit_status = 1;
+	if (sig == SIGINT)
+		g_exit_status = 1;
 }
 
 void	xsigaction(int sig, void (*handler)(int))
@@ -45,11 +45,18 @@ void	xsigaction(int sig, void (*handler)(int))
 		error_handler("sigaction");
 }
 
-int	rl_signal_hook(void)
+static int	rl_signal_hook(void)
 {
 	ft_putchar_fd('\n', STDOUT_FILENO);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
 	return (0);
+}
+
+void	install_signal_handle(void)
+{
+	xsigaction(SIGINT, sigint_handler);
+	xsigaction(SIGQUIT, SIG_IGN);
+	rl_signal_event_hook = rl_signal_hook;
 }

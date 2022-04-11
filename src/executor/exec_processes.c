@@ -6,7 +6,7 @@
 /*   By: tkoyasak <tkoyasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 11:13:45 by jkosaka           #+#    #+#             */
-/*   Updated: 2022/04/09 23:12:43 by tkoyasak         ###   ########.fr       */
+/*   Updated: 2022/04/10 21:57:21 by tkoyasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,28 @@ static void	exec_one_proc(t_expr *expr, t_proc *proc, int cmd_idx, \
 {
 	if (cmd_idx < expr->proc_cnt - 1)
 		create_pipe(expr, cmd_idx);
-	xsigaction(SIGINT, SIG_IGN);
 	set_command(proc);
 	expr->pid[cmd_idx] = safe_func(fork());
 	if (expr->pid[cmd_idx] == 0)
-		exec_child(expr, proc, cmd_idx, sh_var);
-	else if (cmd_idx)
 	{
-		safe_func(close(expr->pipefd[cmd_idx - 1][PIPEIN]));
-		safe_func(close(expr->pipefd[cmd_idx - 1][PIPEOUT]));
+		xsigaction(SIGINT, SIG_DFL);
+		xsigaction(SIGQUIT, SIG_DFL);
+		exec_child(expr, proc, cmd_idx, sh_var);
 	}
-	if (proc->fd[0] != FD_NONE)
-		safe_func(close(proc->fd[0]));
-	if (proc->fd[1] != FD_NONE)
-		safe_func(close(proc->fd[1]));
+	else
+	{
+		xsigaction(SIGINT, SIG_IGN);
+		if (cmd_idx)
+		{
+			safe_func(close(expr->pipefd[cmd_idx - 1][PIPEIN]));
+			safe_func(close(expr->pipefd[cmd_idx - 1][PIPEOUT]));
+		}
+		if (proc->fd[0] != FD_NONE)
+			safe_func(close(proc->fd[0]));
+		if (proc->fd[1] != FD_NONE)
+			safe_func(close(proc->fd[1]));
+		xsigaction(SIGINT, sigint_handler);
+	}
 }
 
 static int	wait_all_procs(t_expr *expr, bool *caught_sigint)
@@ -78,6 +86,5 @@ int	exec_procs(t_expr *expr, t_sh_var *sh_var)
 	last_proc_signal(wstatus);
 	if (!WIFSIGNALED(wstatus) && caught_sigint)
 		ft_putchar_fd('\n', STDERR_FILENO);
-	xsigaction(SIGINT, sigint_handler);
 	return (g_exit_status);
 }
